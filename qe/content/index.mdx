@@ -1,0 +1,33 @@
+---
+title: Documentation Home
+description: Explore the Orquestra platform
+---
+import DocsetMenu from './components/docset-menu';
+import { colors } from 'gatsby-theme-apollo-core';
+import { Button } from '@apollo/space-kit/Button';
+import { Link } from 'gatsby';
+
+Welcome! 👋 Orquestra is a platform for building orchestrated and repeatable **workflows**, enabled by the systematic organization of data and resources
+
+<DocsetMenu />
+
+### New to Orquestra or Workflow Management?
+
+It's easy to adopt Workflow Management incrementally, meaning you can set it up Orquestra alongside a jupyter notebook and migrate functionality at your convenience.
+
+<div>
+  <Button
+    size="large"
+    color={colors.primary}
+    as={<Link to="/tutorial/helloworld" />}
+  >
+    Start the tutorial!
+  </Button>
+  <Button
+    size="large"
+    as={<Link to="/basics/platform" />}
+    style={{marginLeft: 16}}
+  >
+    Learn more
+  </Button>
+</div>
