@@ -35,7 +35,7 @@ const footerNavConfig = {
 
 
 module.exports = {
-  // pathPrefix: '/docs',
+  pathPrefix: '/docs/qe',
   plugins: [
     {
       resolve: 'gatsby-theme-apollo-docs',
@@ -45,14 +45,13 @@ module.exports = {
         root: __dirname,
         siteName: 'Orquestra Docs',
         pageTitle: 'Orquestra Platform',
-        subtitle: 'Basics',
+        subtitle: 'Quantum Engine',
         menuTitle: 'Orquestra Platform',
         description: 'how to use the orquestra platform',
         githubRepo: 'zapatacomputing/orquestra-docs',
         twitterHandle: 'ZapataComputing', 
         sidebarCategories: {
-          null: ['index','basics/platform','basics/why-workflows'],
-          Tutorial: ['tutorial/helloworld','tutorial/hydrogen-vqe','tutorial/maxcut-qaoa'],
+          null: ['index'],
         }
       }
     }
