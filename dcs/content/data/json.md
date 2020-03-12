@@ -1,4 +1,15 @@
 ---
 title: Workflow Results via JSON
-description: blah
+description: How to view and analyze workflow results in JSON format.
 ---
+
+To initiate an aggregation of a workflow, run
+
+`qe get workflowresult <workflow ID>`
+
+This starts the aggregation process. To see if the aggregation has finished, run that command again. Aggregation is dependent on the workflow output having been correlated, which occurs automatically. If correlation has not yet finished, aggregation will fail. When aggregation has finished, it will return a download link for the file. An example:
+![Download link](/../img/downloadlink2.png)
+
+This link will expire after seven days. If the link expires and you did not get the file, please contact support.
+
+The format of the output is described in more detail on [the aggregation page](/data/aggregation/). To see a full example of a workflow result file, see TODO:link. For a tutorial on how to make a plot from a workflow result file, see TODO:link.

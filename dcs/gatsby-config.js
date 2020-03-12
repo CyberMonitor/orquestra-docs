@@ -10,10 +10,10 @@ const navConfig = {
     description:
       'Submit workflows to a production-ready workflow management system.'
   },
-  'Orquestra Data Correlation Service': {
-    url: 'https://www.orquestra.io/docs/dcs',
+  'Orquestra Data Management': {
+    url: 'https://www.orquestra.io/docs/data',
     description:
-      'Manage the entirety of your workflows output data and seamlessly build rich plots.'
+      'Manage the entirety of your workflow\'s output data and seamlessly build rich plots.'
   },
 };
 
@@ -35,7 +35,7 @@ const footerNavConfig = {
 
 
 module.exports = {
-  pathPrefix: '/docs/dcs',
+  pathPrefix: '/docs/data',
   plugins: [
     {
       resolve: 'gatsby-theme-apollo-docs',
@@ -45,13 +45,17 @@ module.exports = {
         root: __dirname,
         siteName: 'Orquestra Docs',
         pageTitle: 'Orquestra Platform',
-        subtitle: 'Data Correlation',
+        subtitle: 'Data Management',
         menuTitle: 'Orquestra Platform',
-        description: 'A guide to using the Orquestra Data Correlation Service',
+        description: 'A guide to Orquestra\'s data management',
         githubRepo: 'zapatacomputing/orquestra-docs',
         twitterHandle: 'ZapataComputing', 
         sidebarCategories: {
-          null: ['index','data/why-artifacts'],
+          null: ['index'],
+          'Data': [
+            'data/artifacts',
+            'data/taskdataobjects',
+          ],
           'Data Management': [
             'data/correlation',
             'data/aggregation',
@@ -61,6 +65,9 @@ module.exports = {
           ],
         }
       }
+    },
+    {
+      resolve: 'gatsby-plugin-catch-links'
     }
   ]
 };

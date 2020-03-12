@@ -10,7 +10,7 @@ const navConfig = {
     description:
       'Submit workflows to a production-ready workflow management system.'
   },
-  'Orquestra Data Correlation Service': {
+  'Orquestra Data Management': {
     url: 'https://www.orquestra.io/docs/dcs',
     description:
       'Manage the entirety of your workflows output data and seamlessly build rich plots.'
@@ -52,6 +52,15 @@ module.exports = {
         twitterHandle: 'ZapataComputing', 
         sidebarCategories: {
           null: ['index'],
+          'Overview': [
+            'basics/platform',
+            'basics/why-workflows',
+          ],
+          'Tutorials': [
+            'tutorial/helloworld',
+            'tutorial/hydrogen-vqe',
+            'tutorial/maxcut-qaoa',
+          ],
         }
       }
     }
