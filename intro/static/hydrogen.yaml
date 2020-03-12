@@ -55,7 +55,7 @@ spec:
           - basis: '{{item}}' # Note that quotes are needed here because of the curly braces
         withItems:
         - STO-3G
-        - 6-31G
+        # - 6-31G
         # - 6-311G
 
   - name: bond-length-loop
@@ -176,6 +176,7 @@ spec:
           - resources: [open-pack-core, open-pack-optimizers, open-pack-forest, open-pack-vqe]
           - docker-image: "{{workflow.parameters.docker-image}}"
           - docker-tag: "{{workflow.parameters.docker-tag}}"
+          - memory: 2048Mi
           artifacts:
           - ansatz:
               from: "{{steps.build-vqe-circuit-template.outputs.artifacts.ansatz}}"
