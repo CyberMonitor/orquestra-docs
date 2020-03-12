@@ -3,17 +3,45 @@ title: 1. Simulating H₂ with VQE
 description: Calculate the equilibrium bond length of H₂ with a variational quantum eigensolver
 ---
 
-1. Login to quantum engine.
-2. Download the [hydrogen VQE example workflow](/hydrogen.yaml). (Right click and select `Save Link As`.)
-3. Submit the workflow with `qe submit workflow hydrogen.yaml`.
-4. Monitor the status of your workflow with `qe get workflow workflow_id` where
+## Using the Quantum Engine CLI
+
+The quantum engine CLI helps users connect to the Orquestra platform and be able to run workflows belonging to organizations and projects they have been granted access to.
+
+### Downloading the CLI
+
+In order to download the CLI tool, please follow the steps below:
+
+1. Go to the [Quantum Engine CLI releases page](https://github.com/zapatacomputing/qe-cli/releases) and choose the version suitable for your machine. The latest release is recommended.
+
+1. Once you have downloaded the CLI tool, place it under `/usr/local/bin` or place it in a directory of your choice and update your `~/.bashrc` or `~/.zshrc` file to add the directory to your `$PATH`.
+
+1. Rename the file to be called `qe`. Make the file executable by running `chmod a+x qe`.
+
+1. Now you can call the CLI tool as `qe`, and it should display the list of available commands and additional help.
+
+### Logging into Orquestra
+
+In order to start being productive with Orquestra, you need to log into the platform using the Quantum Engine CLI.
+
+The Quantum Engine assumes that you have acquired the correct credentials from Zapata Computing. Therefore all you will need is your email in order to log in, which is done as follows:
+
+`qe login -e <your-email-address> -s <quantum-engine-server-uri>`
+
+where the `quantum-engine-server-uri` depends on your cluster and is:
+- `prod-b`: `TODO:80`
+
+### Running VQE
+
+1. Download the [hydrogen VQE example workflow](/hydrogen.yaml). (Right click and select `Save Link As`.)
+1. Submit the workflow with `qe submit workflow hydrogen.yaml`.
+1. Monitor the status of your workflow with `qe get workflow workflow_id` where
 `workflow_id` is the ID of your workflow.
-5. After the workflow has completed, run `qe get workflowresult workflow_id` to request the workflow results.
-6. Continue to run `qe get workflowresult workflow_id` until a URL with workflow results is returned.
-7. Open the URL to download the JSON file with the workflow results.
-8. Copy the python script below into the same directory as the JSON file.
-9. In the python script, replace the name of the JSON file with the name of the JSON file that you have downloaded in Step 7.
-10. Run the python script to plot the calculated binding energy curve.
+1. After the workflow has completed, run `qe get workflowresult workflow_id` to request the workflow results.
+1. Continue to run `qe get workflowresult workflow_id` until a URL with workflow results is returned.
+1. Open the URL to download the JSON file with the workflow results.
+1. Copy the python script below into the same directory as the JSON file.
+1. In the python script, replace the name of the JSON file with the name of the JSON file that you have downloaded in Step 7.
+1. Run the python script to plot the calculated binding energy curve.
 
 ```python
 """Plot the VQE binding energy curve of a diatomic molecule from a Quantum
