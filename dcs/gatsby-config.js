@@ -35,7 +35,7 @@ const footerNavConfig = {
 
 
 module.exports = {
-  pathPrefix: '/docs/data',
+  pathPrefix: '/docs/dcs',
   plugins: [
     {
       resolve: 'gatsby-theme-apollo-docs',
