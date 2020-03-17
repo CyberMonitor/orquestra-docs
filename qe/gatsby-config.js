@@ -52,21 +52,14 @@ module.exports = {
         twitterHandle: 'ZapataComputing', 
         sidebarCategories: {
           null: ['index'],
-          'How-Tos': [
-            'how-tos/installation',
-            'how-tos/login',
-            'how-tos/submit',
-            'how-tos/getworkflow',
-            'how-tos/getworkflowresult',
-          ],
-          'Reference': [
-            'reference/whattheheck.md',
-            'reference/resources.md',
+          'Overview': [
+            'basics/platform',
+            'basics/why-workflows',
           ],
           'Tutorials': [
-            'tutorials/helloworld',
-            'tutorials/hydrogen-vqe',
-            'tutorials/maxcut-qaoa',
+            'tutorial/helloworld',
+            'tutorial/hydrogen-vqe',
+            'tutorial/maxcut-qaoa',
           ],
         }
       }

@@ -1,7 +1,34 @@
 ---
-title: H₂ Bond Length
+title: 1. Simulating H₂ with VQE
 description: Calculate the equilibrium bond length of H₂ with a variational quantum eigensolver
 ---
+
+## Using the Quantum Engine CLI
+
+The quantum engine CLI helps users connect to the Orquestra platform and be able to run workflows belonging to organizations and projects they have been granted access to.
+
+### Downloading the CLI
+
+In order to download the CLI tool, please follow the steps below:
+
+1. Go to the [Quantum Engine CLI releases page](https://github.com/zapatacomputing/qe-cli/releases) and choose the version suitable for your machine. The latest release is recommended.
+
+1. Once you have downloaded the CLI tool, place it under `/usr/local/bin` or place it in a directory of your choice and update your `~/.bashrc` or `~/.zshrc` file to add the directory to your `$PATH`.
+
+1. Rename the file to be called `qe`. Make the file executable by running `chmod a+x qe`.
+
+1. Now you can call the CLI tool as `qe`, and it should display the list of available commands and additional help.
+
+### Logging into Orquestra
+
+In order to start being productive with Orquestra, you need to log into the platform using the Quantum Engine CLI.
+
+The Quantum Engine assumes that you have acquired the correct credentials from Zapata Computing. Therefore all you will need is your email in order to log in, which is done as follows:
+
+`qe login -e <your-email-address> -s <quantum-engine-server-uri>`
+
+where the `quantum-engine-server-uri` depends on your cluster and is:
+- `prod-b`: `prod-b.orquestra.io:80`
 
 ### Running VQE
 
