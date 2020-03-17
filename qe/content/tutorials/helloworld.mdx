@@ -3,29 +3,51 @@ title: Hello World
 description: Start here to learn how to build workflows with Orquestra.
 ---
 
-## Using the Quantum Engine CLI
+This tutorial walks you through the steps to create your first [Quantum Engine resource](link to reference docs about resources) and how to use that resource in a [workflow](link to reference docs about workflows).
+We can create a very minimalistic workflow without using resources but we will miss out on what makes workflows useful: sharing resusable [templates](link to reference docs about templates).
 
-The quantum engine CLI helps users connect to the Orquestra platform and be able to run workflows belonging to organizations and projects they have been granted access to.
+Our goal is have a resource that prints `Hello World` when used within a workflow. Therefore, our first goal is to create said resource.
 
-### Downloading the CLI
+## Resource
 
-In order to download the CLI tool, please follow the steps below:
+A resource is made of two components: the Python code that will be executed and the template that calls that Python code and reused within a workflow.
 
-1. Go to the [Quantum Engine CLI releases page](https://github.com/zapatacomputing/qe-cli/releases) and choose the version suitable for your machine. The latest release is recommended.
+Since we only support Git resources right now, we're going to host our resource in a public Github repository.
+It contains two folders:
+1. The `src` folder contains your Python code. It must also contain a `setup.py` file that it is responsible for installing your code in the machine you've been given. This installation is done automatically for you.
 
-1. Once you have downloaded the CLI tool, place it under `/usr/local/bin` or place it in a directory of your choice and update your `~/.bashrc` or `~/.zshrc` file to add the directory to your `$PATH`.
+1. The `template` folder contains your templates that use your Python code in the `src` folder.
 
-1. Rename the file to be called `qe`. Make the file executable by running `chmod a+x qe`.
+Let's us elaborate a little more on those two folders.
 
-1. Now you can call the CLI tool as `qe`, and it should display the list of available commands and additional help.
+### Python source
 
-### Logging into Orquestra
+Your Python source can be anything you want it to be. The only requirement is that it is installable via `pip` using the `setup.py` file you provided. Here is a sample `setup.py`:
 
-In order to start being productive with Orquestra, you need to log into the platform using the Quantum Engine CLI.
+```Python
 
-The Quantum Engine assumes that you have acquired the correct credentials from Zapata Computing. Therefore all you will need is your email in order to log in, which is done as follows:
+```
 
-`qe login -e <your-email-address> -s <quantum-engine-server-uri>`
+And as to the Python code itself, here it is:
 
-where the `quantum-engine-server-uri` depends on your cluster and is:
-- `prod-b`: `TODO:80`
+```Python
+
+```
+
+### Template
+
+Your template is responsible for invoking your Python source. An additional requirement that will make sense in most cases is that your template's parent must be `generic-task` which has the necessary instructions on where to run your Python code.
+
+
+Please find below the `Hello World` template.
+
+```YAML
+
+```
+
+With those two folders in place, we can now create a simple workflow that uses that resource.
+Please find below a simple workflow that ends up printing the message onto standard output.
+
+```YAML
+
+```
