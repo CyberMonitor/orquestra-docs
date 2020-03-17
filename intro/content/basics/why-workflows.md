@@ -1,5 +1,5 @@
 ---
-title: Why workflows?
+title: Why Workflows?
 description: Why adopting Orquestra workflows will help you get to results faster
 ---
 
@@ -9,7 +9,7 @@ Adopting workflows in your organization will ease these pain points considerably
 
 ## What are workflows?
 
-Workflows are text files that specify through series of steps that encode the sequence of actions necessary to go from nothing to results of scientific and business value.
+Workflows are text files that specify a sequence of actions necessary to go from nothing to results of scientific and business value.
 
 Workflows are the language that Orquestra's Quantum Engine understands. The Orquestra platform's Quantum Engine takes workflows as inputs and then kicks off the process of execution.
 
