@@ -1,5 +1,5 @@
 ---
-title: 0. Hello World
+title: 0. Hello Workflow
 description: Start here to learn how to build workflows with Orquestra.
 ---
 
@@ -42,7 +42,7 @@ import setuptools
 
 setuptools.setup(
     name                            = "orquestra",
-    packages                        = setuptools.find_packages(where = "python"),
+    packages                        = setuptools.find_namespace_packages(include=['orquestra.*']),
     package_dir                     = {
         "" : "python"
     },
@@ -107,7 +107,7 @@ spec:
             welcome()
     outputs:
       artifacts:
-      - name: welcome
+      - name: welcome-message
         path: /app/welcome.json
 ```
 
@@ -156,8 +156,6 @@ spec:
     steps:
     - - name: welcome
         template: welcome-to-orquestra
-    - - name: bye
-        template: say-bye
 ```
 
 - The `ZapOSApiVersion` is the workflow API version. The current version is `v1alpha1`.
@@ -174,11 +172,11 @@ spec:
 
 **8. Create a file locally called `welcome-workflow.yaml` and put the above example workflow in it.**
 
-Next, we will see how to use a pre-existing resource and explore one possible pattern for multiple steps.
+Next, we will see how to use a pre-existing resource and explore one possible pattern for a workflow with multiple steps.
 
 Zapata has a resource with a URL of `git@github.com:zapatacomputing/test.git` and branch `python`.
 
-**9. Add another resource to the `resources` section of your workflow for this resource.
+**9. Add another resource to the `resources` section of your workflow for this resource.**
 
 After that, the resources section should look like the following:
 
@@ -196,7 +194,7 @@ resources:
     branch: "python"
 ```
 
-This pre-built resource has a template called `bye-orquestra` in it and associated source code. You can now use that template in your workflow. We will use this template to demonstrate a new pattern you can use in your workflows. The following is the templates section of `welcome-workflow.yaml` with the new template added:
+This pre-built resource has a template called `bye-orquestra` in it and associated source code. You can now use that template in your workflow. We will use this template to demonstrate a new pattern you can use in your workflows. The following is the `templates` section of `welcome-workflow.yaml` with the new template added:
 
 ```YAML
   templates:
@@ -204,30 +202,36 @@ This pre-built resource has a template called `bye-orquestra` in it and associat
     steps:
     - - name: welcome
         template: welcome-to-orquestra
-    - - name: bye
+    - - name: transform
         template: say-bye
 
   - name: say-bye
     steps:
     - - name: bye
         template: bye-orquestra
+        arguments:
+          artifacts:
+          - message:
+              from: '{{steps.welcome.outputs.artifacts.welcome}}'
 ```
 
-- There is now a second step with a `name` of `bye`. `bye` calls the `template` named `say-bye`. This template is not defined in either of the resources. It is defined later in the workflow.
+- There is now a second step with a `name` of `bye`. The step `bye` calls the `template` named `say-bye`. This template is not defined in either of the resources. It is defined later in the workflow.
 
 - The template `say-bye` has `steps` like `salutations` did. The step `bye` calls the template `bye-orquestra` from the pre-built resource you just added.
 
-This pattern of calling a template that has a list of steps allows you to make groupings of steps under a single name that can be called in your workflow. This can be useful for organization, and it allows you to easily reuse a sequence of steps.
+- [explain artifat use]
 
-**10. Edit the `templates` section of `welcome-workflow.yaml` to match the example above.
+This pattern of calling a template that has a list of steps allows you to make groupings of steps under a single name &mdash; the newly defined template's name &mdash; that can be called in your workflow. This can be useful for organization, and it allows you to easily reuse a sequence of steps.
+
+**10. Edit the `templates` section of `welcome-workflow.yaml` to match the example above.**
 
 Now you are ready to run the workflow!
 
-**11. Make sure you have installed the Quantum Engine CLI by following the [instructions for installation]()**
+**11. Make sure you have installed the Quantum Engine CLI by following the [instructions for installation]().**
 
-**12. Log in to Quantum Engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your command line. Contact support to register your email or receive the `quantum-engine-uri`.**
+**12. Log in to Quantum Engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your command line. Contact support to register your email and/or receive the `quantum-engine-uri`.**
 
-**13. Submit your `welcome-workflow.yaml` by running `qe submit <path/to/workflow/welcome-workflow.yaml>`
+**13. Submit your `welcome-workflow.yaml` by running `qe submit <path/to/workflow/welcome-workflow.yaml>`**
 
 This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
 ```Bash

@@ -52,7 +52,7 @@ module.exports = {
         twitterHandle: 'ZapataComputing', 
         sidebarCategories: {
           null: ['index','basics/platform','basics/why-workflows'],
-          Tutorial: ['tutorial/helloworld','tutorial/hydrogen-vqe','tutorial/maxcut-qaoa'],
+          Tutorial: ['tutorial/helloworkflow','tutorial/hydrogen-vqe','tutorial/maxcut-qaoa'],
         }
       }
     }
