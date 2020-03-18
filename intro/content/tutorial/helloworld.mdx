@@ -1,4 +1,261 @@
 ---
 title: 0. Hello World
-description: Start here to learn how to build workflows with Orquestra
+description: Start here to learn how to build workflows with Orquestra.
 ---
+
+## Introduction
+
+This tutorial walks you through the steps to create your first Quantum Engine workflow. The key components used in a workflow are **tasks**, **templates**, and **resources**.
+
+### Tasks and Templates
+
+The functional unit of a workflow is a task. Each task references a template and provides values for any required inputs to that template. A template references code that will take in those inputs and generate outputs, and it can be reused within a workflow.
+
+### Resource
+
+Resources are a way of making templates and code reusable and shareable. A resource is made of two components: the Python code that will be executed and the template that calls that Python code.
+
+## Building your own workflow
+
+This tutorial will demonstrate how to build your own resource, which will allow you to use your own code in your workflow, and it will demonstrate how to use an existing resource in your workflow. We could create a very minimalistic workflow without using resources, but we would miss out on what makes Quantum Engine powerful: sharing reusable templates and code. We will start by showing you how to build your own resource.
+
+Since we currently only support Git resources, the first step is:
+
+**1. Go to [GitHub](https://github.com/), create an account if you don't have one, and create a public Github repository.**
+
+This repository will be your resource. Resources must contain two folders:
+- The `src` folder will contain your Python code. It must also contain a `setup.py` file that is responsible for installing your code in the machine where your workflow is executed. This installation is done automatically for you.
+- The `templates` folder contains your templates that use your Python code in the `src` folder.
+
+We will start with the `src` folder.
+
+**2. Using either the GitHub UI or by cloning your repo and using the command line, add a `src` folder to the repository with a file called `setup.py`.**
+
+Let's elaborate on what the contents of the `src` folder will be.
+
+**Python source**
+
+Your Python source can be anything you want it to be. The only requirement is that it is installable via `pip` using the `setup.py` file you provide. Here is a sample `setup.py`:
+
+```Python
+import setuptools
+
+setuptools.setup(
+    name                            = "orquestra",
+    packages                        = setuptools.find_packages(where = "python"),
+    package_dir                     = {
+        "" : "python"
+    },
+    classifiers                     = (
+        "Programming Language :: Python :: 3",
+        "Operating System :: OS Independent",
+    ),
+)
+```
+
+In this sample, `name` is the name of your package. The contents of the `packages` field in this sample tells the installer to look in your repo in a folder called `python` for your package. The contents of the `package_dir` field in this sample means that the contents of the "python" folder can be imported without the python path prefix, for example, with `from orquestra import all`.
+
+**3. Add the sample `setup.py` file text above to the `setup.py` file in your repository `src` folder.**
+
+The other component of the `src` folder is the code you want to run.
+
+**4. Add a python package to the `src` folder with the path `python/orquestra` and with a python module in it called `welcome.py`**
+
+Our goal in this tutorial is to create a resource that produces an [artifact]() with the text `Welcome to Orquestra!` when used within a workflow. The contents of `welcome.py` that will achieve this are below:
+
+```Python
+"""
+This module saves a welcome message.
+"""
+
+import json
+
+def welcome():
+    message = "Welcome to Orquestra!"
+
+    with open("welcome.json",'w') as f:
+        f.write(json.dumps(message, indent=2)) # Write message to file as this will serve as output artifact
+```
+
+**5. Add the sample `welcome.py` script above to your `welcome.py` file.**
+
+The second folder in the resource directory is the `templates` folder.
+
+**6. Create the `templates` folder in the top level of your repository with a file called `welcome.yaml` inside of it.**
+ 
+Let's elaborate on what the contents of the `templates` folder will be.
+
+**Template**
+
+Your template is responsible for invoking your Python source. A template that will call the Python source code we just wrote is below:
+
+```YAML
+spec:
+  templates:
+  - name: welcome-to-orquestra
+    parent: generic-task
+    inputs:
+      parameters:
+      - name: command
+        value: python3 main.py
+      artifacts:
+      - name: main-script
+        path: /app/main.py
+        raw:
+          data: |
+            from orquestra import welcome
+            welcome()
+    outputs:
+      artifacts:
+      - name: welcome
+        path: /app/welcome.json
+```
+
+Let us proceed to explain the different parts of the template we just created above.
+
+- The `spec` section: every template YAML file must begin with a `spec`, without which your template won't compile.
+
+- The `templates` section under `spec` allows you to list all your templates under it.
+
+- The `name` field tells the compiler the name of your template. This field is required.
+
+- The `parent` field allows us to specify a template natively provided by the Quantum Engine as this `parent` (called `generic-task`) contains the necessary instructions as to how to execute your Python code. This is only needed because our template doesn't have a `steps` section that would have invoked other templates (we will see an example below where a `parent` field is not specified). We finally note that you cannot have multiple parents.
+
+- The `inputs` field lists the different input data that are needed to run your template. We have two sorts of inputs: input parameters and input artifacts. Input artifacts are in general persistent (meaning they will be written to disk) which input parameters are not. In our case, we define an input artifact which is actually executable Python code that calls the Python function we wrote earlier. The aspect to pay attention to is the `command` input parameter: without it, the input artifact will never be executed. This is because `generic-task` will look for the `command` input parameter to determine if there are commands to execute. The compiler will see the `main-script` input artifact and will create to disk a file called `/app/main.py`. But `/app` is the default working directory, so in our command, we only need to specify `python3 main.py` as the value of the `command` input parameter and not `python3 /app/main.py`. And that's how you execute your own Python code using the Quantum Engine.
+
+- The `outputs` field allows us to specify the data we expect at the end of the template's execution. Our Python script in input artfacts produced a file under `/app/welcome.json` but without output artifacts, we will have to look for the file by path all the time, and it could even be garbage collected since we never marked it as an output artifact. By specifying the file as an output artifact, we can refer to it as input artifacts in other templates.
+
+**7. Add the sample `welcome.yaml` template snippet above to your `welcome.yaml` file.**
+
+With those two folders in place, we can now create a simple workflow that uses that resource. A simple workflow that will run the template we just created is below.
+
+```YAML
+ZapOSApiVersion: v1alpha1
+kind: Workflow
+
+resources:
+- name: welcome
+  type: git
+  parameters:
+    url: "git@github.com:<your-git-username>/welcome.git"
+    branch: "python"
+
+metadata:
+  generateName: welcome-to-orquestra-
+
+spec:
+  entrypoint: salutations
+
+  arguments:
+    parameters:
+    - s3-bucket: quantum-engine
+    - s3-key: tutorials/welcome/
+
+  templates:
+  - name: salutations
+    steps:
+    - - name: welcome
+        template: welcome-to-orquestra
+    - - name: bye
+        template: say-bye
+```
+
+- The `ZapOSApiVersion` is the workflow API version. The current version is `v1alpha1`.
+
+- The `kind` field declares that this is a `Workflow`.
+
+- The `resources` section is where you can list one or more resources, such as the one you just created. Currently, only Git resources are supported, so all resources will have the fields shown in this example. Resources must have a `name`. Git resources will have `git` as the `type`. The `parameters` tell Orquestra how to find the Git resource you just built. `url`, which is the URL of your repository on GitHub, is required. `branch` will tell Orquestra which branch to use, and it will default to `master`.
+
+- The `metadata` section contains data not necessary to run your workflow but that will be needed so you can easily work with the data generated by your workflow. In our case, we have only the `generatedName` field, which will be used to generate your workflow ID and other names (that you'll see when you execute the workflow later).
+
+- The `spec` section contains the data for running your workflow. The `entrypoint` tells Orquestra which step to start with. The `arguments` section can have `parameters` and/or `artifacts`. `parameters` are variables that can be accessed within the workflow. `s3-bucket` and `s3-key` are used by `generic-task` (discussed above) to know where to store your outputs. `s3-bucket` must be `quantum-engine` in order for Orquestra's data management services to access your data. `s3-key` can be a path of your choosing.
+
+- The `templates` section in a workflow is where you describe, step by step, how to go from zero to your final results. You group these steps into templates so it is easier to work with them. Steps can run in parallel or in series. Series steps begin with a double dash, while parallel steps begin with a single dash. In our case, we only have a single step, so it begins with a double dash. The `name` of the template is how the `entrypoint`, discussed above, finds it. The first step, whose `name` is `welcome`, references the template `welcome-to-orquestra`, which we created earlier in our resource, using its `template` field.
+
+**8. Create a file locally called `welcome-workflow.yaml` and put the above example workflow in it.**
+
+Next, we will see how to use a pre-existing resource and explore one possible pattern for multiple steps.
+
+Zapata has a resource with a URL of `git@github.com:zapatacomputing/test.git` and branch `python`.
+
+**9. Add another resource to the `resources` section of your workflow for this resource.
+
+After that, the resources section should look like the following:
+
+```YAML
+resources:
+- name: welcome
+  type: git
+  parameters:
+    url: "git@github.com:<your-git-username>/welcome.git"
+    branch: "python"
+- name: goodbye
+  type: git
+  parameters:
+    url: "git@github.com:zapatacomputing/test.git"
+    branch: "python"
+```
+
+This pre-built resource has a template called `bye-orquestra` in it and associated source code. You can now use that template in your workflow. We will use this template to demonstrate a new pattern you can use in your workflows. The following is the templates section of `welcome-workflow.yaml` with the new template added:
+
+```YAML
+  templates:
+  - name: salutations
+    steps:
+    - - name: welcome
+        template: welcome-to-orquestra
+    - - name: bye
+        template: say-bye
+
+  - name: say-bye
+    steps:
+    - - name: bye
+        template: bye-orquestra
+```
+
+- There is now a second step with a `name` of `bye`. `bye` calls the `template` named `say-bye`. This template is not defined in either of the resources. It is defined later in the workflow.
+
+- The template `say-bye` has `steps` like `salutations` did. The step `bye` calls the template `bye-orquestra` from the pre-built resource you just added.
+
+This pattern of calling a template that has a list of steps allows you to make groupings of steps under a single name that can be called in your workflow. This can be useful for organization, and it allows you to easily reuse a sequence of steps.
+
+**10. Edit the `templates` section of `welcome-workflow.yaml` to match the example above.
+
+Now you are ready to run the workflow!
+
+**11. Make sure you have installed the Quantum Engine CLI by following the [instructions for installation]()**
+
+**12. Log in to Quantum Engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your command line. Contact support to register your email or receive the `quantum-engine-uri`.**
+
+**13. Submit your `welcome-workflow.yaml` by running `qe submit <path/to/workflow/welcome-workflow.yaml>`
+
+This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
+```Bash
+
+```
+
+**14. To see details of the execution of your workflow, run `qe get workflow <workflow-ID>` with your workflow ID from the previous step substituted in.**
+
+ The output will look like:
+```Bash
+
+```
+
+[Explanation of output]
+
+**15. To get the results of your workflow, run `qe get workflowresult <workflow-ID>` with your workflow ID.**
+
+[Note about how it takes time, will return a link when done] This file will look like:
+
+```JSON
+
+```
+
+[Explanation of output]
+
+[Concluding sentence]
+
+For your convenience, here is the completed workflow:
+```YAML
+
+```
