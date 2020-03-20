@@ -21,7 +21,7 @@ Templates can be defined once and reused multiple times within a workflow. Templ
 
 ### Resource
 
-Resources are a way of making templates and code reusable and shareable. A resource is made of two components: the Python code that will be executed and the template that calls that Python code.
+Resources are a way of making templates and code reusable and shareable. A resource is made of two components: the code that will be executed and the template that calls that code. Currently, only Python 3.7 code is supported.
 
 ## Building your own workflow
 
@@ -48,7 +48,9 @@ Since we currently only support Git resources, the first step is:
 This repository will be where you build your resource. [This GitHub repo](https://github.com/zapatacomputing/tutorial-0-welcome) can be used as a guide for what it should look like at the end of the following steps.
 
 To be used by Orquestra, resources must contain two folders:
-- The `src` folder will contain your Python code. It must also contain a `setup.py` file that is responsible for installing your code in the machine where your workflow is executed. This installation is done automatically for you.
+- The `src` folder will contain:
+  - A setup file that is responsible for installing your code in the machine where your workflow is executed. This installation is done automatically for you.
+  - Source code under a folder called `python`.
 - The `templates` folder contains your templates that use your Python code in the `src` folder.
 
 We will start with the `src` folder. Your Python source can be anything you want it to be. The only requirement is that it is installable via `pip` using the `setup.py` file you provide. 
