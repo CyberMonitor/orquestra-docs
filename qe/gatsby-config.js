@@ -53,13 +53,7 @@ module.exports = {
         sidebarCategories: {
           null: ['index'],
           'Overview': [
-            'basics/platform',
-            'basics/why-workflows',
-          ],
-          'Tutorials': [
-            'tutorial/helloworld',
-            'tutorial/hydrogen-vqe',
-            'tutorial/maxcut-qaoa',
+            'basics/introduction',
           ],
         }
       }
