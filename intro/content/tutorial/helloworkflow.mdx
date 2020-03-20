@@ -10,9 +10,13 @@ This tutorial walks you through the steps to create your first Quantum Engine wo
 ### Templates
 
 The functional unit of a workflow is a template. Each template can do one of three things:
+
 1. It can reference another template and provide values for any required inputs to that template.
-2. It can reference code that will take in those inputs and generate outputs.
-3. It can contain a list of templates.
+
+1. It can reference code that will take in those inputs and generate outputs.
+
+1. It can contain a list of templates.
+
 Templates can be defined once and reused multiple times within a workflow. Templates are analogous to functions, which can execute a task or call other functions.
 
 ### Resource
@@ -22,19 +26,28 @@ Resources are a way of making templates and code reusable and shareable. A resou
 ## Building your own workflow
 
 Creating a workflow consists of 3 major steps:
-A. Create one or more templates and associated source code (optional)
-B. Make available templates as an resource (optional)
-C. Incorporate the resource into a workflow
 
-Note: A and B are optional if you reuse existing resources.
+1. Create one or more templates and associated source code (optional)
 
-This tutorial will demonstrate how to build your own resource, which will allow you to use your own code in your workflow, and it will demonstrate how to use an existing resource in your workflow. We could create a very minimalistic workflow without using resources, but we would miss out on what makes Quantum Engine powerful: sharing reusable templates and code. We will start by showing you how to build your own resource.
+1. Make templates and code available as a resource (optional)
+
+1. Incorporate the resource into a workflow
+
+Note: Steps 1 and 2 are optional if you reuse existing resources.
+
+This tutorial will demonstrate:
+- How to build your own resource, which will allow you to use your own code in your workflow
+- How to use an existing resource in your workflow
+
+We could create a very minimalistic workflow without using resources, but we would miss out on what makes Quantum Engine powerful: sharing reusable templates and code. We will start by showing you how to build your own resource.
 
 Since we currently only support Git resources, the first step is:
 
 **1. Go to [GitHub](https://github.com/), create an account if you don't have one, and create a public Github repository.**
 
-This repository will be your resource. To be used by Orquestra, resources must contain two folders:
+This repository will be where you build your resource. [This GitHub repo](https://github.com/zapatacomputing/tutorial-0-welcome) can be used as a guide for what it should look like at the end of the following steps.
+
+To be used by Orquestra, resources must contain two folders:
 - The `src` folder will contain your Python code. It must also contain a `setup.py` file that is responsible for installing your code in the machine where your workflow is executed. This installation is done automatically for you.
 - The `templates` folder contains your templates that use your Python code in the `src` folder.
 
@@ -42,7 +55,7 @@ We will start with the `src` folder. Your Python source can be anything you want
 
 **2. Using either the GitHub UI or by cloning your repo and using the command line, add a `src` folder to the repository with the path `python/orquestra` and with a python module in it called `welcome.py`.**
 
-Our goal in this tutorial is to create a resource that produces an [artifact](https://www.orquestra.io/docs/dcs/data/artifacts/) with the text `Welcome to Orquestra!` when used within a workflow. The contents of `welcome.py` that will achieve this are below:
+Our goal in the first part of this tutorial is to create a resource that produces an [artifact](https://www.orquestra.io/docs/dcs/data/artifacts/) with the text `Welcome to Orquestra!` when used within a workflow. The contents of `welcome.py` that will achieve this are below:
 
 ```Python
 """
@@ -62,7 +75,12 @@ def welcome():
         f.write(json.dumps(message_dict, indent=2)) # Write message to file as this will serve as output artifact
 ```
 
-*Important note*: We create the file `welcome.json` because any output has to be saved in a file in order to be passed on to the next template or to be accessible after the workflow has completed. We will see how to pass it on to another template later in this tutorial. All artifacts must also have a `schema` field. More details on artifacts are found on the [artifacts page](https://www.orquestra.io/docs/dcs/data/artifacts/).
+*Two important notes:*
+
+- All artifacts must have a `schema` field. More details on artifacts are found on the [artifacts page](https://www.orquestra.io/docs/dcs/data/artifacts/).
+
+- We create the file `welcome.json` because any output has to be saved in a file in order to be passed on to the next template or to be accessible after the workflow has completed. We will see how to pass it on to another template later in this tutorial.
+
 
 **3. Add the sample `welcome.py` script above to your `welcome.py` file.**
 
@@ -236,7 +254,7 @@ spec:
 
 Next, we will see how to use a pre-existing resource and explore one possible pattern for a workflow with multiple steps.
 
-For example, Zapata has a resource with a URL of `git@github.com:zapatacomputing/ztransform.git`. This will transform a message you give it in a fun way.
+For example, Zapata has a resource with a URL of `git@github.com:zapatacomputing/tutorial-0-ztransform.git`. This will transform a message you give it in a fun way.
 
 **9. Add another resource to the `resources` section of your workflow for this resource, using the `master` branch.**
 
@@ -256,7 +274,7 @@ resources:
 - name: ztransform
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/ztransform.git"
+    url: "git@github.com:zapatacomputing/tutorial-0-ztransform.git"
     branch: "master"
 ```
 
@@ -358,7 +376,7 @@ This file will look like the following (except for the comments, which were adde
         "inputParam:docker-registry": "zapatacomputing",
         "inputParam:docker-tag": "latest",
         "inputParam:memory": "1024Mi",
-        "welcome": { # An artifact called "welcome"
+        "welcome": { # An artifact called `welcome`
             "id": "welcome-to-orquestra-d9djf-2235995037/welcome",
             "message": "Welcome to Orquestra!", # The message generated by this template
             "schema": "message",
@@ -380,7 +398,7 @@ This file will look like the following (except for the comments, which were adde
         "inputParam:docker-tag": "latest",
         "inputParam:memory": "1024Mi",
         "workflowId": "welcome-to-orquestra-d9djf",
-        "zessage": { # An artifact called "zessage"
+        "zessage": { # An artifact called `zessage`
             "id": "welcome-to-orquestra-d9djf-1289017430/zessage",
             "message": "Zelcome Zo Zrquestra!", # The message after it was transformed
             "schema": "message",
@@ -392,7 +410,7 @@ This file will look like the following (except for the comments, which were adde
 }
 ```
 
-The sections "welcome-to-orquestra-d9djf-1289017430" and "welcome-to-orquestra-d9djf-2235995037" correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the template that was executed, and they also contain their output artifact. The artifact `welcome` is the output of the `greeting` template, and the artifact `zessage` is the output of the `transform-welcome` template. More information on the contents of this file are found on the [Workflow Results via JSON page](https://www.orquestra.io/docs/dcs/data/json/).
+The sections `welcome-to-orquestra-d9djf-1289017430` and `welcome-to-orquestra-d9djf-2235995037` correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the template that was executed, and they also contain their output artifact. The artifact `welcome` is the output of the `greeting` template, and the artifact `zessage` is the output of the `transform-welcome` template. More information on the contents of this file are found on the [Workflow Results via JSON page](https://www.orquestra.io/docs/dcs/data/json/).
 
 Note: The sections in this results file will not necessarily be in the order that they were executed.
 
@@ -402,74 +420,12 @@ We have now seen how to construct a working workflow from its elemental componen
 Additionally, we submitted a workflow to Quantum Engine and got its result in JSON format.
 This hopefully introduced some of the key concepts and mechanics in using Orquestra Quantum Engine.
 
-For your convenience, here is the completed workflow:
-```YAML
-# Workflow API version
-ZapOSApiVersion: v1alpha1
+## Completed Tutorial Materials
 
-# Declares this as workflow
-kind: Workflow
+For your convenience, here are the completed resources and workflow:
 
-# List resources needed by workflow.
-resources:
+[Welcome resource](https://github.com/zapatacomputing/tutorial-0-welcome)
 
-# A resource named `welcome` that is a public git repo. All the fields here are required except branch, which defaults to master.
-- name: welcome
-  type: git
-  parameters:
-    url: "git@github.com:zapatacomputing/welcome.git"
-    branch: "master"
+[ZTransform resource](https://github.com/zapatacomputing/tutorial-0-ztransform)
 
-# Another public git repo resource.
-- name: ztransform
-  type: git
-  parameters:
-    url: "git@github.com:zapatacomputing/ztransform.git"
-    branch: "master"
-
-# Data to help you easily work with your workflow
-metadata:
-
-  # Prefix for workflow ID
-  generateName: welcome-to-orquestra-
-
-# Data for running the workflow
-spec:
-
-  # Think of this as identifying the `main` function -- this tells the workflow which template to start with
-  entrypoint: salutations
-
-  # Initializing global variables for use in workflow
-  arguments:
-    parameters:
-
-    # Where output data is stored -- Must be `quantum-engine` for compatibility with Orquestra data services
-    - s3-bucket: quantum-engine
-    # Path where output data is stored within the `s3-bucket` -- can be anything you want
-    - s3-key: tutorials/welcome/
-
-  # The steps of the workflow
-  templates:
-
-  # `salutations` is a template that just contains a list of `steps`, which are other templates
-  - name: salutations
-    steps:
-
-    # This template runs the `welcome-to-orquestra` template in the `welcome` resource
-    - - name: greeting
-        template: welcome-to-orquestra
-        arguments:
-          parameters:
-          - resources: [welcome]
-
-    # This template runs the `z-transformation` template in the `ztransform` resource
-    - - name: transform-welcome
-        template: z-transformation
-        arguments:
-          parameters:
-          - resources: [ztransform]
-          artifacts:
-          - name: message
-            # This template takes in the output artifact from the `welcome` template
-            from: '{{steps.greeting.outputs.artifacts.welcome}}'
-```
+[Complete workflow](http://orquestra.io/docs/hello-workflow.yaml)
