@@ -55,6 +55,9 @@ module.exports = {
           'Overview': [
             'basics/introduction',
           ],
+          'Defining a Workflow': [
+            'definingaworkflow/resources'
+          ]
         }
       }
     }
