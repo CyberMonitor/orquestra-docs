@@ -18,6 +18,8 @@ This is where you will find the documentation for Orquestra documentation and th
 
 The site is now running locally at http://localhost:8000/ 
 
+### CI/CD
+CI pipeline is found https://cicd.zapos.io/teams/platform/pipelines/docs
 
 # Content Structure
 
