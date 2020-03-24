@@ -1,6 +1,6 @@
 ---
 title: Resources
-description: The workflow engine of the Orquestra platform
+description: The building blocks of Orquestra workflows
 ---
 
 ## Overview

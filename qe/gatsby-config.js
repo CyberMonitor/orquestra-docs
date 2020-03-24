@@ -52,10 +52,8 @@ module.exports = {
         twitterHandle: 'ZapataComputing', 
         sidebarCategories: {
           null: ['index'],
-          'Overview': [
-            'basics/introduction',
-          ],
           'Defining a Workflow': [
+            'definingaworkflow/workflows',
             'definingaworkflow/resources'
           ]
         }
