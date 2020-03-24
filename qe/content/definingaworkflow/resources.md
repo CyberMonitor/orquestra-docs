@@ -35,7 +35,7 @@ making it "callable" from within your workflow
 The *source code* for a resource is exactly that, it contains all the code to
 run the process you want. This code will typically be a set of functions that 
 take in inputs and then produce output objects that can be serialized into 
-Artifact(s) (TODO: link to artifacts here). 
+[Artifact(s)](https://www.orquestra.io/docs/dcs/data/artifacts/). 
 
 ###### Note: Currently, new resources must use Python 3.7 source code to be natively supported in Orquestra, however we will be expanding this support to other languages in the future.
 
