@@ -53,6 +53,7 @@ module.exports = {
         sidebarCategories: {
           null: ['index'],
           'Defining a Workflow': [
+            'definingaworkflow/workflows',
             'definingaworkflow/resources'
           ]
         }
