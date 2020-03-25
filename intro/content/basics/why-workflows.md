@@ -5,7 +5,7 @@ description: Why adopting Orquestra workflows will help you get to results faste
 
 Managing processes and experiments in modern systems can present a number of challenges. Scientists have to implement new algorithms, distribute them across multiple platforms, and plumb output data into databases. On top of that, scientists then must become data analysts to decide the best way to use the data. All while exploring a challenging new field such as quantum computing.
 
-Adopting workflows in your organization will ease these pain points considerably. Read on to learn how workflows' declarative approach to expressing a process will simplify iteration and enable your team to spend more time making new discoveries. You'll also learn how the Orquestra platform enables faster iteration cycles thanks to its advanced ecosystem of tooling and excellent user experience.
+Adopting workflows in your organization will ease these pain points considerably. Read on to learn how workflows' declarative approach to expressing a process will simplify iteration and enable your team to spend more time making new discoveries. You'll also learn how the Orquestra platform enables faster iteration cycles thanks to its advanced ecosystem of tooling and expressive workflow system.
 
 ## What are workflows?
 
@@ -15,7 +15,7 @@ Workflows are text files that specify a sequence of actions necessary to go from
 
 ### Scientist and developer experiences
 
-Using workflows in your organization via the Orquestra platform can help you discover new algorithms faster due to its excellent scientist experience. Our #1 goal is to simplify process management across the stack. Experiments that are normally difficult to execute, such as optimizations, and visualization suddenly become trivial thanks to Orquestra. Let's learn how!
+Using workflows in your organization via the Orquestra platform can help you discover new algorithms faster due to its natural expression of scientific experiments. Our #1 goal is to simplify process management across the stack. Experiments that are normally difficult to execute, such as optimizations, and visualization suddenly become trivial thanks to Orquestra. Let's learn how!
 
 #### Modern tooling
 
