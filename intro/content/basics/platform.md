@@ -9,21 +9,23 @@ Orquestra can be used as a new layer in your stack that sits between your infras
 
 ## The Components of Orquestra
 
-The figure below shows the major components of Orquestra and how they work together. Workflows are your inputs to the Quantum Engine, which then uses your workflows to run your experiments, producing results that can be processed further or directly plotted.
+The figure below shows the major components of Orquestra and how they work together.
 
 ![Orquestra Layers](../img/orquestra-overview.svg)
 
+Workflows are the blueprint for your experiment - describing which algorithms to run under which conditions. The Quantum Engine uses your workflows as step-by-step instructions in order to run your experiment, generate and process your data, and produce results for data analysis.
+
 ### Workflows
 
-Your workflow is a description of the different steps required to get the desired experiment's results. The Quantum Engine kicks into gear, spinning up machines, fetching required resources, and executing steps in your workflow until successful completion. Please see the following tutorials that demonstrate quantum experiments in Orquestra:
+Your workflow is a description of the different steps required to get the desired experiment's results. The Quantum Engine kicks into gear, spinning up machines, fetching required resources, and executing steps in your workflow until successful completion. Please see the following tutorials that demonstrate how to run quantum experiments on Orquestra:
 
 - [Bond Length Estimation of H2](../tutorial/hydrogen-vqe)
 - [Solving the Max-Cut Problem](../tutorial/maxcut-qaoa)
 
 ### Quantum Engine
 
-Quantum computing is a very fast-moving field. The ability to incorporate the newest algorithms into an existing workflow relies on how well the orchestration is done by the Quantum Engine. Orquestra gives you the capability to swap different sections of your workflows, run them in parallel, and compare results, allowing quicker research and product development.
+Quantum computing is a very fast-moving field. The ability to incorporate the newest algorithms into an existing workflow relies on how well the orchestration is done by the Quantum Engine. Orquestra gives you the capability to seamlessly swap in different sections of your workflows, run them in parallel, and compare results, allowing quicker research and product development.
 
 ### Data management
 
-Quantum experiments produce vast amounts of data, quickly exposing some of the limitations of current database management systems. Orquestra seamlessly handles the management of your data across different sources, producing at the end a single data file which you can use for analysis.
+Quantum experiments produce vast amounts of data, quickly exposing some of the limitations of current database management systems. Orquestra automatically handles the management of your data, producing a single, structured, data file that you can use to analyze the results of your experiments.
