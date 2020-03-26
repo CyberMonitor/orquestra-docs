@@ -181,4 +181,13 @@ spec:
         path: /app/welcome.json
 ```
 
+
+
+### Referencing a Resource in a Workflow
+
+For a detailed explanataion of how to reference a resource from within a workflow,
+please refer to the "Resources" 
+section in [Building a Workflow One Step at a Time](https://www.orquestra.io/docs/qe/definingaworkflow/workflows/#building-a-workflow-one-step-at-a-time).
+
+
 To see an example of a resource, check out Zapata's [Open Pack Core resource](https://github.com/zapatacomputing/open-pack-core) on GitHub.
