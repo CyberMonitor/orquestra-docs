@@ -5,28 +5,23 @@ description: The workflow engine of the Orquestra platform
 
 ## Overview
 
-Workflows are the language of Orquestra used by the Quantum Engine as 
-step-by-step instructions of which actions to perform on which data. 
+Workflows are the language used to provide the Quantum Engine step-by-step instructions of which actions to perform on which data. 
 
-As explained in [Why Workflows?](https://orquestra.io/docs/basics/why-workflows/), 
-here at Zapata we have found workflows to be a naturally expressive, easily 
-extensible, and highly shareable means to perform our scientific experiments. 
-With Orquestra, we hope to create a community of scientists and developers alike 
-that will allow everyone to make quicker discoveries and achieve **real** value.
+As explained in [Why Workflows?](https://orquestra.io/docs/basics/why-workflows/), here at Zapata we have found workflows to be a naturally expressive, easily extensible, and highly shareable means to perform our scientific experiments. With Orquestra, we hope to create a community of scientists and developers alike that will allow everyone to make quicker discoveries and achieve **real** value.
 
-Below we will step through the basics of the Orquestra workflow language by
-building a workflow from scratch.
+Below we will step through the basics of the Orquestra workflow language by building a workflow from scratch.
 
 ## One Step at a Time
+
+In this section, we will describe every necessary component of a workflow, one by one.
 
 ### Workflow Declarations
 
 At the beginning of every workflow, we define two key-words
-1.  `ZapOSApiVersion`
+1. `ZapOSApiVersion`
 2. `kind`
 
-These will always be set to the values of `v1alpha` and `Workflow` respectively 
-for the current version of Orquestra.
+These will always be set to the values of `v1alpha` and `Workflow` respectively for the current version of Orquestra.
 
 ```YAML
 # Workflow API version
@@ -38,19 +33,18 @@ kind: Workflow
 
 ### Resources
 
-Resources contain the definitions and implementations of the functions that one
-can perform from within a workflow. To learn more about what comprises a
-resource and how to build one yourself, check out out the 
-[Resources](https://orquestra.io/docs/qe/definingaworkflow/resources) page.
+Resources contain the definitions and implementations of the functions that one can perform from within a workflow. To learn more about what comprises a resource and how to build one yourself, check out out the [Resources](https://orquestra.io/docs/qe/definingaworkflow/resources) page.
 
-For all resources, there are 3 required fields:
+To use a resource, there must be a reference to it in the `resources` section of your workflow. References to resources have 3 required fields:
 - `name`: this is the name of your resource and the way you can reference a
 given resource in your `step` declaration
 - `type`: currently only `git` resource types are supported
 - `parameters`: this is a list of various parameters specific to the type of 
-resource. For a `git` resource, there are two required parameters:
-  -  `url`: the location of the git repository (syntax shown below)
-  -  `branch`: the branch of the repository containing the desired version
+resource.
+
+For a `git` resource, there are two required fields under `parameters`:
+-  `url`: the location of the git repository (syntax shown below)
+-  `branch`: the branch of the repository containing the desired version
 
 ```YAML
 # List resources needed by workflow.
@@ -66,11 +60,7 @@ resources:
 
 ### Metadata
 
-Each workflow run in Orquestra is assinged a randomly generated workflow ID that 
-is assumed to be unique. For the sake of clarity and record keeping, the 
-`generateName` key inside of the `metadata` block allows you to set the prefix 
-of each workflow ID. 
-
+Each workflow run in Orquestra is assigned a randomly generated workflow ID that is assumed to be unique. For the sake of clarity and record keeping, the `generateName` key inside of the `metadata` block allows you to set the prefix of each workflow ID. 
 
 ```YAML
 # Data to help you easily work with your workflow
@@ -84,22 +74,18 @@ Using this example workflow, a possible workflow ID would be: `welcome-to-orques
 
 ### Spec
 
-The `spec` block of the workflow file contains the majority of the information 
-regarding the execution process defined by the workflow. This section contains
-3 main components: 
+The `spec` block of the workflow file contains the majority of the information regarding the execution process defined by the workflow. This section contains 3 main components: 
 1. `entrypoint`
-2. `spec`
+2. `arguments`
 3. `templates`
 
 Below, we will describe what each component is responsible for.
 
 #### Entrypoint
 
-The `entrypoint` key is simple, it tells the Quantum Engine which template your 
-workflow starts with. 
+The `entrypoint` key is simple. It tells the Quantum Engine which template your workflow starts with. 
 
-In the example below, the `entrypoint` is set to `saluations`, indicating that 
-the workflow begins on the `saluations` template.
+In the example below, the `entrypoint` is set to `saluations`, indicating that the workflow begins with the `salutations` template.
 
 ```YAML
 # Data for running the workflow
@@ -111,23 +97,15 @@ spec:
 
 #### Arguments
 
-Inside of the `arguments` section of the `spec`, we have a set of 
-"workflow parameters" that we can both create and define. 
+Inside of the `arguments` section of the `spec`, we have a set of "workflow parameters" that we can both create and define. 
 
-These "workflow parameters" can be thought of as global parameters for the
-workflow and can be referenceed in any `step` using the syntax: 
-`{{workflow.parameters.<parameter name>}}`. Later in the Steps section we 
-will show this in more detail. 
+These "workflow parameters" can be thought of as global parameters for the workflow and can be referenceed in any `step` using the syntax: `{{workflow.parameters.<parameter name>}}`. Later in the Steps section we will show this in more detail. 
 
 As shown in the example below, there are two **required** workflow parameters.
-- `s3-bucket`: this should always be set to `quantum-engine` for the current
-version of Orquestra
-- `s3-key`: this value determines the organization of your data within
-Orquestra's data management system. 
+- `s3-bucket`: this should always be set to `quantum-engine` for the current version of Orquestra
+- `s3-key`: this is the path where your output data will be stored within Orquestra's data management system. The path is delimited by forward slashes, and can be anything you want--Orquestra will create the folder structure for you.
 
-To keep your data separated from others', it
-is always useful to make the `s3-key` something relative to your workflow.
-
+To keep your data separated from others', it is always useful to make the `s3-key` something relevant to your workflow.
 
 ```YAML
 # Data for running the workflow
@@ -157,7 +135,7 @@ outputs, and series of instructions to be performed.
 - In contrast, a `step` is the invocation of a `template`, passing objects and 
 parameter values to the `template` to be executed. 
 
-For further distinction between the two, please refer to the [Templates](https://www.orquestra.io/docs/qe/workflow/templates/) page and the [Steps](https://www.orquestra.io/docs/qe/workflow/steps/) page
+For further distinction between the two, please refer to the [Templates](https://www.orquestra.io/docs/qe/workflow/templates/) page and the [Steps](https://www.orquestra.io/docs/qe/workflow/steps/) page.
 
 
 In the example below, we define a template named `salutaions` - the entrypoint template for this workflow. Below in the "Steps" section we will show how to define what this template does.
@@ -200,6 +178,8 @@ spec:
 
 ## Putting it all together
 
+Here is a complete, functional workflow that has all of these components:
+
 ```YAML
 # Workflow API version
 ZapOSApiVersion: v1alpha1
@@ -214,7 +194,7 @@ resources:
 - name: welcome
   type: git
   parameters:
-    url: "git@github.com:<your-github-username>/<your-git-repo-name>.git"
+    url: "git@github.com:zapatacomputing/tutorial-0-welcome.git"
     branch: "master"
 
 # Data to help you easily work with your workflow
