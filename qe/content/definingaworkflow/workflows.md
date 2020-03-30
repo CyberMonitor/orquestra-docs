@@ -145,11 +145,58 @@ spec:
 
 #### Templates
 
-(TODO: short description + link to templates + code snippet for this example)
+The `templates` block is the most important section of a workflow. This is where you define the step-by-step instructions of your workflow for the Quantum Engine to execute. 
+
+In this section, we define two new terms: `templates` and `steps`. 
+Although similar, there are both semantic and syntactical 
+differences between the two. 
+
+- A `template` is the like definition of a function - it defines the inputs, 
+outputs, and series of instructions to be performed. 
+
+- In contrast, a `step` is the invocation of a `template`, passing objects and 
+parameter values to the `template` to be executed. 
+
+For further distinction between the two, please refer to the [Templates](https://www.orquestra.io/docs/qe/workflow/templates/) page and the [Steps](https://www.orquestra.io/docs/qe/workflow/steps/) page
+
+
+In the example below, we define a template named `salutaions` - the entrypoint template for this workflow. Below in the "Steps" section we will show how to define what this template does.
+
+```YAML
+# Data for running the workflow
+spec:
+
+  # The steps of the workflow
+  templates:
+
+  # `salutations` is a template that just contains a list of `steps`, which are other templates
+  - name: salutations
+```
 
 #### Steps
 
-(TODO: short description + link to templates + code snippet for this example)
+If a template is not executing source code, it will contain a list of steps. The `steps` section of a template declares which actions to perform on which data. For more information about what steps are and what functionality exists around steps, please refer the [Steps](https://www.orquestra.io/docs/qe/workflow/steps/) page.
+
+In the example below, we add the step `greeting` to the `salutations` template so that when the salutations template is run, the first step is to call the greeting template.
+
+```YAML
+# Data for running the workflow
+spec:
+
+  # The steps of the workflow
+  templates:
+
+  # `salutations` is a template that just contains a list of `steps`, which are other templates
+  - name: salutations
+    steps:
+
+    # This template runs the `welcome-to-orquestra` template in the `welcome` resource
+    - - name: greeting
+        template: welcome-to-orquestra
+        arguments:
+          parameters:
+          - resources: [welcome]
+```
 
 ## Putting it all together
 
