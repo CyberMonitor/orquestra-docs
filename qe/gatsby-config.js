@@ -54,7 +54,9 @@ module.exports = {
           null: ['index'],
           'Defining a Workflow': [
             'definingaworkflow/workflows',
-            'definingaworkflow/resources'
+            'definingaworkflow/resources',
+            'definingaworkflow/templates',
+            'definingaworkflow/steps'
           ]
         }
       }

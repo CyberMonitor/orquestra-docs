@@ -19,7 +19,7 @@ building a workflow from scratch.
 
 ## One Step at a Time
 
-#### Workflow Declarations
+### Workflow Declarations
 
 At the beginning of every workflow, we define two key-words
 1.  `ZapOSApiVersion`
@@ -36,7 +36,7 @@ ZapOSApiVersion: v1alpha1
 kind: Workflow
 ```
 
-#### Resources
+### Resources
 
 Resources contain the definitions and implementations of the functions that one
 can perform from within a workflow. To learn more about what comprises a
@@ -45,7 +45,7 @@ resource and how to build one yourself, check out out the
 
 For all resources, there are 3 required fields:
 - `name`: this is the name of your resource and the way you can reference a
-given resource in your `step` declaration (TODO: add step description link)
+given resource in your `step` declaration
 - `type`: currently only `git` resource types are supported
 - `parameters`: this is a list of various parameters specific to the type of 
 resource. For a `git` resource, there are two required parameters:
@@ -64,7 +64,7 @@ resources:
     branch: "master"
 ```
 
-#### Metadata
+### Metadata
 
 Each workflow run in Orquestra is assinged a randomly generated workflow ID that 
 is assumed to be unique. For the sake of clarity and record keeping, the 
@@ -82,7 +82,7 @@ metadata:
 
 Using this example workflow, a possible workflow ID would be: `welcome-to-orquestra-3ks9w`
 
-#### Spec
+### Spec
 
 The `spec` block of the workflow file contains the majority of the information 
 regarding the execution process defined by the workflow. This section contains
@@ -93,7 +93,7 @@ regarding the execution process defined by the workflow. This section contains
 
 Below, we will describe what each component is responsible for.
 
-##### Entrypoint
+#### Entrypoint
 
 The `entrypoint` key is simple, it tells the Quantum Engine which template your 
 workflow starts with. 
@@ -109,14 +109,15 @@ spec:
   entrypoint: salutations
 ```
 
-##### Arguments
+#### Arguments
 
 Inside of the `arguments` section of the `spec`, we have a set of 
 "workflow parameters" that we can both create and define. 
 
 These "workflow parameters" can be thought of as global parameters for the
-workflow and can be referenceed in any `step` using the syntax: `{{workflow.parameters.<parameter name>}}`. Later in the `step` section we will show this
-in more detail (TODO: link to step section). 
+workflow and can be referenceed in any `step` using the syntax: 
+`{{workflow.parameters.<parameter name>}}`. Later in the Steps section we 
+will show this in more detail. 
 
 As shown in the example below, there are two **required** workflow parameters.
 - `s3-bucket`: this should always be set to `quantum-engine` for the current
@@ -142,28 +143,13 @@ spec:
     - s3-key: tutorials/welcome/
 ```
 
-##### Templates
+#### Templates
 
+(TODO: short description + link to templates + code snippet for this example)
 
-```YAML
-# Data for running the workflow
-spec:
+#### Steps
 
-  # The steps of the workflow
-  templates:
-
-  # `salutations` is a template that just contains a list of `steps`, which are other templates
-  - name: salutations
-    steps:
-
-    # This template runs the `welcome-to-orquestra` template in the `welcome` resource
-    - - name: greeting
-        template: welcome-to-orquestra
-        arguments:
-          parameters:
-          - resources: [welcome]
-```
-
+(TODO: short description + link to templates + code snippet for this example)
 
 ## Putting it all together
 
