@@ -58,7 +58,7 @@ This repository will be where you build your resource. [This GitHub repo](https:
 
 In order to be recognized by Orquestra, a resource must contain two folders:
 - The `src/` folder which contains:
-  - A setup file that is responsible for installing your code in the machine where your workflow is executed. This installation is done automatically for you.
+  - A `setup.py` file that is responsible for installing your code in the machine where your workflow is executed. This installation is done automatically for you conforming to [Python3 setuptools standard](https://docs.python.org/3/distutils/setupscript.html) for Setup Scripts.
   - A nested folder `python/` containing source code.
 - The `templates/` folder which will hold the templates used by code in the `src/` folder.
 
