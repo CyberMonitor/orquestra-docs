@@ -53,8 +53,12 @@ module.exports = {
         sidebarCategories: {
           null: ['index'],
           'Defining a Workflow': [
-            'definingaworkflow/workflows',
-            'definingaworkflow/resources'
+            'workflow/workflows',
+            'workflow/resources'
+          ],
+          'The Quantum Engine (qe) CLI':[
+            'cli/install',
+            'cli/submit'
           ]
         }
       }
