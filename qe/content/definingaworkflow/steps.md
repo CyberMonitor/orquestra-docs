@@ -5,7 +5,7 @@ description: The functional unit of a workflow
 
 ## Overview
 
-In contrast to a template declaration, a step declaration is the invocation of a given template. When defining a step in your workflow, you must pass the required `arguments` declared by the template.
+In contrast to a [template](https://www.orquestra.io/docs/qe/workflow/templates) declaration, a step declaration is the invocation of a given template. When defining a step in your workflow, you must pass the required `arguments` declared by the template.
 
 The basic outline of a step is shown below:
 
@@ -32,7 +32,7 @@ Step references are important because they allow us to pass artifacts produced b
 
 The `template` field is the name of the template we want to use for the current step. 
 
-The ability of the template used be a step to be either workflow template or a resource template allows for us to be more expressive and create more complex workflows.
+The template used in a step can be either a workflow template or a resource template. This allows for us to be more expressive and create more complex workflows.
 
 ### Arguments
 
@@ -50,9 +50,9 @@ For example, in the [Simulating H₂ with VQE](https://orquestra.io/docs/tutoria
 
 #### Artifacts
 
-Artifacts are the more complex data structures used by Orquestra. Check out our section on [Artifacts]() for more information about them from a data management perspective. 
+Artifacts are the more complex data structures used by Orquestra. Check out our section on [Artifacts](https://www.orquestra.io/docs/dcs/data/artifacts/) for more information about them from a data management perspective. 
 
-In this section of a step, we must declare the specific artifacts that we want to use in the current step. Since artifacts are currently only produced during the execution of the current workflow, they must be referenced by name. 
+In this section of a step, we must declare the specific artifacts that we want to use in the current step. It is currently only possible to use artifacts produced by the execution of the current workflow. These must be referenced by name. 
 
 See the following two sections ("Referencing Step Outputs" and "Referencing Template Inputs") to see the different ways to reference the values for artifacts.
 
@@ -170,11 +170,11 @@ ___
 
 ### Serial Steps vs Parallel Steps
 
-In Orquestra, we also have the capability to control which steps in a template are performed in parallel and which are performed serially. By having this control, we enable workflows to take advantage of the distributed nature of Orquestra - allowing you to get your results quicker. To show how to control your step scheduling let's take a look at some examples.
+In Orquestra, we also have the capability to control which steps in a template are performed in parallel and which are performed serially. By having this control, we enable workflows to take advantage of the distributed nature of Orquestra - allowing you to get your results quicker. To show how to control your step scheduling, let's take a look at some examples.
 
 #### Example 1: Serial Scheduling
 
-To ensure that steps are performed serially you must ensure that each step has two `-`'s before the name field.
+To ensure that steps are performed serially, you must ensure that each step has two `-`'s before the name field.
 
 ```YAML
   - name: serial-example
@@ -195,7 +195,7 @@ In the above example, `step-1` and `step-2` both have two `-`'s and therefore `s
 
 #### Example 2: Parallel Scheduling
 
-To allow a set of steps to be performed in parallel the syntax becomes as follows: the first step in the set of parallel steps still needs two `-`'s, however all other steps in the set should only have one `-`. 
+To allow a set of steps to be performed in parallel, the syntax becomes as follows: the first step in the set of parallel steps still needs two `-`'s, however, all other steps in the set should only have one `-`. 
 
 ```YAML
   - name: parallel-example
@@ -217,7 +217,7 @@ To allow a set of steps to be performed in parallel the syntax becomes as follow
           - resources: [example-resource]
 ```
 
-In the above example, `step-1`, `step-2`, and `step-3` are all performed in parallel with eachother.
+In the above example, `step-1`, `step-2`, and `step-3` are all performed in parallel with each other.
 
 #### Example 3: Mixed Scheduling
 
@@ -255,7 +255,8 @@ Often it is the case that we want a step in a template to perform only after all
 
 In the above example, the steps execute in the following order: 
 1. `serial-step-1` begins
-2. `serial-step-2` finishes
+2. `serial-step-1` finishes
 3. `parallel-step-1`, `parallel-step-2`, and `parallel-step-3` all begin executing
 4. `parallel-step-1`, `parallel-step-2`, and `parallel-step-3` all finish executing (it is entirely possible for one of these steps to finish before another begins)
-5. `serial-step-2` finishes
+5. `serial-step-2` begins
+6. `serial-step-2` finishes
