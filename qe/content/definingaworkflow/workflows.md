@@ -135,7 +135,7 @@ outputs, and series of instructions to be performed.
 - In contrast, a `step` is the invocation of a `template`, passing objects and 
 parameter values to the `template` to be executed. 
 
-For further distinction between the two, please refer to the [Templates](https://www.orquestra.io/docs/qe/workflow/templates/) page and the [Steps](https://www.orquestra.io/docs/qe/workflow/steps/) page.
+For further distinction between the two, please refer to the [Templates page](https://www.orquestra.io/docs/qe/workflow/templates/) and the [Steps page](https://www.orquestra.io/docs/qe/workflow/steps/).
 
 
 In the example below, we define a template named `salutaions` - the entrypoint template for this workflow. Below in the "Steps" section we will show how to define what this template does.
