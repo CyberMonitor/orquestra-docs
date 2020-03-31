@@ -1,13 +1,13 @@
 ---
 title: Workflow Basics
-description: The workflow engine of the Orquestra platform
+description: An overview of Orquestra workflows
 ---
 
 ## Overview
 
 Workflows are the language used to provide the Quantum Engine step-by-step instructions of which actions to perform on which data. 
 
-As explained in [Why Workflows?](https://orquestra.io/docs/basics/why-workflows/), here at Zapata we have found workflows to be a naturally expressive, easily extensible, and highly shareable means to perform our scientific experiments. With Orquestra, we hope to create a community of scientists and developers alike that will allow everyone to make quicker discoveries and achieve **real** value.
+As explained in [Why Workflows?](https://orquestra.io/docs/basics/why-workflows/), here at Zapata we have found workflows to be a naturally expressive, easily extensible, and highly shareable means to perform our scientific experiments. With Orquestra, we hope to create a community of scientists and developers alike that will enable everyone to make quicker discoveries and achieve **real** value.
 
 Below we will step through the basics of the Orquestra workflow language by building a workflow from scratch.
 
@@ -99,7 +99,7 @@ spec:
 
 Inside of the `arguments` section of the `spec`, we have a set of "workflow parameters" that we can both create and define. 
 
-These "workflow parameters" can be thought of as global parameters for the workflow and can be referenceed in any `step` using the syntax: `{{workflow.parameters.<parameter name>}}`. Later in the Steps section we will show this in more detail. 
+These "workflow parameters" can be thought of as global parameters for the workflow and can be referenceed in any `step` using the syntax: `{{workflow.parameters.<parameter name>}}`.
 
 As shown in the example below, there are two **required** workflow parameters.
 - `s3-bucket`: this should always be set to `quantum-engine` for the current version of Orquestra

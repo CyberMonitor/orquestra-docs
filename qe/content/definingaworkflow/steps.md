@@ -1,6 +1,6 @@
 ---
 title: Steps 
-description: The functional unit of a workflow 
+description: The functional units of Orquestra
 ---
 
 ## Overview
@@ -32,7 +32,7 @@ Step references are important because they allow us to pass artifacts produced b
 
 The `template` field is the name of the template we want to use for the current step. 
 
-The template used in a step can be either a workflow template or a resource template. This allows for us to be more expressive and create more complex workflows.
+The template used in a step can be either a *workflow template* or a *resource template*. This allows for us to be more expressive and create more complex workflows.
 
 ### Arguments
 
@@ -54,7 +54,7 @@ Artifacts are the more complex data structures used by Orquestra. Check out our 
 
 In this section of a step, we must declare the specific artifacts that we want to use in the current step. It is currently only possible to use artifacts produced by the execution of the current workflow. These must be referenced by name. 
 
-See the following two sections ("Referencing Step Outputs" and "Referencing Template Inputs") to see the different ways to reference the values for artifacts.
+See the sections "Referencing Step Outputs" and "Referencing Template Inputs" to see the different ways to reference the values for artifacts.
 
 ##  Additional Functionality 
 
@@ -103,6 +103,7 @@ In the example below, we have a template that declares an input artifact called 
           parameters:
           - resources: [template1-resource]
           artifacts:
+          - input-artifact:
                 from: "{{inputs.artifacts.template-input-artifact}}"
     - - name: step2
         template: template2
@@ -115,6 +116,22 @@ In the example below, we have a template that declares an input artifact called 
 ```
 
 As shown above, we use the syntax: `"{{inputs.artifacts.<artifact name>}}"` to reference the input artifact of the current template. 
+
+We are also not limited to referencing input artifacts in this manner. You can reference input parameters using a similar syntax: `"{{inputs.parameters.<parameter name>}}"`
+
+```YAML
+  - name: example-template
+    inputs:
+        parameters:
+        - name: template-input-parameter
+    steps:
+    - - name: step1
+        template: template1
+        arguments:
+          parameters:
+          - resources: [template1-resource]
+          - input-parameter: "{{inputs.parameters.template-input-parameter}}"
+```
 
 ### Looping Over Steps
 
@@ -221,7 +238,7 @@ In the above example, `step-1`, `step-2`, and `step-3` are all performed in para
 
 #### Example 3: Mixed Scheduling
 
-Often it is the case that we want a step in a template to perform only after all steps in a set of parallel steps have finished. To do this, one just needs to set the step that should wait for all to finish to have two `-`'s. 
+Often it is the case that we want a step in a template to perform only after all steps in a set of parallel steps have finished. See the example below for how to define this properly.
 
 ```YAML
   - name: mixed-example

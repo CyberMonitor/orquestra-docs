@@ -1,6 +1,6 @@
 ---
 title: Templates 
-description: blah blah blah
+description: The reusable units of Orquestra
 ---
 
 There are two types of templates: **workflow templates** and **resource templates**.
@@ -11,13 +11,15 @@ Resource templates are responsible for wrapping your source code into callable o
 
 The fields that define a resource template are:
  - `name`: This is the name of the template, which is used to reference it in the workflow
- - `parent`: This field is used for templates that reference source code and not a list of other templates. When used, the value of this field must be `generic-task`
- - `inputs`: The `inputs` field lists the different input data that are needed to run your template. We have two sorts of inputs: input parameters and input artifacts. Input artifacts are in general persistent (meaning they will be written to disk) which input parameters are not. In our case, we define an input artifact which is actually executable Python code that calls our source code.
-   - `main-script` (`inputs/artifacts`): For templates referencing source code, the `main-script` input artifact is the script that calls your source code. 
-   - `command` (`inputs/parameters`): For templates referencing source code, the `command` input parameter is the bash command used to launch the script that calls your source code. This value is typically `python3 main.py`
+ - `parent`: This field is used for resource templates and the value of this field must be `generic-task`
+ - `inputs`: The `inputs` field lists the different input data that are needed to run your template. We have two sorts of inputs: *input parameters* and *input artifacts*. 
+   - *Input parameters* are typically simple values (e.g. strings, integers, floats, etc) that we can configure easily in our workflow.
+      - `command` (`inputs/parameters`): For resource templates, the `command` input parameter is the bash command used to launch the script that calls your source code. This value is typically `python3 main.py` and is **required**.
+   - *Input artifacts* are in general persistent (meaning they will be written to disk) data (which input parameters are not).
+      - `main-script` (`inputs/artifacts`): For resource templates, the `main-script` input artifact is an executable script that calls your source code. This artifact - or an equivalent one - is required so that the `command` references an actual script.
  - `outputs`: This field defines the output `artifacts` that the task produces. By specifying files produced by your source code as an output artifacts, they will be processed by Orquestra and can be refered to as input artifacts in other templates. Anything produced by your source code that is not declared as an ourput artifact will be lost.
 
-Below is an example of a file containing a template named `welcome-to-orquestra` that calls the source code shown above.
+Below is an example of a file containing a template named `welcome-to-orquestra` that calls the source code shown on the [Resources page](https://orquestra.io/docs/qe/definingaworkflow/resources).
 
 ```YAML
 # Every template YAML file must begin with a `spec` and `templates`, without which your template won't compile.
@@ -28,6 +30,9 @@ spec:
   - name: welcome-to-orquestra
     parent: generic-task
     inputs:
+      parameters:
+      - name: command
+        value: python3 main.py
       artifacts:
       - name: main-script
         path: /app/main.py  # The `path` value for artifacts is where they are placed and they must be under the `app` directory
@@ -35,9 +40,6 @@ spec:
           data: |
             from orquestra import welcome
             welcome()
-      parameters:
-      - name: command
-        value: python3 main.py
     outputs:
       artifacts:
       - name: welcome
@@ -48,10 +50,11 @@ spec:
 
 Workflow templates define a series of steps to execute by calling other templates.
 
-Workflow `templates` contain three sections:
+Workflow `templates` contain four sections:
+- `name`: the name of the template (used to call the template)
 - `inputs`: a declaration of expected `parameters` and `artifacts` needed when calling this template
 - `outputs`: a declaration of expected `artifacts` produced by calling this template
-- `steps`: a series of calls to other `templates`  
+- `steps`: a series of calls to other `templates` (either *resource templates* or more *workflow templates*)
 
 Workflow templates do not need to declare `inputs` or `outputs`, however, it should be noted that without `inputs`, the steps **within** the template will only have access to artifacts created by previous steps **within the template** and workflow parameters, while when using a template without `outputs`, any steps **calling** this template will not have access to any artifacts produced inside the template.
 

@@ -1,6 +1,6 @@
 ---
 title: Resources
-description: The building blocks of Orquestra workflows
+description: The shareable units of Orquestra
 ---
 
 ## Overview
@@ -24,16 +24,16 @@ The *source code* for a resource is exactly that: it contains all the code to ru
 
 ###### Note: Currently, new resources must use Python 3.7 source code to be natively supported in Orquestra, however we will be expanding this support to other languages in the future.
 
-### Templates
+### Resource Templates
 
-*Templates* are the wrappers around your source code that expose it to the wonderful world of Orquestra workflows. By taking a function and wrapping it into a template, it is able to be referenced in your workflow as a *task*.
+*Resource Templates* are the wrappers around your source code that expose it to the wonderful world of Orquestra workflows. By taking a function and wrapping it into a template, it is able to be referenced in your workflow as a *task*.
 
-A template definition contains:
+A resource template definition contains:
 1. The optional and necessary inputs, delineating between input parameters and input [*artifacts*](https://www.orquestra.io/docs/dcs/data/artifacts/)
 2. The expected output *artifacts*
 3. A short script that will call your source code
 
-Templates are explained in detail on the [Templates page](https://www.orquestra.io/docs/qe/workflow/templates).
+Resource templates are explained in detail on the [Templates page](https://www.orquestra.io/docs/qe/workflow/templates).
 
 ## How do I build my own resource?
 
@@ -41,8 +41,7 @@ Templates are explained in detail on the [Templates page](https://www.orquestra.
 
 To be used by Orquestra, resources must contain two folders:
 - A `src` folder, containing your source code
-- A `templates` folder, containing the template definitions that can be called
-from within your workflow
+- A `templates` folder, containing the templates that can be called from within your workflow
 
 An example of the full structure of a resource is below:
 <pre>
@@ -105,15 +104,15 @@ from .welcome import welcome
 
 Only the functions that are imported in this file will be accessible when using your source code as a package. Here you will want to import any functions that you need to call from the script in your template.
 
-### Templates
+### Resource Templates
 
-As mentioned above, your template is responsible for wrapping your source code into a callable object that can be referenced from within your workflow. Typically, there will be a one-to-one correspondence between the templates that you write and the functions from your source code that you want to expose to Orquestra.
+As mentioned above, your resource template is responsible for wrapping your source code into a callable object that can be referenced from within your workflow. Typically, there will be a one-to-one correspondence between the resource templates that you write and the functions from your source code that you want to expose to Orquestra.
 
 All resource templates are expected to be in various files under the `templates` directory in a resource and must have the `.yaml` file extension. For these templates to be compiled, the file must begin with the `spec` and `templates` headers, with your templates defined below.
 
 Templates are described in detail on the [Templates page](https://www.orquestra.io/docs/qe/workflow/templates).
 
-Below is an example of a file containing a template named `welcome-to-orquestra` that calls the source code shown above.
+Below is an example of a file containing a resource template named `welcome-to-orquestra` that calls the source code shown above.
 
 ```YAML
 # Every template YAML file must begin with a `spec` and `templates`, without which your template won't compile.
