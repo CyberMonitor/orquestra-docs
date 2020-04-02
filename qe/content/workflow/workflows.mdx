@@ -9,15 +9,13 @@ Workflows are the language used to provide the Quantum Engine step-by-step instr
 
 As explained in [Why Workflows?](https://orquestra.io/docs/basics/why-workflows/), here at Zapata we have found workflows to be a naturally expressive, easily extensible, and highly shareable means to perform our scientific experiments. With Orquestra, we hope to create a community of scientists and developers alike that will enable everyone to make quicker discoveries and achieve **real** value.
 
-Below we will step through the basics of the Orquestra workflow language by building a workflow from scratch.
-
 ## One Step at a Time
 
-In this section, we will describe every necessary component of a workflow, one by one.
+Below we will step through the basics of the Orquestra workflow language by building a workflow from scratch.
 
 ### Workflow Declarations
 
-At the beginning of every workflow, we define two key-words
+At the beginning of every workflow, we define two parameters
 1. `ZapOSApiVersion`
 2. `kind`
 
@@ -60,7 +58,7 @@ resources:
 
 ### Metadata
 
-Each workflow run in Orquestra is assigned a randomly generated workflow ID that is assumed to be unique. For the sake of clarity and record keeping, the `generateName` key inside of the `metadata` block allows you to set the prefix of each workflow ID. 
+Each workflow run in Orquestra is assigned a randomly generated workflow ID. For the sake of clarity and record keeping, the `generateName` key inside of the `metadata` block allows you to set the prefix of each workflow ID. 
 
 ```YAML
 # Data to help you easily work with your workflow

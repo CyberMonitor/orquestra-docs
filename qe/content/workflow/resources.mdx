@@ -5,17 +5,15 @@ description: The shareable units of Orquestra
 
 ## Overview
 
-_Resources_ are the building blocks for your workflows. They define what tasks you are able to perform and what data you will produce.
+Resources are the building blocks for your workflows. They define what tasks you are able to perform and what data you will produce.
 
 By incorporating source code into a _resource_, it becomes easily usable and shareable within Orquestra. Through the use of _resources_, we hope to make it as easy as possible to navigate the minefield of bringing your own source code into harmony with others'.  
 
 ## What is a resource? 
 
-Before diving in to building a resource from scratch, let's first talk about why we use _resources_. Above, we said that resources make source code "easily usable and shareable within Orquestra", but what does this actually mean?
-
 You can think of resources as the "libraries" available in your workflow. A resource is made of two components: 
 
-1. The **source code** that will be executed at runtime - this can contain one or more functions that take in input parameters and data and produce output data
+1. The **source code** that will be executed at the runtime of a step inside an Orquestra workflow - this can contain one or more functions that take in input parameters and data and produce output data
 2. The **template** that you can access in your workflow - it wraps your source code, making it "callable" from within your workflow
 
 ### Source Code
@@ -40,8 +38,8 @@ Resource templates are explained in detail on the [Templates page](https://www.o
 ### Structure
 
 To be used by Orquestra, resources must contain two folders:
-- A `src` folder, containing your source code
-- A `templates` folder, containing the templates that can be called from within your workflow
+- A `src/` folder, containing your source code
+- A `templates/` folder, containing the templates that can be called from within your workflow
 
 An example of the full structure of a resource is below:
 <pre>

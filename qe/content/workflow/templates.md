@@ -3,7 +3,7 @@ title: Templates
 description: The reusable units of Orquestra
 ---
 
-There are two types of templates: **workflow templates** and **resource templates**.
+There are two types of templates: **resource templates** and **workflow templates**.
 
 ## Resource Templates
 
