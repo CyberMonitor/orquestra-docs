@@ -54,7 +54,9 @@ module.exports = {
           null: ['index'],
           'Defining a Workflow': [
             'workflow/workflows',
-            'workflow/resources'
+            'workflow/resources',
+            'workflow/templates',
+            'workflow/steps'
           ],
           'The Quantum Engine (qe) CLI':[
             'cli/install',
