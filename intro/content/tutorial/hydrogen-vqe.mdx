@@ -3,32 +3,324 @@ title: 1. Simulating H₂ with VQE
 description: Calculate the equilibrium bond length of H₂ with a variational quantum eigensolver
 ---
 
-## Using the Quantum Engine CLI
+## Introduction
 
-The quantum engine CLI helps users connect to the Orquestra platform and be able to run workflows belonging to organizations and projects they have been granted access to.
+This tutorial will walk through using Quantum Engine to use VQE to calculate the binding energy curve of a H₂ molecule.
 
-### Downloading the CLI
+## Composing a workflow to calculate the Hartree-Fock energy
 
-In order to download the CLI tool, please follow the steps below:
+To help illustrate the process of composing a workflow, we will start by focusing on just part of the VQE process.
+We will build a two-step workflow that first creates the geometry of a hydrogen molecule and then performs a Hartree-Fock calculation.
+Furthermore, we will build our own Quantum Engine resource for the first step (the creation of the molecular geometry).
+For the second step, we will use an existing Quantum Engine resource, `qe-psi4`, that exposes the functionality of the Psi4 quantum chemistry package.
 
-1. Go to the [Quantum Engine CLI releases page](https://github.com/zapatacomputing/qe-cli/releases) and choose the version suitable for your machine. The latest release is recommended.
+**1. Create a GitHub repository**
 
-1. Once you have downloaded the CLI tool, place it under `/usr/local/bin` or place it in a directory of your choice and update your `~/.bashrc` or `~/.zshrc` file to add the directory to your `$PATH`.
+Go to [GitHub](https://github.com/) and create a public repository called `diatomic-molecule`. If you are unfamiliar with GitHub you can reference their [create a repo guide](https://help.github.com/en/github/getting-started-with-github/create-a-repo) for help
 
-1. Rename the file to be called `qe`. Make the file executable by running `chmod a+x qe`.
+This repository will be where you build your resource. [This GitHub repo](https://github.com/zapatacomputing/diatomic-molecule) can be used as a reference for how the `diatomic-molecule` resource should look like throughout the tutorial.
 
-1. Now you can call the CLI tool as `qe`, and it should display the list of available commands and additional help.
+**2. Add python code to the repository**
 
-### Logging into Orquestra
+Using either the GitHub UI or by cloning your repo and using the command line, create a file `src/diatomicmolecule.py` with the contents below:
 
-In order to start being productive with Orquestra, you need to log into the platform using the Quantum Engine CLI.
+```python
+"""Function for building a diatomic molecule."""
 
-The Quantum Engine assumes that you have acquired the correct credentials from Zapata Computing. Therefore all you will need is your email in order to log in, which is done as follows:
+def create_diatomic_molecule_geometry(species1, species2, bond_length):
+    """Create a molecular geometry for a diatomic molecule.
+    
+    Args:
+        species1 (str): Chemical symbol of the first atom, e.g. 'H'.
+        species2 (str): Chemical symbol of the second atom.
+        bond_length (float): bond distance.
+        
+    Returns:
+        dict: a dictionary containing the coordinates of the atoms.
+    """
 
-`qe login -e <your-email-address> -s <quantum-engine-server-uri>`
+    geometry = {"sites": [
+        {'species': species1, 'x': 0, 'y': 0, 'z': 0},
+        {'species': species2, 'x': 0, 'y': 0, 'z': bond_length}
+    ]}
 
-where the `quantum-engine-server-uri` depends on your cluster and is:
-- `prod-b`: `prod-b.orquestra.io:80`
+    return geometry
+```
+
+**3. Adding a `setup.py`**
+
+Create a file `src/setup.py` with the following contents:
+
+```python
+import setuptools
+
+setuptools.setup(
+    name="diatomic-molecule",
+    version="0.1.0",
+    py_modules=['diatomicmolecule']
+)
+```
+
+**4. Adding `templates`**
+
+Create a file `templates/diatomic-molecule.yaml` with the following contents:
+
+```yaml
+spec:
+  templates:
+
+  # Create a diatomic moleucle
+  - name: create-diatomic-molecule
+    parent: generic-task
+    inputs:
+      parameters:
+      - name: species1
+      - name: species2
+      - name: bond-length
+      - name: command
+        value: python3 main_script.py
+      artifacts:
+      - name: main-script
+        path: /app/main_script.py
+        raw:
+          data: |
+            import json
+            from diatomicmolecule import create_diatomic_molecule_geometry
+            from orquestra.core.utils import SCHEMA_VERSION
+            geometry = create_diatomic_molecule_geometry('{{inputs.parameters.species1}}',
+                                                         '{{inputs.parameters.species2}}',
+                                                         {{inputs.parameters.bond-length}}) 
+            
+            geometry['schema'] = SCHEMA_VERSION + "-molecular_geometry"
+            with open('molecule.json', 'w') as f:
+              f.write(json.dumps(geometry))
+    outputs:
+      artifacts:
+      - name: geometry
+        path: /app/molecule.json
+```
+ 
+**5. Commit and push your resource**
+
+Commit your changes and push them to GitHub.
+(Note that you will not need to do this if you are using the GitHub UI to modify the repository.)
+The structure of your repository should look like this:
+```
+.
+├── src
+│   ├── diatomicmolecule.py
+│   └── setup.py
+└── templates
+    └── diatomic-molecule.yaml
+```
+
+**6. Building a Workflow**
+
+Create a file `hartree-fock-workflow.yaml` file with the code below, inserting the URL of your github repository in line 13.
+
+```YAML
+# Workflow API version
+ZapOSApiVersion: v1alpha1
+
+# Declares this as workflow
+kind: Workflow
+
+# List resources needed by workflow.
+resources:
+
+- name: diatomic-molecule
+  type: git
+  parameters:
+    url: "git@github.com:<your-github-username>/<your-git-repo-name>.git"
+    branch: "master"
+- name: open-pack-core
+  type: git
+  parameters:
+    url: "git@github.com:zapatacomputing/open-pack-core.git"
+    branch: "master"
+- name: qe-openfermion
+  type: git
+  parameters:
+    url: "git@github.com:zapatacomputing/qe-openfermion.git"
+    branch: "master"
+- name: qe-psi4
+  type: git
+  parameters:
+    url: "git@github.com:zapatacomputing/qe-psi4.git"
+    branch: "master"
+
+# Data to help you easily work with your workflow
+metadata:
+
+  # Prefix for workflow ID
+  generateName: hartree-fock-
+
+# Data for running the workflow
+spec:
+
+  # Think of this as identifying the `main` function -- this tells the workflow which template to start with
+  entrypoint: run-h2
+
+  # Initializing global variables for use in workflow
+  arguments:
+    parameters:
+
+    # Where output data is stored -- Must be `quantum-engine` for compatibility with Orquestra data services
+    - s3-bucket: quantum-engine
+    # Path where output data is stored within the `s3-bucket` -- can be anything you want
+    - s3-key: tutorials/hartree-fock/
+
+  # The steps of the workflow
+  templates:
+  - name: run-h2
+    steps:
+
+    # Create the molecular geometry
+    - - name: create-molecule
+        template: create-diatomic-molecule
+        arguments:
+        parameters:
+        - species1: H
+        - species2: H
+        - bond-length: '{{inputs.parameters.bond-length}}'
+        - resources: [diatomic-molecule, open-pack-core]
+        - docker-image: open_pack_psi4
+        - docker-tag: latest
+
+    # Perform a Hartree-Fock calculation using Psi4
+    - - name: run-psi4
+        template: run-psi4
+        arguments:
+        artifacts:
+        - geometry:
+            from: '{{steps.create-molecule.outputs.artifacts.geometry}}'
+        parameters:
+        - basis: '{{inputs.parameters.basis}}'
+        - method: scf # ccsd(t)
+        - reference: rhf
+        - nthreads: "4"
+        - save-hamiltonian: 'True' # Boolean values must be put in quotes!
+        - resources: [open-pack-core, qe-psi4, qe-openfermion]
+        - docker-image: qe-psi4
+        - docker-tag: latest
+```
+
+**7. Running the Workflow**
+
+You are now ready to run the workflow!
+
+* Make sure you have installed the [Quantum Engine CLI](https://www.orquestra.io/docs/qe/cli/install/)
+
+* Log in to Quantum Engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your terminal. Contact support to register your email and/or receive the `quantum-engine-uri`.
+
+* Submit your `hartree-fock-workflow.yaml` by running `qe submit workflow <path/to/workflow/hartree-fock-workflow.yaml>`**
+
+This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
+```Bash
+Successfully submitted workflow to quantum engine!
+Workflow ID: welcome-to-orquestra-d9djf
+```
+
+**8. Worfklow Progress**
+
+The workflow is now submitted to the Orquestra Quantum Engine and will be scheduled for execution when compute becomes available.
+
+To see details of the execution of your workflow, run `qe get workflow <workflow-ID>` with your workflow ID from the previous step substituted in.
+
+ The output will look like:
+```Bash
+Name:                welcome-to-orquestra-d9djf
+Namespace:           default
+ServiceAccount:      default
+Status:              Succeeded
+Created:             Thu Mar 19 21:14:33 +0000 (5 minutes ago)
+Started:             Thu Mar 19 21:14:33 +0000 (5 minutes ago)
+Finished:            Thu Mar 19 21:19:49 +0000 (19 seconds ago)
+Duration:            5 minutes 16 seconds
+Parameters:
+  s3-bucket:         quantum-engine
+  s3-key:            tutorials/welcome/
+
+STEP                                         STEPNAME                                DURATION  MESSAGE
+ ✔ welcome-to-orquestra-d9djf (salutations)
+ ├---✔ greeting (welcome-to-orquestra)       welcome-to-orquestra-d9djf-2235995037  5m
+ └---✔ transform-welcome (z-transformation)  welcome-to-orquestra-d9djf-1289017430  13s
+```
+
+This output shows the status of the execution of the steps in your workflow.
+
+**9. Workflow Results**
+
+To get the results of your workflow, run `qe get workflowresult <workflow-ID>` with your workflow ID.
+
+After a workflow runs, it takes time for the data to be processed. This results file cannot be created until the data is done being processed. You can try running the above command every few minutes until it returns a link to download a file. 
+
+Once finished, the output will look like the following:
+```Bash
+Name:        welcome-to-orquestra-d9djf
+Location:    http://40.89.251.200:9000/workflow-results/bb2b58b4-b25d-59e3-9fee-e7b79f0c20d5.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=zapata%2F20200319%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200319T212017Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22bb2b58b4-b25d-59e3-9fee-e7b79f0c20d5.json%22&X-Amz-Signature=c4de1784b252fa6164aea8aa49a91bdd84c20c4dc55411e93f69a57b4ea62ac1
+```
+___
+**Note:** The above link is only valid temporarily and typically expires after 7 days.
+___
+
+**10. Downloading the Results**
+
+When your workflow is completed, the `workflowresult` command will provide you with a http web-link under `Location` in the console output. Click on or copy and paste the link into your browser to download the file
+
+This file will look like the following (except for the comments, which were added in this tutorial for clarity):
+
+```JSON
+{
+    "welcome-to-orquestra-d9djf-2235995037": { # The step that executed the `greeting` task
+        "class": "welcome-to-orquestra",
+        "id": "welcome-to-orquestra-d9djf-2235995037",
+        "inputParam:command": "python3 main.py",
+        "inputParam:cpu": "1000m",
+        "inputParam:disk": "10Gi",
+        "inputParam:docker-image": "zmachine_default",
+        "inputParam:docker-registry": "zapatacomputing",
+        "inputParam:docker-tag": "latest",
+        "inputParam:memory": "1024Mi",
+        "welcome": { # An artifact called `welcome`
+            "id": "welcome-to-orquestra-d9djf-2235995037/welcome",
+            "message": "Welcome to Orquestra!", # The message generated by this template
+            "schema": "message",
+            "taskClass": "welcome-to-orquestra",
+            "taskId": "welcome-to-orquestra-d9djf-2235995037",
+            "workflowId": "welcome-to-orquestra-d9djf"
+        },
+        "workflowId": "welcome-to-orquestra-d9djf"
+    },
+    "welcome-to-orquestra-d9djf-1289017430": { # The step that executed the `transform-welcome` task
+        "class": "z-transformation",
+        "id": "welcome-to-orquestra-d9djf-1289017430",
+        "inputArtifact:message": "welcome-to-orquestra-d9djf-2235995037/welcome",
+        "inputParam:command": "python3 main.py",
+        "inputParam:cpu": "1000m",
+        "inputParam:disk": "10Gi",
+        "inputParam:docker-image": "zmachine_default",
+        "inputParam:docker-registry": "zapatacomputing",
+        "inputParam:docker-tag": "latest",
+        "inputParam:memory": "1024Mi",
+        "workflowId": "welcome-to-orquestra-d9djf",
+        "zessage": { # An artifact called `zessage`
+            "id": "welcome-to-orquestra-d9djf-1289017430/zessage",
+            "message": "Zelcome Zo Zrquestra!", # The message after it was transformed
+            "schema": "message",
+            "taskClass": "z-transformation",
+            "taskId": "welcome-to-orquestra-d9djf-1289017430",
+            "workflowId": "welcome-to-orquestra-d9djf"
+        }
+    }
+}
+```
+
+The sections `welcome-to-orquestra-d9djf-1289017430` and `welcome-to-orquestra-d9djf-2235995037` correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the template that was executed for the given step, any input parameters or input artifacts, and the output artifacts. The artifact `welcome` is the output of the `greeting` template, and the artifact `zessage` is the output of the `transform-welcome` template. More information on the contents of this file are found on the [Workflow Results via JSON page](https://www.orquestra.io/docs/dcs/data/json/).
+
+___
+**Note:** The sections in this results file will not necessarily be in the order that they were executed.
+___
 
 ### Running VQE
 
