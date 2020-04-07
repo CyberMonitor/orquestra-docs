@@ -324,16 +324,248 @@ ___
 
 ### Running VQE
 
-1. Download the []: # (This is a comment)by right click on the link and select `Save Link As` and accept the defaults)
-1. Submit the workflow with `qe submit workflow hydrogen.yaml`.
-1. Monitor the status of your workflow with `qe get workflow workflow_id` where
-`workflow_id` is the ID of your workflow.
-1. After the workflow has completed, run `qe get workflowresult workflow_id` to request the workflow results.
-1. Continue to run `qe get workflowresult workflow_id` until a URL with workflow results is returned.
-1. Open the URL to download the JSON file with the workflow results.
-1. Copy the python script below into the same directory as the JSON file.
-1. In the python script, replace the name of the JSON file with the name of the JSON file that you have downloaded in Step 7.
-1. Run the python script to plot the calculated binding energy curve.
+Here we walk through running a workflow that performs a VQE calculation for different bond lengths and basis sets, and plot the results.
+
+**1. Building the Workflow**
+
+Create a file `vqe-workflow.yaml` file with the code below, inserting the URL of your github repository in line 8.
+
+```yaml
+ZapOSApiVersion: v1alpha1
+kind: Workflow
+
+resources:
+- name: diatomic-molecule
+  type: git
+  parameters:
+    url: "git@github.com:<your-github-username>/<your-git-repo-name>.git"
+    branch: "master"
+- name: open-pack-core
+  type: git
+  parameters:
+    url: "git@github.com:zapatacomputing/open-pack-core.git"
+    branch: "master"
+- name: qe-openfermion
+  type: git
+  parameters:
+    url: "git@github.com:zapatacomputing/qe-openfermion.git"
+    branch: "master"
+- name: qe-psi4
+  type: git
+  parameters:
+    url: "git@github.com:zapatacomputing/qe-psi4.git"
+    branch: "master"
+- name: open-pack-vqe
+  type: git
+  parameters:
+    url: "git@github.com:zapatacomputing/open-pack-vqe.git"
+    branch: "master"
+- name: open-pack-optimizers
+  type: git
+  parameters:
+    url: "git@github.com:zapatacomputing/open-pack-optimizers.git"
+    branch: "master"
+- name: open-pack-forest
+  type: git
+  parameters:
+    url: "git@github.com:zapatacomputing/open-pack-forest.git"
+    branch: "master"
+- name: open-pack-qhipster
+  type: git
+  parameters:
+    url: "git@github.com:zapatacomputing/open-pack-qhipster.git"
+    branch: "master"
+
+# Specify the prefix to use when generating names of workflow executions.
+metadata:
+  generateName: h2-example-
+
+# The actual workflow specification
+spec:
+
+  entrypoint: basis-set-loop
+  arguments:
+    parameters:
+    - s3-bucket: quantum-engine
+    - s3-key: projects/examples/hydrogen/data
+    - docker-image: 'open_pack_default'
+    - docker-tag: 'latest'
+
+  templates:
+
+  - name: basis-set-loop
+    steps:
+    - - name: bond-length-loop
+        template: bond-length-loop
+        arguments:
+          parameters:
+          - basis: '{{item}}' # Note that quotes are needed here because of the curly braces
+        withItems:
+        - STO-3G
+        # - 6-31G
+        # - 6-311G
+
+  - name: bond-length-loop
+    inputs:
+      parameters:
+      - name: basis
+    steps:
+    - - name: run-h2
+        template: run-h2
+        arguments:
+          parameters:
+          - basis: '{{inputs.parameters.basis}}'
+          - bond-length: '{{item}}'
+        withItems: [0.60, 0.70, 0.80]
+
+  - name: run-h2
+    inputs:
+      parameters:
+      - name: basis
+      - name: bond-length
+    steps:
+    - - name: create-molecule
+        template: create-diatomic-molecule
+        arguments:
+          parameters:
+          - species1: H
+          - species2: H
+          - bond-length: '{{inputs.parameters.bond-length}}'
+          - resources: [diatomic-molecule, open-pack-core]
+          - docker-image: open_pack_psi4
+          - docker-tag: latest
+
+    - - name: run-psi4
+        template: run-psi4
+        arguments:
+          artifacts:
+          - geometry:
+              from: '{{steps.create-molecule.outputs.artifacts.geometry}}'
+          parameters:
+          - basis: '{{inputs.parameters.basis}}'
+          - method: scf # ccsd(t)
+          - reference: rhf
+          - nthreads: "4"
+          - save-hamiltonian: 'True' # Boolean values must be put in quotes!
+          - resources: [open-pack-core, qe-psi4, qe-openfermion]
+          - docker-image: qe-psi4
+          - docker-tag: latest
+    - - name: transform-hamiltonian
+        template: transform-interaction-operator
+        arguments:
+          artifacts:
+          - input-op:
+              from: "{{steps.run-psi4.outputs.artifacts.hamiltonian}}"
+          parameters:
+          - transformation: Jordan-Wigner
+          - resources: [qe-openfermion, open-pack-core]
+          - docker-image: "{{workflow.parameters.docker-image}}"
+          - docker-tag: "{{workflow.parameters.docker-tag}}"
+    - - name: build-vqe-circuit-template
+        template: build-vqe-circuit-template
+        arguments:
+          parameters:
+          - ansatz-type: singlet UCCSD
+          - n-alpha: "{{steps.run-psi4.outputs.parameters.n-alpha}}"
+          - n-beta: "{{steps.run-psi4.outputs.parameters.n-beta}}"
+          - n-mo: "{{steps.run-psi4.outputs.parameters.n-mo}}"
+          - transformation: Jordan-Wigner
+          - resources: [open-pack-core, open-pack-vqe, qe-openfermion]
+          - docker-image: "{{workflow.parameters.docker-image}}"
+          - docker-tag: "{{workflow.parameters.docker-tag}}"
+    - - name: generate-random-ansatz-params
+        template: generate-random-ansatz-params
+        arguments:
+          parameters:
+          - min-val: "-0.01"
+          - max-val: "0.01"
+          - resources: [open-pack-core]
+          - docker-image: "{{workflow.parameters.docker-image}}"
+          - docker-tag: "{{workflow.parameters.docker-tag}}"
+          artifacts:
+          - ansatz:
+              from: "{{steps.build-vqe-circuit-template.outputs.artifacts.ansatz}}"
+    - - name: optimize-variational-circuit
+        template: optimize-variational-circuit
+        arguments:
+          parameters:
+          - backend-specs: "{'module_name': 'orquestra.qhipster.simulator', 'function_name': 'QHipsterSimulator'}"
+          - optimizer-specs: "{'module_name': 'orquestra.optimizers.scipy_optimizer', 'function_name': 'ScipyOptimizer', 'method': 'L-BFGS-B'}"
+          - resources: [open-pack-core, open-pack-optimizers, open-pack-qhipster, open-pack-vqe, qe-openfermion]
+          - docker-image: open_pack_qhipster
+          - docker-tag: 0.0.2
+          - memory: 2048Mi
+          artifacts:
+          - ansatz:
+              from: "{{steps.build-vqe-circuit-template.outputs.artifacts.ansatz}}"
+          - qubit-operator:
+              from: "{{steps.transform-hamiltonian.outputs.artifacts.transformed-op}}"
+          - initial-parameters:
+              from: "{{steps.generate-random-ansatz-params.outputs.artifacts.params}}"
+```
+
+**2. Running the Workflow**
+
+Submit your `vqe-workflow.yaml` by running `qe submit workflow <path/to/workflow/vqe-workflow.yaml>`**
+
+This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
+```Bash
+Successfully submitted workflow to quantum engine!
+Workflow ID: welcome-to-orquestra-d9djf
+```
+
+**3. Worfklow Progress**
+
+The workflow is now submitted to the Orquestra Quantum Engine and will be scheduled for execution when compute becomes available.
+
+To see details of the execution of your workflow, run `qe get workflow <workflow-ID>` with your workflow ID from the previous step substituted in.
+
+ The output will look like:
+```Bash
+Name:                welcome-to-orquestra-d9djf
+Namespace:           default
+ServiceAccount:      default
+Status:              Succeeded
+Created:             Thu Mar 19 21:14:33 +0000 (5 minutes ago)
+Started:             Thu Mar 19 21:14:33 +0000 (5 minutes ago)
+Finished:            Thu Mar 19 21:19:49 +0000 (19 seconds ago)
+Duration:            5 minutes 16 seconds
+Parameters:
+  s3-bucket:         quantum-engine
+  s3-key:            tutorials/welcome/
+
+STEP                                         STEPNAME                                DURATION  MESSAGE
+ ✔ welcome-to-orquestra-d9djf (salutations)
+ ├---✔ greeting (welcome-to-orquestra)       welcome-to-orquestra-d9djf-2235995037  5m
+ └---✔ transform-welcome (z-transformation)  welcome-to-orquestra-d9djf-1289017430  13s
+```
+
+This output shows the status of the execution of the steps in your workflow.
+
+**4. Workflow Results**
+
+To get the results of your workflow, run `qe get workflowresult <workflow-ID>` with your workflow ID.
+
+After a workflow runs, it takes time for the data to be processed. This results file cannot be created until the data is done being processed. You can try running the above command every few minutes until it returns a link to download a file. 
+
+Once finished, the output will look like the following:
+```Bash
+Name:        welcome-to-orquestra-d9djf
+Location:    http://40.89.251.200:9000/workflow-results/bb2b58b4-b25d-59e3-9fee-e7b79f0c20d5.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=zapata%2F20200319%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200319T212017Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22bb2b58b4-b25d-59e3-9fee-e7b79f0c20d5.json%22&X-Amz-Signature=c4de1784b252fa6164aea8aa49a91bdd84c20c4dc55411e93f69a57b4ea62ac1
+```
+___
+**Note:** The above link is only valid temporarily and typically expires after 7 days.
+___
+
+**5. Downloading the Results**
+
+When your workflow is completed, the `workflowresult` command will provide you with a http web-link under `Location` in the console output. Click on or copy and paste the link into your browser to download the file.
+
+**6. Plotting the Results**
+
+* Copy the python script below into the same directory as the JSON file.
+* In the python script, replace the name of the JSON file with the name of the JSON file that you have downloaded in Step 7.
+* Run the python script to plot the calculated binding energy curve.
 
 
 ```python
