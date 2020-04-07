@@ -51,7 +51,7 @@ module.exports = {
         githubRepo: 'zapatacomputing/orquestra-docs/intro',
         twitterHandle: 'ZapataComputing', 
         sidebarCategories: {
-          null: ['index','basics/platform','basics/why-workflows'],
+          null: ['index','basics/platform','basics/why-workflows', 'basics/glossary'],
           Tutorial: ['tutorial/helloworkflow','tutorial/hydrogen-vqe','tutorial/maxcut-qaoa'],
         }
       }
