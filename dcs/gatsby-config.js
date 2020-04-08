@@ -49,7 +49,8 @@ module.exports = {
         subtitle: 'Data Management',
         menuTitle: 'Orquestra Platform',
         description: 'A guide to Orquestra\'s data management',
-        githubRepo: 'zapatacomputing/orquestra-docs/dcs',
+        githubRepo: 'zapatacomputing/orquestra-docs',
+        baseDir: 'dcs',
         twitterHandle: 'ZapataComputing', 
         sidebarCategories: {
           null: ['index'],

@@ -48,7 +48,8 @@ module.exports = {
         subtitle: 'Basics',
         menuTitle: 'Orquestra Platform',
         description: 'how to use the orquestra platform',
-        githubRepo: 'zapatacomputing/orquestra-docs/intro',
+        githubRepo: 'zapatacomputing/orquestra-docs',
+        baseDir: 'intro',
         twitterHandle: 'ZapataComputing', 
         sidebarCategories: {
           null: ['index','basics/platform','basics/why-workflows', 'basics/glossary'],
