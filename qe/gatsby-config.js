@@ -48,7 +48,8 @@ module.exports = {
         subtitle: 'Quantum Engine',
         menuTitle: 'Orquestra Platform',
         description: 'how to use the orquestra platform',
-        githubRepo: 'zapatacomputing/orquestra-docs/qe',
+        githubRepo: 'zapatacomputing/orquestra-docs',
+        baseDir: 'qe',
         twitterHandle: 'ZapataComputing', 
         sidebarCategories: {
           null: ['index'],
