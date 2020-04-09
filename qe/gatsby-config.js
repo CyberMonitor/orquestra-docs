@@ -50,7 +50,8 @@ module.exports = {
         description: 'how to use the orquestra platform',
         githubRepo: 'zapatacomputing/orquestra-docs',
         baseDir: 'qe',
-        twitterHandle: 'ZapataComputing', 
+        twitterHandle: 'ZapataComputing',
+        logoLink: 'https://www.orquestra.io/docs/',
         sidebarCategories: {
           null: ['index'],
           'Defining a Workflow': [

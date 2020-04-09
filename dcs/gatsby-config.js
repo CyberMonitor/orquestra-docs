@@ -50,7 +50,8 @@ module.exports = {
         description: 'A guide to Orquestra\'s data management',
         githubRepo: 'zapatacomputing/orquestra-docs',
         baseDir: 'dcs',
-        twitterHandle: 'ZapataComputing', 
+        twitterHandle: 'ZapataComputing',
+        logoLink: 'https://www.orquestra.io/docs/',
         sidebarCategories: {
           null: ['index'],
           'Data': [
