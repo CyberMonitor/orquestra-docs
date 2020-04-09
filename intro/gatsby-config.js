@@ -35,6 +35,7 @@ const footerNavConfig = {
 
 
 module.exports = {
+  pathPrefix: '/docs',
   plugins: [
     {
       resolve: 'gatsby-theme-apollo-docs',
@@ -42,7 +43,6 @@ module.exports = {
         navConfig,
         footerNavConfig,
         root: __dirname,
-        baseUrl: 'https://www.orquestra.io/docs',
         siteName: 'Orquestra Docs',
         pageTitle: 'Orquestra Platform',
         subtitle: 'Basics',
