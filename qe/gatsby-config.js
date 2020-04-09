@@ -62,7 +62,11 @@ module.exports = {
           ],
           'The Quantum Engine (qe) CLI':[
             'cli/install',
-            'cli/submit'
+            'cli/login',
+            'cli/submit',
+            'cli/workflowdetails',
+            'cli/logs',
+            'cli/workflowresults',
           ]
         }
       }
