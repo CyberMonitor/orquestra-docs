@@ -179,30 +179,30 @@ spec:
     - - name: create-molecule
         template: create-diatomic-molecule
         arguments:
-        parameters:
-        - species1: H
-        - species2: H
-        - bond-length: '{{inputs.parameters.bond-length}}'
-        - resources: [diatomic-molecule, open-pack-core]
-        - docker-image: open_pack_psi4
-        - docker-tag: latest
+          parameters:
+          - species1: H
+          - species2: H
+          - bond-length: '0.7'
+          - resources: [diatomic-molecule, open-pack-core]
+          - docker-image: open_pack_psi4
+          - docker-tag: latest
 
     # Perform a Hartree-Fock calculation using Psi4
     - - name: run-psi4
         template: run-psi4
         arguments:
-        artifacts:
-        - geometry:
-            from: '{{steps.create-molecule.outputs.artifacts.geometry}}'
-        parameters:
-        - basis: '{{inputs.parameters.basis}}'
-        - method: scf # ccsd(t)
-        - reference: rhf
-        - nthreads: "4"
-        - save-hamiltonian: 'True' # Boolean values must be put in quotes!
-        - resources: [open-pack-core, qe-psi4, qe-openfermion]
-        - docker-image: qe-psi4
-        - docker-tag: latest
+          artifacts:
+          - geometry:
+              from: '{{steps.create-molecule.outputs.artifacts.geometry}}'
+          parameters:
+          - basis: STO-3G
+          - method: scf # ccsd(t)
+          - reference: rhf
+          - nthreads: "4"
+          - save-hamiltonian: 'False' # Boolean values must be put in quotes!
+          - resources: [open-pack-core, qe-psi4, qe-openfermion]
+          - docker-image: qe-psi4
+          - docker-tag: latest
 ```
 
 **7. Running the Workflow**
@@ -229,23 +229,23 @@ To see details of the execution of your workflow, run `qe get workflow <workflow
 
  The output will look like:
 ```Bash
-Name:                welcome-to-orquestra-d9djf
+Name:                hartree-fock-4772f
 Namespace:           default
 ServiceAccount:      default
 Status:              Succeeded
-Created:             Thu Mar 19 21:14:33 +0000 (5 minutes ago)
-Started:             Thu Mar 19 21:14:33 +0000 (5 minutes ago)
-Finished:            Thu Mar 19 21:19:49 +0000 (19 seconds ago)
-Duration:            5 minutes 16 seconds
-Parameters:
+Created:             Tue Apr 07 17:35:31 +0000 (2 minutes ago)
+Started:             Tue Apr 07 17:35:31 +0000 (2 minutes ago)
+Finished:            Tue Apr 07 17:37:45 +0000 (41 seconds ago)
+Duration:            2 minutes 14 seconds
+Parameters:          
   s3-bucket:         quantum-engine
-  s3-key:            tutorials/welcome/
+  s3-key:            tutorials/hartree-fock/
 
-STEP                                         STEPNAME                                DURATION  MESSAGE
- ✔ welcome-to-orquestra-d9djf (salutations)
- ├---✔ greeting (welcome-to-orquestra)       welcome-to-orquestra-d9djf-2235995037  5m
- └---✔ transform-welcome (z-transformation)  welcome-to-orquestra-d9djf-1289017430  13s
-```
+STEP                                               STEPNAME                        DURATION  MESSAGE
+ ✔ hartree-fock-4772f (run-h2)                                                              
+ ├---✔ create-molecule (create-diatomic-molecule)  hartree-fock-4772f-1985307964  19s       
+ └---✔ run-psi4 (run-psi4)                         hartree-fock-4772f-1924622246  1m  
+ ```
 
 This output shows the status of the execution of the steps in your workflow.
 
@@ -257,8 +257,8 @@ After a workflow runs, it takes time for the data to be processed. This results 
 
 Once finished, the output will look like the following:
 ```Bash
-Name:        welcome-to-orquestra-d9djf
-Location:    http://40.89.251.200:9000/workflow-results/bb2b58b4-b25d-59e3-9fee-e7b79f0c20d5.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=zapata%2F20200319%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200319T212017Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22bb2b58b4-b25d-59e3-9fee-e7b79f0c20d5.json%22&X-Amz-Signature=c4de1784b252fa6164aea8aa49a91bdd84c20c4dc55411e93f69a57b4ea62ac1
+Name:        hartree-fock-4772f
+Location:    http://40.89.251.200:9000/workflow-results/3dcdd240-f5c6-5c78-a80a-9aa86a6941b5.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=zapata%2F20200407%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200407T191718Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%223dcdd240-f5c6-5c78-a80a-9aa86a6941b5.json%22&X-Amz-Signature=d1107e50f741c002c7fe0d328bafec5ef52afb3819a93c02ef1f19b4f56d59a4
 ```
 ___
 **Note:** The above link is only valid temporarily and typically expires after 7 days.
@@ -268,50 +268,93 @@ ___
 
 When your workflow is completed, the `workflowresult` command will provide you with a http web-link under `Location` in the console output. Click on or copy and paste the link into your browser to download the file
 
-This file will look like the following (except for the comments, which were added in this tutorial for clarity):
+This file will look like the following:
 
 ```JSON
 {
-    "welcome-to-orquestra-d9djf-2235995037": { # The step that executed the `greeting` task
-        "class": "welcome-to-orquestra",
-        "id": "welcome-to-orquestra-d9djf-2235995037",
-        "inputParam:command": "python3 main.py",
-        "inputParam:cpu": "1000m",
-        "inputParam:disk": "10Gi",
-        "inputParam:docker-image": "zmachine_default",
-        "inputParam:docker-registry": "zapatacomputing",
-        "inputParam:docker-tag": "latest",
-        "inputParam:memory": "1024Mi",
-        "welcome": { # An artifact called `welcome`
-            "id": "welcome-to-orquestra-d9djf-2235995037/welcome",
-            "message": "Welcome to Orquestra!", # The message generated by this template
-            "schema": "message",
-            "taskClass": "welcome-to-orquestra",
-            "taskId": "welcome-to-orquestra-d9djf-2235995037",
-            "workflowId": "welcome-to-orquestra-d9djf"
+    "hartree-fock-z78cn-734196932": {
+        "class": "run-psi4",
+        "energycalc-results": {
+            "energy": -1.1173735079951446,
+            "id": "hartree-fock-z78cn-734196932/energycalc-results",
+            "n_alpha": 1,
+            "n_beta": 1,
+            "n_frozen_core": 0,
+            "n_frozen_valence": 0,
+            "n_mo": 2,
+            "schema": "io-zapOS-v1alpha1-energy_calc",
+            "taskClass": "run-psi4",
+            "taskId": "hartree-fock-z78cn-734196932",
+            "workflowId": "hartree-fock-z78cn"
         },
-        "workflowId": "welcome-to-orquestra-d9djf"
-    },
-    "welcome-to-orquestra-d9djf-1289017430": { # The step that executed the `transform-welcome` task
-        "class": "z-transformation",
-        "id": "welcome-to-orquestra-d9djf-1289017430",
-        "inputArtifact:message": "welcome-to-orquestra-d9djf-2235995037/welcome",
-        "inputParam:command": "python3 main.py",
+        "id": "hartree-fock-z78cn-734196932",
+        "inputArtifact:geometry": "hartree-fock-z78cn-1709410626/geometry",
+        "inputParam:basis": "STO-3G",
+        "inputParam:charge": "0",
+        "inputParam:command": "bash main_script.sh",
         "inputParam:cpu": "1000m",
         "inputParam:disk": "10Gi",
-        "inputParam:docker-image": "zmachine_default",
+        "inputParam:docker-image": "qe-psi4",
+        "inputParam:docker-registry": "zapatacomputing",
+        "inputParam:docker-tag": "latest",
+        "inputParam:freeze-core": "False",
+        "inputParam:freeze-core-extract": "False",
+        "inputParam:memory": "1024Mi",
+        "inputParam:method": "scf",
+        "inputParam:multiplicity": "1",
+        "inputParam:n-active": "None",
+        "inputParam:n-active-extract": "None",
+        "inputParam:nthreads": "4",
+        "inputParam:options": "None",
+        "inputParam:reference": "rhf",
+        "inputParam:save-hamiltonian": "False",
+        "workflowId": "hartree-fock-z78cn"
+    },
+    "hartree-fock-z78cn-1709410626": {
+        "class": "create-diatomic-molecule",
+        "geometry": {
+            "id": "hartree-fock-z78cn-1709410626/geometry",
+            "schema": "zapata-v1-molecular_geometry",
+            "sites": [
+                {
+                    "id": "hartree-fock-z78cn-1709410626/geometry_sites[0]",
+                    "parentId": "hartree-fock-z78cn-1709410626/geometry",
+                    "parentType": "zapata-v1-molecular_geometry",
+                    "species": "H",
+                    "workflowId": "hartree-fock-z78cn",
+                    "x": 0,
+                    "y": 0,
+                    "z": 0,
+                    "zapata-v1-molecular_geometry_sites_index": 0
+                },
+                {
+                    "id": "hartree-fock-z78cn-1709410626/geometry_sites[1]",
+                    "parentId": "hartree-fock-z78cn-1709410626/geometry",
+                    "parentType": "zapata-v1-molecular_geometry",
+                    "species": "H",
+                    "workflowId": "hartree-fock-z78cn",
+                    "x": 0,
+                    "y": 0,
+                    "z": 0.7,
+                    "zapata-v1-molecular_geometry_sites_index": 1
+                }
+            ],
+            "taskClass": "create-diatomic-molecule",
+            "taskId": "hartree-fock-z78cn-1709410626",
+            "workflowId": "hartree-fock-z78cn"
+        },
+        "id": "hartree-fock-z78cn-1709410626",
+        "inputParam:bond-length": "0.7",
+        "inputParam:command": "python3 main_script.py",
+        "inputParam:cpu": "1000m",
+        "inputParam:disk": "10Gi",
+        "inputParam:docker-image": "open_pack_psi4",
         "inputParam:docker-registry": "zapatacomputing",
         "inputParam:docker-tag": "latest",
         "inputParam:memory": "1024Mi",
-        "workflowId": "welcome-to-orquestra-d9djf",
-        "zessage": { # An artifact called `zessage`
-            "id": "welcome-to-orquestra-d9djf-1289017430/zessage",
-            "message": "Zelcome Zo Zrquestra!", # The message after it was transformed
-            "schema": "message",
-            "taskClass": "z-transformation",
-            "taskId": "welcome-to-orquestra-d9djf-1289017430",
-            "workflowId": "welcome-to-orquestra-d9djf"
-        }
+        "inputParam:species1": "H",
+        "inputParam:species2": "H",
+        "workflowId": "hartree-fock-z78cn"
     }
 }
 ```
@@ -322,7 +365,7 @@ ___
 **Note:** The sections in this results file will not necessarily be in the order that they were executed.
 ___
 
-### Running VQE
+## Running VQE
 
 Here we walk through running a workflow that performs a VQE calculation for different bond lengths and basis sets, and plot the results.
 
