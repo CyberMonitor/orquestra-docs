@@ -74,7 +74,6 @@ The basic outline for a workflow template is as follows:
       # to execute, either 
       # in parallel or
       # in sequence with each other
-    
 ```
 
 Every workflow must contain **at least** one `template`, the "entrypoint" template. This is where the Quantum Engine begins the execution of your workflow. 
