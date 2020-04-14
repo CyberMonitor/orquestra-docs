@@ -383,10 +383,10 @@ resources:
   parameters:
     url: "git@github.com:<your-github-username>/<your-git-repo-name>.git"
     branch: "master"
-- name: open-pack-core
+- name: z-quantum-core
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/open-pack-core.git"
+    url: "git@github.com:zapatacomputing/z-quantum-core.git"
     branch: "master"
 - name: qe-openfermion
   type: git
@@ -398,26 +398,27 @@ resources:
   parameters:
     url: "git@github.com:zapatacomputing/qe-psi4.git"
     branch: "master"
-- name: open-pack-vqe
+- name: z-quantum-vqe
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/open-pack-vqe.git"
+    url: "git@github.com:zapatacomputing/z-quantum-vqe.git"
     branch: "master"
-- name: open-pack-optimizers
+- name: z-quantum-optimizers
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/open-pack-optimizers.git"
+    url: "git@github.com:zapatacomputing/z-quantum-optimizers.git"
     branch: "master"
-- name: open-pack-forest
+- name: qe-forest
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/open-pack-forest.git"
+    url: "git@github.com:zapatacomputing/qe-forest.git"
     branch: "master"
-- name: open-pack-qhipster
+- name: qe-qhipster
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/open-pack-qhipster.git"
+    url: "git@github.com:zapatacomputing/qe-qhipster.git"
     branch: "master"
+
 
 # Specify the prefix to use when generating names of workflow executions.
 metadata:
@@ -431,7 +432,7 @@ spec:
     parameters:
     - s3-bucket: quantum-engine
     - s3-key: projects/examples/hydrogen/data
-    - docker-image: 'open_pack_default'
+    - docker-image: 'z-quantum-default'
     - docker-tag: 'latest'
 
   templates:
@@ -445,7 +446,7 @@ spec:
           - basis: '{{item}}' # Note that quotes are needed here because of the curly braces
         withItems:
         - STO-3G
-        - 6-31G
+        # - 6-31G
         # - 6-311G
 
   - name: bond-length-loop
@@ -459,7 +460,7 @@ spec:
           parameters:
           - basis: '{{inputs.parameters.basis}}'
           - bond-length: '{{item}}'
-        withItems: [0.60, 0.70, 0.80]
+        withItems: [0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
   - name: run-h2
     inputs:
@@ -474,7 +475,7 @@ spec:
           - species1: H
           - species2: H
           - bond-length: '{{inputs.parameters.bond-length}}'
-          - resources: [diatomic-molecule, open-pack-core]
+          - resources: [diatomic-molecule, z-quantum-core]
           - docker-image: open_pack_psi4
           - docker-tag: latest
 
@@ -490,7 +491,7 @@ spec:
           - reference: rhf
           - nthreads: "4"
           - save-hamiltonian: 'True' # Boolean values must be put in quotes!
-          - resources: [open-pack-core, qe-psi4, qe-openfermion]
+          - resources: [z-quantum-core, qe-openfermion, qe-psi4]
           - docker-image: qe-psi4
           - docker-tag: latest
     - - name: transform-hamiltonian
@@ -501,7 +502,7 @@ spec:
               from: "{{steps.run-psi4.outputs.artifacts.hamiltonian}}"
           parameters:
           - transformation: Jordan-Wigner
-          - resources: [qe-openfermion, open-pack-core]
+          - resources: [z-quantum-core, qe-openfermion]
           - docker-image: "{{workflow.parameters.docker-image}}"
           - docker-tag: "{{workflow.parameters.docker-tag}}"
     - - name: build-vqe-circuit-template
@@ -513,7 +514,7 @@ spec:
           - n-beta: "{{steps.run-psi4.outputs.parameters.n-beta}}"
           - n-mo: "{{steps.run-psi4.outputs.parameters.n-mo}}"
           - transformation: Jordan-Wigner
-          - resources: [open-pack-core, open-pack-vqe, qe-openfermion]
+          - resources: [z-quantum-core, qe-openfermion, z-quantum-vqe]
           - docker-image: "{{workflow.parameters.docker-image}}"
           - docker-tag: "{{workflow.parameters.docker-tag}}"
     - - name: generate-random-ansatz-params
@@ -522,7 +523,7 @@ spec:
           parameters:
           - min-val: "-0.01"
           - max-val: "0.01"
-          - resources: [open-pack-core]
+          - resources: [z-quantum-core]
           - docker-image: "{{workflow.parameters.docker-image}}"
           - docker-tag: "{{workflow.parameters.docker-tag}}"
           artifacts:
@@ -532,11 +533,11 @@ spec:
         template: optimize-variational-circuit
         arguments:
           parameters:
-          - backend-specs: "{'module_name': 'orquestra.qhipster.simulator', 'function_name': 'QHipsterSimulator'}"
-          - optimizer-specs: "{'module_name': 'orquestra.optimizers.scipy_optimizer', 'function_name': 'ScipyOptimizer', 'method': 'L-BFGS-B'}"
-          - resources: [open-pack-core, open-pack-optimizers, open-pack-qhipster, open-pack-vqe, qe-openfermion]
-          - docker-image: open_pack_qhipster
-          - docker-tag: 0.0.2
+          - backend-specs: "{'module_name': 'qeforest.simulator', 'function_name': 'ForestSimulator', 'device_name': 'wavefunction-simulator'}"
+          - optimizer-specs: "{'module_name': 'zquantum.optimizers.scipy_optimizer', 'function_name': 'ScipyOptimizer', 'method': 'L-BFGS-B'}"
+          - resources: [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-forest, z-quantum-vqe]
+          - docker-image: "{{workflow.parameters.docker-image}}"
+          - docker-tag: "{{workflow.parameters.docker-tag}}"
           - memory: 2048Mi
           artifacts:
           - ansatz:
@@ -619,7 +620,7 @@ import json
 from matplotlib import pyplot as plt
 
 # Insert the path to your JSON file here
-with open('d5f2be37-cece-5c1b-b099-ec867d50283c.json') as f:
+with open('31de8df6-12fa-5b22-b9a9-e7e09e5b7c33.json') as f:
     data = json.load(f)
 
 # Extract lists of energies, bond lengths, and basis sets.
@@ -652,10 +653,11 @@ for basis in basis_set_list:
 # Plot the binding energy curve
 plt.figure()
 for i in range(len(basis_set_list)):
-    plt.plot(bond_length_sets[i], energy_sets[i])
+    plt.plot(bond_length_sets[i], energy_sets[i], marker='o')
 
-plt.xlabel('Bond length (Angstrom)')
+plt.xlabel('Bond length (Angstroms)')
 plt.ylabel('Energy (Ha)')
 plt.legend(basis_set_list)
+plt.tight_layout()
 plt.show()
 ```
