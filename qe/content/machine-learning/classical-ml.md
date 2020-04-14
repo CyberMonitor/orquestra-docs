@@ -12,6 +12,7 @@ The following libraries are included in Zapata's Machine Learning Image:
 - pandas v1.0.1
 - scipy v1.4.1
 - scikit-learn v0.22.1
+- theano v1.0.4
 - tensorflow v2.1.0
 - keras v2.3.1
 - torch v1.3.0
@@ -23,7 +24,7 @@ The following libraries are included in Zapata's Machine Learning Image:
 To use this image, follow the instructions on the [Docker Images page](../workflow/images), and use the values:
 ```YAML
 - name: docker-image
-  value: zapatacomputing/open-pack-ml
+  value: open-pack-ml
 - name: docker-tag
   value: latest
 ```
