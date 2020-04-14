@@ -70,7 +70,7 @@ module.exports = {
             'cli/workflowresults',
           ],
           'Machine Learning':[
-            'machine-learning/classical-ml'
+            'machine-learning/ml'
           ]
         }
       }

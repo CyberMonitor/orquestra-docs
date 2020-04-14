@@ -39,4 +39,4 @@ spec:
 When you use this [resource](./resources) in a [workflow](./workflows), it will use the referenced Docker image.
 
 A full list of pages for Zapata's pre-made images, which contain the `docker-image` and `docker-tag` values, is below:
-- [Machine Learning image](../machine-learning/classical-ml)
+- [Machine Learning image](../machine-learning/ml)
