@@ -58,7 +58,8 @@ module.exports = {
             'workflow/workflows',
             'workflow/resources',
             'workflow/templates',
-            'workflow/steps'
+            'workflow/steps',
+            'workflow/images'
           ],
           'The Quantum Engine (qe) CLI':[
             'cli/install',
@@ -67,6 +68,9 @@ module.exports = {
             'cli/workflowdetails',
             'cli/logs',
             'cli/workflowresults',
+          ],
+          'Machine Learning':[
+            'machine-learning/ml'
           ]
         }
       }
