@@ -3,7 +3,7 @@ title: Using Classical Machine Learning Libraries
 description: Easily access common machine learning libraries in a workflow
 ---
 
-Zapata provides a pre-made Docker image to make common classical machine learning libraries available for use in workflows. To learn more about using Docker images in Quantum Engine, go to the [Docker images page](../workflow/images).
+Zapata provides a pre-made Docker image to make common classical machine learning libraries available for use in workflows. It is called `zapatacomputing/open-pack-ml`. To learn more about using Docker images in Quantum Engine, go to the [Docker images page](../workflow/images).
 
 ## Libraries available
 
@@ -25,5 +25,5 @@ To use this image, follow the instructions on the [Docker Images page](../workfl
 - name: docker-image
   value: zapatacomputing/open-pack-ml
 - name: docker-tag
-  value: production
+  value: latest
 ```
