@@ -18,9 +18,9 @@ The following libraries are included in Zapata's Machine Learning Image:
 - gym v0.16.0
 - tensorboard v2.1.1
 
-## Using the image in a resource
+## Using the image
 
-To use this image in a [resource](../workflow/resources), follow the instructions on the [Docker Images page](../workflow/images), and use the values:
+To use this image, follow the instructions on the [Docker Images page](../workflow/images), and use the values:
 ```YAML
 - name: docker-image
   value: zapatacomputing/open-pack-ml
