@@ -133,10 +133,10 @@ resources:
   parameters:
     url: "git@github.com:<your-github-username>/<your-git-repo-name>.git"
     branch: "master"
-- name: open-pack-core
+- name: z-quantum-core
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/open-pack-core.git"
+    url: "git@github.com:zapatacomputing/z-quantum-core.git"
     branch: "master"
 - name: qe-openfermion
   type: git
@@ -183,8 +183,8 @@ spec:
           - species1: H
           - species2: H
           - bond-length: '0.7'
-          - resources: [diatomic-molecule, open-pack-core]
-          - docker-image: open_pack_psi4
+          - resources: [diatomic-molecule]
+          - docker-image: z-quantum-default
           - docker-tag: latest
 
     # Perform a Hartree-Fock calculation using Psi4
@@ -200,7 +200,7 @@ spec:
           - reference: rhf
           - nthreads: "4"
           - save-hamiltonian: 'False' # Boolean values must be put in quotes!
-          - resources: [open-pack-core, qe-psi4, qe-openfermion]
+          - resources: [z-quantum-core, qe-psi4, qe-openfermion]
           - docker-image: qe-psi4
           - docker-tag: latest
 ```
@@ -432,8 +432,8 @@ spec:
     parameters:
     - s3-bucket: quantum-engine
     - s3-key: projects/examples/hydrogen/data
-    - docker-image: 'z-quantum-default'
-    - docker-tag: 'latest'
+    - docker-image: z-quantum-default
+    - docker-tag: latest
 
   templates:
 
@@ -475,8 +475,8 @@ spec:
           - species1: H
           - species2: H
           - bond-length: '{{inputs.parameters.bond-length}}'
-          - resources: [diatomic-molecule, z-quantum-core]
-          - docker-image: open_pack_psi4
+          - resources: [diatomic-molecule]
+          - docker-image: z-quantum-default
           - docker-tag: latest
 
     - - name: run-psi4
