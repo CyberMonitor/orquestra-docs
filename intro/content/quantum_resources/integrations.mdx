@@ -2,3 +2,50 @@
 title: Interfaces
 description: Learn how to integrate your backend or optimizer into Orquestra
 ---
+
+## Introduction
+
+One of the biggest strengths of Orquestra is its modularity. Integrating new backends, optimizers, compilers, etc. does not require changing the core code – it requires only creating a new module which conforms to existing interfaces and therefore can be used across the whole platform.
+
+### What is an interface?
+
+In general, interface is common standard that's being used to facilitate communication between different parts of the software and ensure uniformity.
+TODO
+
+### Interfaces in Orquestra
+
+In Orquestra interfaces are defined in the [`z-quantum-core` repository](https://github.com/zapatacomputing/z-quantum-core/tree/master/src/python/zquantum/core/interfaces).
+Right now we have the following interfaces:
+- `QuantumBackend`
+- `QuantumSimulator` (subclass of `QuantumBackend`)
+- `Optimizer`
+
+TODO: passing objects into
+
+## Integrating backends/optimizers
+
+### How to integrate your own backend / optimizer
+In order to integrate a new quantum backend or optimizer into Orquestra you need to create a class which inherits after `QuantumBackend`/`QuantumSimulator` or `Optimizer`.
+All you need to do is just implement the methods specified by the interface. In some cases implementing a new backend might also require installing additional software and therefore need a special docker container to work.
+
+In case of the optimizers, the object return should be of type `scipy.optimize.OptimizeResult` and needs to have the following fields:
+- `opt_value` - the optimal value of the cost function
+- `opt_params` - parameters corresponding to the `opt_value`.
+
+
+### Integrated backends
+
+Each hardware integrate lives in a separate repository:
+
+- [qHiPSTER](https://github.com/zapatacomputing/qe-qhipster)
+- Forest QVM (pending)
+- qulacs (pending)
+
+
+### Integrated optimizers
+
+All the currently implemented optimizers live in the [z-quantum-optimizers repository](https://github.com/zapatacomputing/z-quantum-optimizers):
+
+- grid search - brute-force approach checking all the values from a grid.
+- scipy optimizers - integration with `scipy.minimize` optimizers.
+- CMA-ES - Covariance Matrix Adaptation Evolution Strategy
