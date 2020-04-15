@@ -86,12 +86,11 @@ spec:
           data: |
             import json
             from diatomicmolecule import create_diatomic_molecule_geometry
-            from orquestra.core.utils import SCHEMA_VERSION
             geometry = create_diatomic_molecule_geometry('{{inputs.parameters.species1}}',
                                                          '{{inputs.parameters.species2}}',
                                                          {{inputs.parameters.bond-length}}) 
             
-            geometry['schema'] = SCHEMA_VERSION + "-molecular_geometry"
+            geometry['schema'] = "molecular_geometry"
             with open('molecule.json', 'w') as f:
               f.write(json.dumps(geometry))
     outputs:
