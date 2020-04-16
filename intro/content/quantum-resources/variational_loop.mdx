@@ -1,29 +1,31 @@
 ---
 title: Variational Loops
-description: Learn how to use variational loops in Orquestra.
+description: Implementing variational loops in Orquestra
 ---
 
 ## Introduction
 
-A key component of the variational quantum algorithms are variational loops. This section will explain how you can use them in Orquestra.
-
 Variational Quantum Algorithms (VQA) such as Varational Quantum Eigensolver (VQE) or Quantum Approximate Optimization Algorithm (QAOA) rely on hybrid approach to quantum computing.
+
+A key component of variational quantum algorithms are variational loops. This section will explain how you can implement variational loops in Orquestra.
 
 ## Variational loop
 
-Variational loop is a method where we use a quantum computer to evaluate only the cost function we want to minimize.
+The variational loop is a method where we use a quantum computer to evaluate only the cost function we want to minimize.
 
 Before you start you need to define the following:
-  1. Parametrizable circuit
-  2. Cost function you want to minimize
-  3. Classical optimizer
 
-Variational loop usually involves the following steps:
-  1. Initialize the circuit with the parameters.
-  2. Run the circuit on a quantum computer.
-  3. Based on the results of the circuit e.valuate the cost function.
-  4. Run the optimization algorithm to find new set of parameters.
-  5. Go back to step 1.
+1. Parametrizable circuit
+2. A cost function to minimize
+3. A classical optimizer
+
+Variational loops usually involves the following steps:
+
+1. Initialize the circuit with the parameters
+2. Run the circuit on a quantum computer
+3. Based on the results of the circuit evaluate the cost function
+4. Run the optimization algorithm to find new set of parameters
+5. Go back to step 1.
 
 
 ## Variational loops in Orquestra
@@ -32,9 +34,9 @@ Let's see how to use the variational loop in the Orquestra.
 
 ### Template
 
-Currently variational loops are accessible through the `optimize-variational-circuit` template. You can find it in the [z-quantum-optimizers](https://github.com/zapatacomputing/z-quantum-optimizers/blob/master/templates/optimizers.yaml) repository.
+Variational loops can be accessed through the `optimize-variational-circuit` template. You can find it in the [z-quantum-optimizers](https://github.com/zapatacomputing/z-quantum-optimizers/blob/master/templates/optimizers.yaml) repository.
 
-In order to use you need to provide the following inputs:
+The `optimize-variational-circuit` template requires the following inputs:
   - `backend-specs` (parameter)
   - `optimizer-specs` (parameter)
   - `ansatz` (artifact)
