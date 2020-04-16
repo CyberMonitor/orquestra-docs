@@ -1,0 +1,101 @@
+---
+title: Variational Loops
+description: Implementing variational loops in Orquestra
+---
+
+## Introduction
+
+Variational Quantum Algorithms (VQA) such as Varational Quantum Eigensolver (VQE) or Quantum Approximate Optimization Algorithm (QAOA) rely on hybrid approach to quantum computing.
+
+A key component of variational quantum algorithms are variational loops. This section will explain how you can implement variational loops in Orquestra.
+
+## Variational loop
+
+The variational loop is a method where we use a quantum computer to evaluate only the cost function we want to minimize.
+
+Before you start you need to define the following:
+
+1. Parametrizable circuit
+2. A cost function to minimize
+3. A classical optimizer
+
+Variational loops usually involves the following steps:
+
+1. Initialize the circuit with the parameters
+2. Run the circuit on a quantum computer
+3. Based on the results of the circuit evaluate the cost function
+4. Run the optimization algorithm to find new set of parameters
+5. Go back to step 1.
+
+
+## Variational loops in Orquestra
+
+Let's see how to use the variational loop in the Orquestra.
+
+### Template
+
+Variational loops can be accessed through the `optimize-variational-circuit` template. You can find it in the [z-quantum-optimizers](https://github.com/zapatacomputing/z-quantum-optimizers/blob/master/templates/optimizers.yaml) repository.
+
+The `optimize-variational-circuit` template requires the following inputs:
+  - `backend-specs` (parameter)
+  - `optimizer-specs` (parameter)
+  - `ansatz` (artifact)
+  - `initial-parameters` (artifact)
+  - `qubit-operator` (artifact)
+
+`backend-specs` and `optimizer-specs` are dictionaries which specify what backend and optimizer will be used. You can read more about them on the [integrations page](https://www.orquestra.io/docs/qe/quantum_resources/integrations).
+
+`ansatz` corresponds to a dictionary representing given ansatz. Such dictionary should have the following fields (though it may have additional fields):
+  - `ansatz_type` - specifies what type of the ansatz we want to used
+  - `ansatz_module` - name of the module where the function for building this module resides
+  - `ansatz_func` - name of the function for building the ansatz
+  - `ansatz_kwargs` - a dictionary containing all the keyword arguments required by function defined in `ansatz_func`.
+
+`initial-parameters` contains the initial parameters for the optimization algorithm.
+`qubit-operator` represents a `QubitOperator` or `IsingOperator` objects from the `openfermion` library, which are used for calculating the cost function.
+
+
+### Python code
+
+To better understand how variational loop can be implemented in Orquestra, you can look at a basic implementation in [`optimize_variational_circuit`](https://github.com/zapatacomputing/z-quantum-optimizers/blob/master/src/python/zquantum/optimizers/variational_circuits.py):
+
+```python
+from zquantum.core.circuit import build_ansatz_circuit
+from qeopenfermion import evaluate_qubit_operator
+import copy
+
+def optimize_variational_circuit(ansatz, operator, initial_params,
+    backend, optimizer):
+    def get_cost_function(target_operator):
+        # 1. Define cost function
+        def cost_function(params):
+            circuit = build_ansatz_circuit(ansatz, params)
+
+            # 2. Get simplified operator
+            operator_no_coeff = copy.deepcopy(target_operator)
+            for term in target_operator.terms:
+                operator_no_coeff.terms[term] = 1
+            # 3. Calculate expectation values
+            expectation_values = backend.get_expectation_values(circuit, operator_no_coeff)
+            # 4. Get value estimate
+            value_estimate = evaluate_qubit_operator(target_operator, expectation_values)
+            return value_estimate.value
+
+        return cost_function
+    # 5. Create cost function object for given operator
+    cost_function = get_cost_function(operator)
+    # 6. Find optimal parameters
+    optimization_results = optimizer.minimize(cost_function, initial_params)
+    return optimization_results
+```
+
+Let's see what happens in each step:
+
+1. Define a cost function which depends only on the parameters.
+2. Create a simplified operator with the same terms but all the coefficients equal to one.
+3. Pass circuit and simplified operator to the backend to get the expectation values.
+4. Calculate value estimate for the target operator given the expectation values for the simplified one.
+5. Instantiate the cost_function function.
+6. Find parameters which minimize the cost function using given optimizer.
+
+It's worth noting that in principle steps 2 and 4 could be omitted and performing step 3 for `target_operator` would suffice. However, in some cases, we might have multiple operators with the same structure but different coefficients. In such cases extending this procedure would save many calls to backend.
