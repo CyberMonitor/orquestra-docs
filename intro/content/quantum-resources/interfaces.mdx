@@ -26,6 +26,48 @@ With optimizers, the object return should be of type `scipy.optimize.OptimizeRes
 - `opt_value`: the optimal value of the cost function
 - `opt_params`: parameters corresponding to the `opt_value`.
 
+### Using integration
+
+Once you've done your integration, there are two ways you can use it in your template.
+The first one is obvious – you can simply import from the module you've just created, create a python object and voila!
+
+However, this means that the backend/optimizer will be hardcoded in your template and using another one will require changes to the template.
+That's why you can use `create_object` function from `zquantum.core.utils`. It takes a dictionary with specification of the object you'd like to create and creates it inside the template. Take a look at the following example:
+
+```yaml
+templates:
+- name: use-any-backend
+  parent: generic-task
+  inputs:
+    parameters:
+    - name: backend-specs
+    - name: command
+      value: bash main_script.sh
+    artifacts:
+    - name: main-script
+      path: /app/main_script.sh
+      raw:
+        data: |
+          python3 python_script.py
+    - name: python-script
+      path: /app/python_script.py
+      raw:
+        data: |
+          from zquantum.core.utils import create_object
+          backend_specs = {{inputs.parameters.backend-specs}}
+          backend = create_object(backend_specs)
+```
+
+`backend-specs` dictionary should have the following fields:
+- `module_name` - it specifies from which python module you want to import.
+- `function_name` - it specifies the function you want to use to create your object.
+- others - it will treat any other entries in the dictionary as keyword arguments for your object.
+
+For example, for the `MockSimulator` it might look like this:
+
+```yaml
+- backend-specs: "{'module_name': 'zquantum.core.interfaces.mock_objects', 'function_name': 'MockQuantumSimulator', 'n_samples': 1000}"
+```
 
 ### Integrated backends
 
