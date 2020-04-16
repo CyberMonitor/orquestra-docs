@@ -55,7 +55,7 @@ module.exports = {
         sidebarCategories: {
           null: ['index','basics/platform','basics/why-workflows', 'basics/glossary'],
           Tutorial: ['tutorial/helloworkflow','tutorial/hydrogen-vqe'],
-          Resources: ['quantum_resources/integrations', 'quantum_resources/variational_loop'],
+          Resources: ['quantum-resources/interfaces', 'quantum-resources/variational_loop'],
         }
       }
     }
