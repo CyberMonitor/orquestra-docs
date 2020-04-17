@@ -29,12 +29,12 @@ Using either the GitHub UI or by cloning your repo and using the command line, c
 
 def create_diatomic_molecule_geometry(species1, species2, bond_length):
     """Create a molecular geometry for a diatomic molecule.
-    
+
     Args:
         species1 (str): Chemical symbol of the first atom, e.g. 'H'.
         species2 (str): Chemical symbol of the second atom.
         bond_length (float): bond distance.
-        
+
     Returns:
         dict: a dictionary containing the coordinates of the atoms.
     """
@@ -85,12 +85,13 @@ spec:
         raw:
           data: |
             import json
+            from zquantum.core.utils import SCHEMA_VERSION
             from diatomicmolecule import create_diatomic_molecule_geometry
             geometry = create_diatomic_molecule_geometry('{{inputs.parameters.species1}}',
                                                          '{{inputs.parameters.species2}}',
-                                                         {{inputs.parameters.bond-length}}) 
-            
-            geometry['schema'] = "molecular_geometry"
+                                                         {{inputs.parameters.bond-length}})
+
+            geometry['schema'] = SCHEMA_VERSION + "-molecular_geometry"
             with open('molecule.json', 'w') as f:
               f.write(json.dumps(geometry))
     outputs:
@@ -98,7 +99,7 @@ spec:
       - name: geometry
         path: /app/molecule.json
 ```
- 
+
 **5. Commit and push your resource**
 
 Commit your changes and push them to GitHub.
@@ -182,7 +183,7 @@ spec:
           - species1: H
           - species2: H
           - bond-length: '0.7'
-          - resources: [diatomic-molecule]
+          - resources: [z-quantum-core, diatomic-molecule]
           - docker-image: z-quantum-default
           - docker-tag: latest
 
@@ -236,14 +237,14 @@ Created:             Tue Apr 07 17:35:31 +0000 (2 minutes ago)
 Started:             Tue Apr 07 17:35:31 +0000 (2 minutes ago)
 Finished:            Tue Apr 07 17:37:45 +0000 (41 seconds ago)
 Duration:            2 minutes 14 seconds
-Parameters:          
+Parameters:
   s3-bucket:         quantum-engine
   s3-key:            tutorials/hartree-fock/
 
 STEP                                               STEPNAME                        DURATION  MESSAGE
- ✔ hartree-fock-4772f (run-h2)                                                              
- ├---✔ create-molecule (create-diatomic-molecule)  hartree-fock-4772f-1985307964  19s       
- └---✔ run-psi4 (run-psi4)                         hartree-fock-4772f-1924622246  1m  
+ ✔ hartree-fock-4772f (run-h2)
+ ├---✔ create-molecule (create-diatomic-molecule)  hartree-fock-4772f-1985307964  19s
+ └---✔ run-psi4 (run-psi4)                         hartree-fock-4772f-1924622246  1m
  ```
 
 This output shows the status of the execution of the steps in your workflow.
@@ -252,7 +253,7 @@ This output shows the status of the execution of the steps in your workflow.
 
 To get the results of your workflow, run `qe get workflowresult <workflow-ID>` with your workflow ID.
 
-After a workflow runs, it takes time for the data to be processed. This results file cannot be created until the data is done being processed. You can try running the above command every few minutes until it returns a link to download a file. 
+After a workflow runs, it takes time for the data to be processed. This results file cannot be created until the data is done being processed. You can try running the above command every few minutes until it returns a link to download a file.
 
 Once finished, the output will look like the following:
 ```Bash
@@ -589,7 +590,7 @@ This output shows the status of the execution of the steps in your workflow.
 
 To get the results of your workflow, run `qe get workflowresult <workflow-ID>` with your workflow ID.
 
-After a workflow runs, it takes time for the data to be processed. This results file cannot be created until the data is done being processed. You can try running the above command every few minutes until it returns a link to download a file. 
+After a workflow runs, it takes time for the data to be processed. This results file cannot be created until the data is done being processed. You can try running the above command every few minutes until it returns a link to download a file.
 
 Once finished, the output will look like the following:
 ```Bash
