@@ -33,21 +33,32 @@ sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/zapatacomputin
 sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/zapatacomputing/qe-cli/master/install.sh)"
 ```
 
-### Windows Native
+### Windows
 Paste the following command into the Windows Command Prompt:
 
 1. Download the latest `qe` binary for Windows on the `qe-cli` [release page](https://github.com/zapatacomputing/qe-cli/releases). For 32-bit Windows users you'll want to download `qe-windows-386`; 64-bit Windows users will use `qe-windows-amd64`
 2. Locate the binary and rename it to `qe.exe`
-3. (Optional) Move `qe.exe` to the `%SystemRoot%\system32` folder or add `qe.exe` to your PATH 
-4. Open the command prompt (`cmd` or `powershell`) and use `qe`
+3. Move `qe.exe` to the `%SystemRoot%\system32` folder or add `qe.exe` to your PATH 
 
 ### Windows with WSL
 Installation should be very similar to Linux OS. However, you'll need to ensure that the 64-bit version of the binary is installed
 
 1. Download the 64-bit version of the Linux binary `qe-linux-amd64` on the [release page](https://github.com/zapatacomputing/qe-cli/releases)
-2. In your terminal navigate to the downloaded binary and rename it `mv ./qe-linux-amd64 ./qe`
-3. Make the binary executable `chmod +x ./qe`
-4. Copy the binary to a general location `sudo cp ./qe /usr/local/bin/`
+
+2. In your terminal navigate to the folder where you downloaded the binary and rename it by running 
+```bash
+mv ./qe-linux-amd64 ./qe
+```
+
+3. Make the binary executable by running 
+```bash
+chmod +x ./qe
+```
+
+4. Copy the binary to a general location by running 
+```bash
+sudo cp ./qe /usr/local/bin/
+```
 
 ### Notes
-If the above scripts do not work, you can download `qe` from [github](https://github.com/zapatacomputing/qe-cli/releases/latest) as an binary. There are individual download links for common platforms.*
+If the above scripts do not work, you can download `qe` from [github](https://github.com/zapatacomputing/qe-cli/releases/latest) as a binary. There are individual download links for common platforms.
