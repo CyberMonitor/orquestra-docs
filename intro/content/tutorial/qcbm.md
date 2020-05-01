@@ -65,7 +65,7 @@ For illustration, in the figure below we see a circuit with a different topology
 
 As we'll be able to see when we run the workflow, the QCBM model is able to accurately represent the distribution corresponding to the BAS dataset, by attaching a high probability (close to $\frac{1}{6}$) for each of the BAS patterns, and a low probability (close to 0) for the remaining patterns.
 
-![The DDQCL Process](img/training.png)*We start with a random distribution coming from the random initialization of the circuit parameters. After the training process, we end with a distribution that gives the BAS patterns high probabilities, and all the other patterns low probabilities.*
+![The DDQCL Process](../img/training.png)*We start with a random distribution coming from the random initialization of the circuit parameters. After the training process, we end with a distribution that gives the BAS patterns high probabilities, and all the other patterns low probabilities.*
 
 ## Composing a Workflow to Generate a QCBM for BAS Patterns
 
@@ -773,5 +773,5 @@ plt.show()
 
 This code will plot an animation of the probabilities for each of the 16 images, and the cost function above. Notice that the cost decreases during the training process, and the probabilities for the bars and stripes images become close to $\frac{1}{6}$, as desired.
 
-![](img/results.png)
+![](../img/results.png)
 *The results of our training.*
