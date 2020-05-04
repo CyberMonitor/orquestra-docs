@@ -15,7 +15,7 @@ In simple terms, given a dataset $\mathcal{D}$, the QCBM is used to obtain a goo
 The way a QCBM builds a distribution is by starting with a vector $\theta$ of parameters (or angles for our gates), and preparing a wave function $|\phi(\theta)\rangle$ using a quantum circuit model. The process of training the QCBM model gives us a vector $\theta$ that generates a good approximation to $\mathbf{P}_\mathcal{D}$, where the probability of an outcome $\mathbf{x}$ is given by Born's rule $P_{\theta}(\mathbf{x}) = | \langle \mathbf{x} | \psi(\theta) \rangle |^2$.
 
 ## The Dataset: Bars and Stripes
-In this tutorial we use a QCBM to find a distribution that generates a particular dataset. This dataset is the Bars and Stripes dataset. The Bars and Stripes dataset is widely used to study generative models for unsupervised machine learning. It is comprised by the black and white images inside an $m \times n$ rectangle which contain any number of either horizontal stripes or vertical bars. The cardinality of this set is $2^m + 2^n - 2$, and the set corresponding to $m=2$ and $n=2$ is illustrated below.
+In this tutorial we use a QCBM to find a distribution that generates a particular dataset. This dataset is the BAS dataset. The BAS dataset is widely used to study generative models for unsupervised machine learning. It is comprised by the black and white images inside an $m \times n$ rectangle which contain any number of either horizontal stripes or vertical bars. The cardinality of this set is $2^m + 2^n - 2$, and the set corresponding to $m=2$ and $n=2$ is illustrated below.
 
 ![The Bars and Stripes Dataset](../img/bars-and-stripes.png)*The Bars and Stripes dataset inside a $2 \times 2$ box.*
 
@@ -28,13 +28,13 @@ As it is very common in machine learning, we'll train the model by minimizing th
 
 $\mathcal{C}_{nll}(\theta) = -\frac{1}{D} \sum_{d=1}^D \ln(\mathbf{P}_{\theta} (\mathbf{x}^{(d)}))$.
 
-The summation index $d$ runs over the number of BAS patters in the training data set.
+The summation index $d$ runs over the number of BAS patters in the training data set, and $D$ is the size of the dataset.
 
 Since the formula contains the logarithm of the probability, we want to avoid cases in which the probability is zero. Recall that in practice (when not in simulation mode) these probabilities would correspond to the square of the amplitudes (a.k.a. Born probabilities) of these specific computational basis states $\mathbf{x}^{(d)}$. Therefore, even in cases where the probability is non-zero but very small, due to finite sampling, this might still be measured as zero. For this reason, we replace the very small values of the probability by some fixed small value $\epsilon$, and get the following variant:
 
 $\mathcal{C}(\theta) = -\frac{1}{D} \sum_{d=1}^D \ln(\max(\epsilon, \mathbf{P}_\theta (\mathbf{x}^{(d)})))$.
 
-Following the QCBM reference paper, this value is set to $10^{-8}$ in our tutorial.
+Following the [QCBM reference paper](https://www.nature.com/articles/s41534-019-0157-8), this value is set to $10^{-8}$ in our tutorial.
 
 ## The Training Process
 
