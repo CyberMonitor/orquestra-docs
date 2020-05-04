@@ -7,8 +7,8 @@ description: Find a quantum distribution which generates the Bars and Stripes da
 
 This tutorial will walk through an implementation of a quantum circuit Born machine (QCBM) using Quantum Engine to find a distribution that generates the Bars and Stripes (BAS) dataset that fit in a *2 x 2* pixel image.
 
-## The Quantum Circuit Born Machine
-A quantum circuit Born machine (QCBM) is an unsupervised generative model which represents the probability distribution of a dataset as a quantum state. [This](https://www.nature.com/articles/s41534-019-0157-8) quantum machine learning model was proposed as an approach to load arbitrary probability distributions in noisy intermediate-scale quantum (NISQ) devices.
+## The quantum circuit Born machine
+A quantum circuit Born machine (QCBM) is an unsupervised generative model which represents the probability distribution of a dataset as a quantum state. [A quantum circuit Born machine (QCBM)](https://www.nature.com/articles/s41534-019-0157-8) model was proposed as an approach to load arbitrary probability distributions in noisy intermediate-scale quantum (NISQ) devices.
 
 In simple terms, given a dataset, the QCBM is used to obtain a good approximation to the target distribution defined by that dataset. That is, a distribution such that when we sample randomly from it, it is very likely to return the elements in the set or similar elements, and unlikely to return anything different.
 
@@ -18,15 +18,15 @@ The probability of an outcome **x** is given by Born's rule
 
 ![](../img/born-rule.png)
 
-## The Dataset: Bars and Stripes
+## The dataset: Bars and Stripes
 In this tutorial we use a QCBM to find a distribution that generates a particular dataset. This dataset is the Bars and Stripes (BAS) dataset. The BAS dataset is widely used to study generative models for unsupervised machine learning. It is comprised by the black and white images inside an *m x n* rectangle which contain any number of either horizontal stripes or vertical bars. The 6-element set corresponding to *m=2* and *n=2* is illustrated below.
 
-![The Bars and Stripes Dataset](../img/bars-and-stripes.png)*The Bars and Stripes (BAS) dataset inside a *2x2* image.*
+![The Bars and Stripes Dataset](../img/bars-and-stripes.png)*The Bars and Stripes (BAS) dataset inside a *2x2* pixel image.*
 
 The way we parametrize the elements of the BAS dataset is with four qubits, one corresponding to each of the pixels in the images (taken from top to bottom, and each row from left to right). More specifically, for the *2 x 2* example above, the BAS patters are represented by the bitstrings 0000, 1100, 0101, 1111, 0011, and 1010. For simplicity, we can choose to map them to their corresponding computational basis states.
 
-## The Cost Function: Clipped Negative Log-Likelihood
-In order to train the model, we need a cost function which tells us if the distribution we are obtaining is similar to the target distribution or not.
+## The cost function: Clipped negative log-likelihood
+To train the model, we need a cost function which tells us if the distribution we are obtaining is similar to the target distribution or not.
 
 As it is very common in machine learning, we'll train the model by minimizing the Kullback-Leibler (KL) divergence, which measures the distance between two distributions. This is equivalent to minimizing the negative log-likelihood
 
@@ -38,11 +38,11 @@ Since the formula contains the logarithm of the probability, we want to avoid ca
 
 ![](../img/modified-cost-function.png)
 
-## The Training Process
+## The training process
 
 The training process of the QCBM is referred to as the data-driven quantum circuit learning (DDQCL) algorithm. It consists of the following steps:
 1. Initialize the circuit with random parameters.
-2. Prepare the initial state and execute the quantum circuit to obtain the QCBM model and perform measurements in the computational basis.
+2. Prepare the initial state, execute the quantum circuit to obtain the QCBM model and perform measurements in the computational basis.
 3. Compare the distribution obtained to that one of the dataset.
 4. Update the parameters using an optimizer.
 
@@ -51,9 +51,9 @@ Steps 2-4 get repeated until we achieve a small enough error. Notice that Steps 
 ![](../img/quantum-classical.png)
 *The training process.*
 
-## The Ansatz
+## The ansatz
 
-The circuit for this QCBM has a combination of single qubit and entangling gates. In the image below, at the left of the circuit, we show the graph of pairs of qubits which are connected with *XX* (a.k.a. Molmer-Sorensen) gates. We call this graph the *topology* of the circuit. Note that in order to explore the full space, we need this graph to be connected. In this workshop, we chose the all-to-all topology, which connects each pair of vertices.
+The circuit for the QCBM in this tutorial has a combination of single qubit and entangling gates. In the image below, at the left of the circuit, we show the graph of pairs of qubits which are connected with *XX* (a.k.a. Mølmer-Sørensen) gates. We call this graph the *topology* of the circuit. Note that in order to explore the full space, we need this graph to be connected. In this workshop, we chose the all-to-all topology, which connects each pair of vertices.
 
 ![](../img/ansatz-all.png)
 *A circuit with the all-to-all topology.*
@@ -63,13 +63,13 @@ For illustration, in the figure below we see a circuit with a different topology
 ![](../img/ansatz-star.png)
 *A circuit with the star topology*
 
-## The results: A Bars and Stripes Distribution
+## The results: A Bars and Stripes distribution
 
 As we'll be able to see when we run the workflow, the QCBM model is able to accurately represent the distribution corresponding to the BAS dataset, by attaching a high probability close to *1/6* for each of the BAS patterns, and a low probability (close to 0) for the remaining patterns.
 
 ![The DDQCL Process](../img/training.png)*We start with a random distribution coming from the random initialization of the circuit parameters. After the training process, we end with a distribution that gives the BAS patterns high probabilities, and all the other patterns low probabilities.*
 
-## Composing a Workflow to Generate a QCBM for BAS Patterns
+## Composing a workflow to generate a QCBM for BAS patterns
 
 In the next steps we will write the code necessary to build and train this QCBM model in Orquestra. The code consists of three main parts:
 - `ansatz.py` which builds the circuit.
@@ -84,9 +84,9 @@ This repository will be where you build your resource. [This GitHub repo](https:
 
 **2. Add python code to the repository**
 
-Now we will add the bulk of the workflow, which is the Python code that trains the model. We need two files, one for defining the Ansatz, and one for training and optimizing the model.
+Now we will add the bulk of the workflow, which is the Python code that trains the model. We need two files, one for defining the ansatz, and one for training and optimizing the model.
 
-Using either the GitHub UI or by cloning your repo and using the command line, create a file `src/python/zquantum/qcbm/ansatz.py`. In that file, add the following function for defining the Ansatz, with the corresponding topology.
+Using either the GitHub UI or by cloning your repo and using the command line, create a file `src/python/zquantum/qcbm/ansatz.py`. In that file, add the following function for defining the ansatz, with the corresponding topology.
 
 ```python
 import numpy as np
@@ -252,7 +252,7 @@ def generate_random_initial_params(n_qubits, n_layers=1, topology='all', min_val
     return(params)
 ```
 
-Now, in the same fashion, create a file `src/python/zquantum/optimization.py` with the following function (note that inside this function, we are defining the cost).
+Now, in the same fashion, create a file `src/python/zquantum/optimization.py` with the following function (note that inside this function, we are defining the cost function).
 
 ```python
 import copy
@@ -810,4 +810,4 @@ plt.show()
 This code will plot an animation of the probabilities for each of the 16 images, and the cost function above. Notice that the cost decreases during the training process, and the probabilities for the bars and stripes images become close to *1/6*, as desired.
 
 ![](../img/results.png)
-*The results of our training.*
+*The results.*
