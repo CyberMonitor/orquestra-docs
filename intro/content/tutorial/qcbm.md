@@ -5,7 +5,7 @@ description: Find a quantum distribution which generates the Bars and Stripes da
 
 ## Introduction
 
-This tutorial will walk through an implementation of a quantum circuit Born machine (QCBM) using Quantum Engine to find a distribution that generates the Bars and Stripes (BAS) dataset that fit in a *2 x 2* pixel image.
+This tutorial will walk through an implementation of a quantum circuit Born machine (QCBM) using Quantum Engine to find a distribution that generates the Bars and Stripes (BAS) dataset that fit in a 2 × 2 pixel image.
 
 ## The quantum circuit Born machine
 A quantum circuit Born machine (QCBM) is an unsupervised generative model which represents the probability distribution of a dataset as a quantum state. [A quantum circuit Born machine (QCBM)](https://www.nature.com/articles/s41534-019-0157-8) model was proposed as an approach to load arbitrary probability distributions in noisy intermediate-scale quantum (NISQ) devices.
@@ -19,11 +19,11 @@ The probability of an outcome **x** is given by Born's rule
 ![](../img/born-rule.png)
 
 ## The dataset: Bars and Stripes
-In this tutorial we use a QCBM to find a distribution that generates a particular dataset. This dataset is the Bars and Stripes (BAS) dataset. The BAS dataset is widely used to study generative models for unsupervised machine learning. It is comprised by the black and white images inside an *m x n* rectangle which contain any number of either horizontal stripes or vertical bars. The 6-element set corresponding to *m=2* and *n=2* is illustrated below.
+In this tutorial we use a QCBM to find a distribution that generates a particular dataset. This dataset is the Bars and Stripes (BAS) dataset. The BAS dataset is widely used to study generative models for unsupervised machine learning. It is comprised by the black and white images inside an *m* × *n* rectangle which contain any number of either horizontal stripes or vertical bars. The 6-element set corresponding to *m* = 2 and *n* = 2 is illustrated below.
 
-![The Bars and Stripes Dataset](../img/bars-and-stripes.png)*The Bars and Stripes (BAS) dataset inside a *2x2* pixel image.*
+![The Bars and Stripes Dataset](../img/bars-and-stripes.png)*The Bars and Stripes (BAS) dataset inside a 2 × 2 pixel image.*
 
-The way we parametrize the elements of the BAS dataset is with four qubits, one corresponding to each of the pixels in the images (taken from top to bottom, and each row from left to right). More specifically, for the *2 x 2* example above, the BAS patters are represented by the bitstrings 0000, 1100, 0101, 1111, 0011, and 1010. For simplicity, we can choose to map them to their corresponding computational basis states.
+The way we parametrize the elements of the BAS dataset is with four qubits, one corresponding to each of the pixels in the images (taken from top to bottom, and each row from left to right). More specifically, for the 2 × 2 example above, the BAS patters are represented by the bitstrings 0000, 1100, 0101, 1111, 0011, and 1010. For simplicity, we can choose to map them to their corresponding computational basis states.
 
 ## The cost function: Clipped negative log-likelihood
 To train the model, we need a cost function which tells us if the distribution we are obtaining is similar to the target distribution or not.
@@ -61,7 +61,7 @@ The circuit for the QCBM in this tutorial has a combination of single qubit and 
 For illustration, in the figure below we see a circuit with a different topology, the star topology, which connects qubit 1 to all the other ones.
 
 ![](../img/ansatz-star.png)
-*A circuit with the star topology*
+*A circuit with the star topology.*
 
 ## The results: A Bars and Stripes distribution
 
@@ -78,9 +78,9 @@ In the next steps we will write the code necessary to build and train this QCBM 
 
 **1. Create a GitHub repository**
 
-Go to [GitHub](https://github.com/) and create a public repository called `z-quantum-qcbm`. If you are unfamiliar with GitHub you can reference their [create a repo guide](https://help.github.com/en/github/getting-started-with-github/create-a-repo) for help
+Go to [GitHub](https://github.com/) and create a public repository called `qcbm`. If you are unfamiliar with GitHub you can reference their [create a repo guide](https://help.github.com/en/github/getting-started-with-github/create-a-repo) for help
 
-This repository will be where you build your resource. [This GitHub repo](https://github.com/zapatacomputing/z-quantum-qcbm) can be used as a reference for how the `quantum-qcbm` resource should look like throughout the tutorial.
+This repository will be where you build your resource. [This GitHub repo](https://github.com/zapatacomputing/z-quantum-qcbm) can be used as a reference for how the `qcbm` resource should look like throughout the tutorial.
 
 **2. Add python code to the repository**
 
@@ -252,7 +252,7 @@ def generate_random_initial_params(n_qubits, n_layers=1, topology='all', min_val
     return(params)
 ```
 
-Now, in the same fashion, create a file `src/python/zquantum/optimization.py` with the following function (note that inside this function, we are defining the cost function).
+Now, in the same fashion, create a file `src/python/zquantum/qcbm/optimization.py` with the following function. Note that inside this function, we are defining the cost function.
 
 ```python
 import copy
@@ -314,19 +314,12 @@ Create a file `src/setup.py` with the following contents:
 import setuptools
 import os
 
-readme_path = os.path.join("..", "README.md")
-with open(readme_path, "r") as f:
-    long_description = f.read()
-
 setuptools.setup(
     name="quantum-qcbm",
     version="0.1.0",
     author="Zapata Computing, Inc.",
     author_email="info@zapatacomputing.com",
     description="QCBM package for Orquestra.",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/zapatacomputing/z-quantum-qcbm ",
     packages=setuptools.find_namespace_packages(include=['zquantum.*']),
     package_dir={'' : 'python'},
     classifiers=(
@@ -492,7 +485,7 @@ resources:
   parameters:
     url: "git@github.com:zapatacomputing/z-quantum-core.git"
     branch: "master"
-- name: z-quantum-qcbm
+- name: qcbm
   type: git
   parameters:
     url: "git@github.com:<your-github-username>/<your-git-repo-name>.git"
@@ -529,7 +522,7 @@ spec:
   arguments:
     parameters:
     - s3-bucket: quantum-engine
-    - s3-key: projects/z-quantum-qcbm/qcbm-opt
+    - s3-key: tutorial-2-qcbm
     - docker-image: 'z-quantum-default'
 
   templates:
@@ -545,7 +538,7 @@ spec:
           - n-layers: "3"
           - min-val: "-1.57"
           - max-val: "1.57"
-          - resources: [z-quantum-core, z-quantum-qcbm]
+          - resources: [z-quantum-core, qcbm]
           - docker-image: "{{workflow.parameters.docker-image}}"
     - - name: optimize-circuit
         template: optimize-variational-qcbm-circuit
@@ -558,7 +551,7 @@ spec:
           - backend-specs: "{'module_name': 'qeforest.simulator', 'function_name': 'ForestSimulator', 'device_name': 'wavefunction-simulator'}"
           - optimizer-specs: "{'module_name': 'zquantum.optimizers.cma_es_optimizer', 'function_name': 'CMAESOptimizer', 'options': {'popsize': 5, 'sigma_0': 0.1, 'tolx': 1e-6}}"
           # - optimizer-specs: "{'module_name': 'zquantum.optimizers.scipy_optimizer', 'function_name': 'ScipyOptimizer', 'method': 'L-BFGS-B'}"
-          - resources: [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-forest, z-quantum-qcbm]
+          - resources: [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-forest, qcbm]
           - docker-image: "{{workflow.parameters.docker-image}}"
           - memory: 2048Mi
           artifacts:
