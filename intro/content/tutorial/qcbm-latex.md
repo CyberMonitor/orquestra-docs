@@ -8,7 +8,7 @@ description: Find a quantum distribution which generates the Bars and Stripes da
 This tutorial will walk through an implementation of a quantum circuit Born machine (QCBM) using Quantum Engine to find a distribution that generates the Bars and Stripes (BAS) dataset that fit in a $2 \times 2$ box.
 
 ## The Quantum Circuit Born Machine
-A quantum circuit Born machine (QCBM) is an unsupervised generative model which represents the probability distribution of a dataset as a quantum state. [This]([https://www.nature.com/articles/s41534-019-0157-8]) quantum machine learning model was proposed as an approach to load arbitrary probability distributions in noisy intermediate-scale quantum (NISQ) devices.
+A quantum circuit Born machine (QCBM) is an unsupervised generative model which represents the probability distribution of a dataset as a quantum state. [This](https://www.nature.com/articles/s41534-019-0157-8) quantum machine learning model was proposed as an approach to load arbitrary probability distributions in noisy intermediate-scale quantum (NISQ) devices.
 
 In simple terms, given a dataset $\mathcal{D}$, the QCBM is used to obtain a good approximation to the target distribution $\mathbf{P}_{\mathcal{D}}$. That is, a distribution such that when we sample randomly from it, it is very likely to return the elements in $\mathcal{D}$ or similar elements, and unlikely to return anything else.
 
