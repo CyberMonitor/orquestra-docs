@@ -489,7 +489,7 @@ resources:
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/z-quantum-core.git"
-    branch: "master"
+    branch: "stable"
 - name: z-quantum-qcbm
   type: git
   parameters:
@@ -499,22 +499,22 @@ resources:
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/z-quantum-optimizers.git"
-    branch: "master"
+    branch: "stable"
 - name: qe-forest
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/qe-forest.git"
-    branch: "master"
+    branch: "stable"
 - name: qe-qhipster
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/qe-qhipster.git"
-    branch: "master"
+    branch: "stable"
 - name: qe-openfermion
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/qe-openfermion.git"
-    branch: "master"
+    branch: "stable"
 
 # Specify the prefix to use when generating names of workflow executions.
 metadata:
