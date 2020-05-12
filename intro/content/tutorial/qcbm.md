@@ -650,7 +650,7 @@ This file will look like the following:
   "id":"qcbm-opt-58d9k-3616022042",
   "inputParam:command":"python3 main_script.py","inputParam:cpu":"1000m",
   "inputParam:disk":"10Gi",
-  "inputParam:docker-image":"open_pack_default",
+  "inputParam:docker-image":"z-quantum-default",
   "inputParam:docker-registry":"zapatacomputing",
   "inputParam:docker-tag":"latest",
   "inputParam:max-val":"1.57",
