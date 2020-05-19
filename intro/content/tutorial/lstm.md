@@ -1,5 +1,5 @@
 ---
-title: 2.  Prediction with LSTM
+title: 4.  Prediction with LSTM
 description:  Prediction of a sine function by means of Recurrent Neural Networks
 ---
 
