@@ -466,8 +466,8 @@ def plot_grid_values(ax, grid_results):
     lambda val,pos: '{:.2f}$\pi$'.format(val/np.pi) if val !=0 else '0'
     ))
     ax.yaxis.set_major_locator(tck.MultipleLocator(base=np.pi/4))
-    ax.pcolormesh(XX, YY, grid_values)
-    return ax
+    mesh_plot = ax.pcolormesh(XX, YY, grid_values)
+    return mesh_plot, ax
 
 def plot_trajectory(ax, optimizer_results, color, label):
     ax.plot(optimizer_results[0, 0], optimizer_results[0, 1], '*', color=color)
@@ -482,14 +482,20 @@ def plot_cost_function(ax, optimizer_results, color, label):
 with open('38d3d467-cdbe-5ab4-86d5-1123bb89dfa1.json') as f:
     data = json.load(f)
 
-# Extract lists of energies, bond lengths, and basis sets.
+# Extract parameters and values
 bfgs_results = []
 cma_es_results = []
 nelder_mead_results = []
 grid_results = []
+initial_params = []
+
+for task in data:
+    if data[task]['class'] == 'generate-random-ansatz-params':
+        initial_params = data[task]['params']['parameters']['real']
+
 for task in data:
     if data[task]['class'] == 'optimize-variational-circuit':
-        results = []
+        results = [[initial_params[0], initial_params[1], np.nan]]
         history = data[task]['optimization-results']['history']
         for epoch in history:
             x = epoch['params']['real'][0]
@@ -505,26 +511,27 @@ for task in data:
         if "CMAESOptimizer" in specs:
             cma_es_results = np.array(results)
         if "GridSearchOptimizer" in specs:
-            grid_results = np.array(results)
+            grid_results = np.array(results)[1:,:]
 
 # Plot trajectories
 fig, (ax1, ax2) = plt.subplots(1, 2)
-ax1 = plot_grid_values(ax1, grid_results)
+mesh_plot, ax1 = plot_grid_values(ax1, grid_results)
 ax1 = plot_trajectory(ax1, cma_es_results, color='g', label="CMA-ES")
-ax1 = plot_trajectory(ax1, bfgs_results, color='b', label="BFGS")
+ax1 = plot_trajectory(ax1, bfgs_results, color='b', label="L-BFGS-B")
 ax1 = plot_trajectory(ax1, nelder_mead_results, color='r', label="Nelder-Mead")
 
+cbar = fig.colorbar(mesh_plot, ax=ax1)
 ax1.legend()
 ax1.set_xlabel("beta")
 ax1.set_ylabel("gamma")
 
+# Plot values history
 ax2 = plot_cost_function(ax2, cma_es_results, color='g', label="CMA-ES")
-ax2 = plot_cost_function(ax2, bfgs_results, color='b', label="BFGS")
+ax2 = plot_cost_function(ax2, bfgs_results, color='b', label="L-BFGS-B")
 ax2 = plot_cost_function(ax2, nelder_mead_results, color='r', label="Nelder-Mead")
 
 ax2.set_xlabel("Iterations")
 ax2.set_ylabel("Value")
 plt.tight_layout()
 plt.show()
-
 ```
