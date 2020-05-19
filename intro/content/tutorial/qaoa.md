@@ -10,7 +10,7 @@ This tutorial will walk through using Quantum Engine to use QAOA to solve MaxCut
 In addition to that we'll cover some advanced workflow features (e.g. recursive tasks) and using Orquestra interfaces.
 
 ## QAOA
-QAOA is a variational quantum algorithm which allows to solve combinatorial optimization problems. We'll make a very high-level overview of only those parts of QAOA that we need for this tutorial. If you're interested in a more detailed description of QAOA you can read either [the original paper](https://arxiv.org/abs/1411.4028) or [this article](www.mustythoughts.com/Quantum-Approximate-Optimization-Algorithm-Explained.html).
+QAOA is a variational quantum algorithm which allows to solve combinatorial optimization problems. We'll make a very high-level overview of only those parts of QAOA that we need for this tutorial. If you're interested in a more detailed description of QAOA you can read either [the original paper](https://arxiv.org/abs/1411.4028) or [this article](https://www.mustythoughts.com/Quantum-Approximate-Optimization-Algorithm-Explained.html).
 
 
 In order to solve such problem we need to go through the following steps:
