@@ -511,7 +511,7 @@ In order to compare different optimizers you should do the following steps:
 
 1. Copy the `optimize-variational-circuit` step
 2. Change the `name` field for the copy – you cannot have several steps with the same name. For example, you can append the name of the optimizer to the `name`, e.g.: `optimize-variational-circuit-grid-search`
-3. Change the `optimizer-specs` to use another optimizer. Below are some of the optimizers you can try.
+3. Change the `optimizer-specs` to use another optimizer. Below are some of the optimizers you can try. In order for the visualization in the next steps to work, you also need to pass additional dictionary with options: `'options': {'keep_value_history': True}`. Optimizer running with this setting will keep track of the whole optimization history.
 4. You can make steps run in parallel by replacing the first dash before the `name` field of given step to space. See how it's done for `build-uniform-parameter-grid`, to be running in parallel with `generate-random-ansatz-params`.
 
 ```yaml
