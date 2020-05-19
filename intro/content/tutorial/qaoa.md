@@ -373,20 +373,124 @@ Why is using Optimizer Interface convenient? Because all the classes conforming 
 To make things simpler to analyze we will analyze a one-layer case. To do that we will replace `optimize-lbl` task with `optimize-variational-circuit` – the same we used inside `optimize-lbl`. 
 
 To do that you need to:
-1. copy `qaoa_lbl_example.yaml` file and rename it to `qaoa_multiple_optimizers.yaml`
-2. copy `optimize-variational-circuit` so it's after the `build-uniform-parameter-grid`
-3. modify its input artifacts to be same inputs of `optimize-lbl`
-4. remove `optimize-lbl` task (and its definition)
+1. Copy `qaoa_lbl_example.yaml` file and rename it to `qaoa_multiple_optimizers.yaml`
+2. Copy `optimize-variational-circuit` and paste it after `build-uniform-parameter-grid`.
+3. Modify its input artifacts to reflect data dependencies (should be the same paths as inputs of `optimize-lbl`)
+4. Remove `optimize-lbl` task (and its definition)
+5. Change parameters in `generate-random-ansatz-params` to `min-val: "1"`, `max-val: "2"`, `n-layers: "1"`
+6. Change parameters in `build-uniform-parameter-grid` to `max-value: "3.14159265359+0.05"` and `step: "0.1047197551"`.
 
 Here's how it should look like:
 
 ```yaml
-    - - name: `optimize-variational-circuit`
+ZapOSApiVersion: v1alpha1
+kind: Workflow
+
+resources:
+- name: z-quantum-core
+  type: git
+  parameters:
+    url: "git@github.com:zapatacomputing/z-quantum-core.git"
+    branch: "stable"
+- name: z-quantum-qaoa
+  type: git
+  parameters:
+    url: "git@github.com:zapatacomputing/z-quantum-qaoa.git"
+    branch: "stable"
+- name: z-quantum-optimizers
+  type: git
+  parameters:
+    url: "git@github.com:zapatacomputing/z-quantum-optimizers.git"
+    branch: "stable"
+- name: qe-qhipster
+  type: git
+  parameters:
+    url: "git@github.com:zapatacomputing/qe-qhipster.git"
+    branch: "stable"
+- name: qe-openfermion
+  type: git
+  parameters:
+    url: "git@github.com:zapatacomputing/qe-openfermion.git"
+    branch: "stable"
+
+metadata:
+  generateName: qaoa-example-
+
+spec:
+  entrypoint: main
+  arguments:
+    parameters:
+    - s3-bucket: quantum-engine
+    - s3-key: projects/qaoa/
+    - docker-image: z-quantum-default
+    - docker-tag: latest
+
+  templates:
+  - name: main
+    steps:
+    - - name: generate-graph
+        template: generate-erdos-renyi-graph
+        arguments:
+          parameters:
+            - n-nodes: "5"
+            - edge-probability: "0.8"
+            - resources: [z-quantum-core]
+            - docker-image: "{{workflow.parameters.docker-image}}"
+            - docker-tag: "{{workflow.parameters.docker-tag}}"
+    - - name: get-maxcut-hamiltonian
+        template: get-maxcut-hamiltonian
+        arguments:
+          parameters:
+          - resources: [z-quantum-core, qe-openfermion, z-quantum-qaoa]
+          - docker-image: "{{workflow.parameters.docker-image}}"
+          - docker-tag: "{{workflow.parameters.docker-tag}}"
+          artifacts:
+          - graph:
+              from: '{{steps.generate-graph.outputs.artifacts.graph}}'
+    - - name: build-circuit-template
+        template: build-farhi-qaoa-circuit-template
+        arguments:
+          parameters:
+          - resources: [z-quantum-core, qe-openfermion, z-quantum-qaoa]
+          - docker-image: "{{workflow.parameters.docker-image}}"
+          - docker-tag: "{{workflow.parameters.docker-tag}}"
+          artifacts:
+          - hamiltonian:
+              from: '{{steps.get-maxcut-hamiltonian.outputs.artifacts.hamiltonian}}'
+    - - name: generate-random-ansatz-params
+        template: generate-random-ansatz-params
+        arguments:
+          parameters:
+          - min-val: "1"
+          - max-val: "2"
+          - n-layers: "1"
+          - resources: [z-quantum-core]
+          - docker-image: "{{workflow.parameters.docker-image}}"
+          - docker-tag: "{{workflow.parameters.docker-tag}}"
+          artifacts:
+          - ansatz:
+              from: '{{steps.build-circuit-template.outputs.artifacts.ansatz}}'
+
+      - name: build-uniform-parameter-grid
+        template: build-uniform-parameter-grid
+        arguments:
+          parameters:
+          - n-layers: "1"
+          - min-value: "0"
+          - max-value: "3.14159265359+0.05"
+          - step: "0.1047197551"
+          - resources: [z-quantum-core]
+          - docker-image: "{{workflow.parameters.docker-image}}"
+          - docker-tag: "{{workflow.parameters.docker-tag}}"
+          artifacts:
+          - ansatz:
+              from: '{{steps.build-circuit-template.outputs.artifacts.ansatz}}'
+    - - name: optimize-variational-circuit
         template: optimize-variational-circuit
         arguments:
           parameters:
           - backend-specs: "{'module_name': 'qeqhipster.simulator', 'function_name': 'QHipsterSimulator'}"
-          - optimizer-specs: "{'module_name': 'zquantum.optimizers.grid_search', 'function_name': 'GridSearchOptimizer'}"
+          - optimizer-specs: "{'module_name': 'zquantum.optimizers.grid_search', 'function_name': 'GridSearchOptimizer', 'options': {'keep_value_history': True}}"
           - resources: [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-qhipster, z-quantum-qaoa]
           - docker-image: qe-qhipster
           - docker-tag: latest
@@ -401,8 +505,6 @@ Here's how it should look like:
               from: '{{steps.build-uniform-parameter-grid.outputs.artifacts.parameter-grid}}'
 ```
 
-
-
 **2. Running different optimizers in parallel**
 
 In order to compare different optimizers you should do the following steps:
@@ -410,7 +512,7 @@ In order to compare different optimizers you should do the following steps:
 1. Copy the `optimize-variational-circuit` step
 2. Change the `name` field for the copy – you cannot have several steps with the same name. For example, you can append the name of the optimizer to the `name`, e.g.: `optimize-variational-circuit-grid-search`
 3. Change the `optimizer-specs` to use another optimizer. Below are some of the optimizers you can try.
-4. You can even create a separate task for each optimizer and run all of them in parallel. 
+4. You can make steps run in parallel by replacing the first dash before the `name` field of given step to space. See how it's done for `build-uniform-parameter-grid`, to be running in parallel with `generate-random-ansatz-params`.
 
 ```yaml
 - optimizer-specs: "{'module_name': 'zquantum.optimizers.grid_search', 'function_name': 'GridSearchOptimizer', 'options': {'keep_value_history': True}}"
@@ -420,7 +522,6 @@ In order to compare different optimizers you should do the following steps:
 ```
 
 You can find a workflow running these optimizers in parallel in [z-quantum-qaoa repository](https://github.com/zapatacomputing/z-quantum-qaoa/blob/master/examples/qaoa_multiple_optimizers.yaml).
-
 
 **3. Running the Workflow**
 
