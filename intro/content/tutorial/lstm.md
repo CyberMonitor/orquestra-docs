@@ -289,7 +289,7 @@ You are now ready to run the workflow!
 
 * Log in to Quantum Engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your terminal. Contact support to register your email and/or receive the `quantum-engine-uri`.
 
-* Submit your `optimize-qcbm-circuit.yaml` by running `qe submit workflow <path/to/workflow/optimize-qcbm-circuit.yaml>`
+* Submit your `lstm-tutorial.yaml` by running `qe submit workflow <path/to/workflow/lstm-tutorial.yaml>`
 
 This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
 ```Bash
