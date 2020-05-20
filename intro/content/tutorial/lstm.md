@@ -167,9 +167,9 @@ The structure of your repository should look like this:
 
 **6. Building a Workflow**
 
-Create a file `lstm-tutorial.yaml` file with the code below, inserting the URL of your github repository in line {MISSING}. This file can go anywhere (except the `templates` folder), and in the repo you'll find it under `examples`.
+Create a file `lstm-tutorial.yaml` file with the code below, inserting the URL of your github repository in line 15. This file can go anywhere (except the `templates` folder), and in the repo you'll find it under `examples`.
 
-Notice that at the end of this file, we are inputting the Bars and Stripes dataset.
+This yaml file orquestrate all the different steps corresponding to data generation and preprocessing, and the buiding uo and training of the model, ending up with running the model prediction for test dataset.
 
 ```YAML
 # Workflow API version
@@ -185,7 +185,7 @@ resources:
 - name: z-lstm
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/z-lstm.git"
+    url: "git@github.com:<your-github-username>/<your-git-repo-name>.git"
     branch: "master"
 
 # Data to help you easily work with your workflow
