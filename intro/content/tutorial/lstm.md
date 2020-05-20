@@ -1,11 +1,6 @@
 ---
-<<<<<<< HEAD
-title: 3.  Prediction with LSTM
-description:  Generation of a sine function by means of Recurrent Neural Networks
-=======
 title: 4.  Prediction with LSTM
-description:  Prediction of a sine function by means of Recurrent Neural Networks
->>>>>>> 4ea9767366b0803c5fe974b73060cfc82d7da68c
+description:  Generation of a sine function by means of Recurrent Neural Networks
 ---
 
 ## Introduction
