@@ -143,8 +143,311 @@ setuptools.setup(
 ```
 **4. Adding `templates`**
 
-Create a file `templates/.yaml` with the following contents:
+Create in the *templates* folder the following files:
 
+- `generate-data.yaml`:
+```YAML
+# Every template YAML file must begin with a `spec`, without which your template won't compile.
+spec:
+
+  # The `templates` section is where you list one or more templates
+  templates:
+
+  # This is the name of the template, which is used to reference it in the workflow. This field is required.
+  - name: generate-data
+
+    # `generic-task` is the supertemplate that all templates (that don't contain a `steps` section) must inherit from
+    parent: generic-task
+
+    # This section is for the inputs needed to run the template. This section is required.
+    inputs:
+
+      # `parameters` represent initialization values for a template. 
+      parameters:
+      - name: docker-image
+        value: z-ml
+      - name: docker-tag
+        value: latest
+
+      # The `command` parameter is required because that is what is run by `generic-task`.
+      - name: command
+        value: python3 main.py
+
+      # The `numsamples` parameter allows you to change the number of samples created in your workflow
+      - name: time-range
+        # This value acts as a default but can be overridden in the workflow
+        value: 100
+      - name: time-step
+        value: 0.1
+      - name: noise-std
+        value: 0.2
+
+      # This section creates a script called `main.py` containing the code below under `data`. It must be under the `app` directory in order for the command above to locate it.
+      artifacts:
+      - name: main-script
+        path: /app/main.py
+        raw:
+          data: |
+            from lstm.data_manipulator import noisy_sine_generation, save_data
+            
+            data = noisy_sine_generation({{inputs.parameters.time-range}},
+                                  {{inputs.parameters.time-step}},
+                                  {{inputs.parameters.noise-std}})
+            save_data([data], ['data.json'])
+
+      # This section is where output artifacts are listed. They must be listed here, or else they will get deleted when the template completes. They must be under the `app` directory in order to be saved.
+    outputs:
+      artifacts:
+      - name: data
+        path: /app/data.json
+```
+
+- `preprocess-data.yaml`:
+```YAML
+# Every template YAML file must begin with a `spec`, without which your template won't compile.
+spec:
+
+  # The `templates` section is where you list one or more templates
+  templates:
+
+  # This is the name of the template, which is used to reference it in the workflow. This field is required.
+  - name: preprocess-data
+
+    # `generic-task` is the supertemplate that all templates (that don't contain a `steps` section) must inherit from
+    parent: generic-task
+
+    # This section is for the inputs needed to run the template. This section is required.
+    inputs:
+
+      # `parameters` represent initialization values for a template. 
+      parameters:
+      - name: docker-image
+        value: z-ml
+      - name: docker-tag
+        value: latest
+
+      # The `command` parameter is required because that is what is run by `generic-task`.
+      - name: command
+        value: python3 main.py
+
+      - name: train-frac
+        # This value acts as a default but can be overridden in the workflow
+        value: 0.8
+      - name: window-size
+        value: 10
+
+      # This section creates a script called `main.py` containing the code below under `data`. It must be under the `app` directory in order for the command above to locate it.
+      artifacts:
+      - name: data
+        path: /app/data.json
+      - name: main-script
+        path: /app/main.py
+        raw:
+          data: |
+            from lstm.data_manipulator import load_data, save_data, preprocess_data
+
+            data = load_data('data.json')
+            preprocessed_data = preprocess_data(data["data"],
+                                  {{inputs.parameters.train-frac}},
+                                  {{inputs.parameters.window-size}})
+            filenames = ['training_data.json',
+                        'testing_data.json',
+                        'training_data_windows.json',
+                        'testing_data_windows.json']
+            save_data(preprocessed_data, filenames)
+
+      # This section is where output artifacts are listed. They must be listed here, or else they will get deleted when the template completes. They must be under the `app` directory in order to be saved.
+    outputs:
+      artifacts:
+      - name: training-data
+        path: /app/training_data.json
+      - name: testing-data
+        path: /app/testing_data.json
+      - name: training-data-windows
+        path: /app/training_data_windows.json
+      - name: testing-data-windows
+        path: /app/testing_data_windows.json
+```
+
+- `build-model.yaml`:
+```YAML
+# Every template YAML file must begin with a `spec`, without which your template won't compile.
+spec:
+
+  # The `templates` section is where you list one or more templates
+  templates:
+
+  # This is the name of the template, which is used to reference it in the workflow. This field is required.
+  - name: build-model
+
+    # `generic-task` is the supertemplate that all templates (that don't contain a `steps` section) must inherit from
+    parent: generic-task
+
+    # This section is for the inputs needed to run the template. This section is required.
+    inputs:
+
+      # `parameters` represent initialization values for a template. 
+      parameters:
+      - name: docker-image
+        value: z-ml
+      - name: docker-tag
+        value: latest
+
+      # The `command` parameter is required because that is what is run by `generic-task`.
+      - name: command
+        value: python3 main.py
+
+      - name: hnodes
+        # This value acts as a default but can be overridden in the workflow
+        value: 32
+      - name: dropout
+        value: 0.2
+
+      # This section creates a script called `main.py` containing the code below under `data`. It must be under the `app` directory in order for the command above to locate it.
+      artifacts:
+      - name: preprocessed-data
+        path: /app/preprocessed_data.json
+      - name: main-script
+        path: /app/main.py
+        raw:
+          data: |
+            from lstm.data_manipulator import load_data
+            from lstm.lstm_model import build_model, save_model_json
+            
+            data = load_data('preprocessed_data.json')
+            model = build_model(data["data"],
+                                  {{inputs.parameters.hnodes}},
+                                  {{inputs.parameters.dropout}})
+            save_model_json(model, 'model.json')
+
+      # This section is where output artifacts are listed. They must be listed here, or else they will get deleted when the template completes. They must be under the `app` directory in order to be saved.
+    outputs:
+      artifacts:
+      - name: model
+        path: /app/model.json
+```
+- `train-model.yaml`:
+```YAML
+# Every template YAML file must begin with a `spec`, without which your template won't compile.
+spec:
+
+  # The `templates` section is where you list one or more templates
+  templates:
+
+  # This is the name of the template, which is used to reference it in the workflow. This field is required.
+  - name: train-model
+
+    # `generic-task` is the supertemplate that all templates (that don't contain a `steps` section) must inherit from
+    parent: generic-task
+
+    # This section is for the inputs needed to run the template. This section is required.
+    inputs:
+
+      # `parameters` represent initialization values for a template. 
+      parameters:
+      - name: docker-image
+        value: z-ml
+      - name: docker-tag
+        value: latest
+
+      # The `command` parameter is required because that is what is run by `generic-task`.
+      - name: command
+        value: python3 main.py
+
+      - name: nepochs
+        # This value acts as a default but can be overridden in the workflow
+        value: 30
+      - name: batch-size
+        value: 32
+      - name: val-split
+        value: 0.1
+      - name: learning-rate
+        value: 0.01
+
+      # This section creates a script called `main.py` containing the code below under `data`. It must be under the `app` directory in order for the command above to locate it.
+      artifacts:
+      - name: model
+        path: /app/model.json
+      - name: training-data
+        path: /app/training_data.json
+      - name: main-script
+        path: /app/main.py
+        raw:
+          data: |
+            from lstm.data_manipulator import load_data
+            from lstm.lstm_model import load_model_json, train_model, save_loss_history, save_model_json
+            
+            data = load_data('training_data.json')
+            model = load_model_json('model.json')
+            history, model = train_model(model,
+                                  data["data"],
+                                  {{inputs.parameters.nepochs}},
+                                  {{inputs.parameters.batch-size}},
+                                  {{inputs.parameters.val-split}},
+                                  {{inputs.parameters.learning-rate}})
+            save_loss_history(history, 'history.json')
+            save_model_json(model, 'trained_model.json')
+
+      # This section is where output artifacts are listed. They must be listed here, or else they will get deleted when the template completes. They must be under the `app` directory in order to be saved.
+    outputs:
+      artifacts:
+      - name: trained-model
+        path: /app/trained_model.json
+      - name: history
+        path: /app/history.json
+```
+- `predict-using-model.yaml`:
+```YAML
+# Every template YAML file must begin with a `spec`, without which your template won't compile.
+spec:
+
+  # The `templates` section is where you list one or more templates
+  templates:
+
+  # This is the name of the template, which is used to reference it in the workflow. This field is required.
+  - name: predict-using-model
+
+    # `generic-task` is the supertemplate that all templates (that don't contain a `steps` section) must inherit from
+    parent: generic-task
+
+    # This section is for the inputs needed to run the template. This section is required.
+    inputs:
+
+      # `parameters` represent initialization values for a template. 
+      parameters:
+      - name: docker-image
+        value: z-ml
+      - name: docker-tag
+        value: latest
+
+      # The `command` parameter is required because that is what is run by `generic-task`.
+      - name: command
+        value: python3 main.py
+
+      # This section creates a script called `main.py` containing the code below under `data`. It must be under the `app` directory in order for the command above to locate it.
+      artifacts:
+      - name: model
+        path: /app/model.json
+      - name: testing-data
+        path: /app/testing_data.json
+      - name: main-script
+        path: /app/main.py
+        raw:
+          data: |
+            from lstm.data_manipulator import load_data, save_data
+            from lstm.lstm_model import load_model_json, predict
+
+            data = load_data('testing_data.json')
+            model = load_model_json('model.json')
+            predictions = predict(model, data["data"])
+            save_data([predictions], ['predictions.json'])
+
+      # This section is where output artifacts are listed. They must be listed here, or else they will get deleted when the template completes. They must be under the `app` directory in order to be saved.
+    outputs:
+      artifacts:
+      - name: predictions
+        path: /app/predictions.json
+```
 
 **5. Commit and push your resource**
 
