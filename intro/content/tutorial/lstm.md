@@ -16,7 +16,7 @@ The RNN model may be considered a computational black box that takes in a number
 
 In order for the model to learn it is required to specify a *Loss function*, to measure the deviation between the predicted values of the model and the real ones, and an *Optimizer* as the computational object to drive the search aims to minimize that deviation. As loss function it is used a mean squared error (MSE), and an extension of stochastic gradient descent, Adam, as optimizer. Below is the MSE loss function, and the snippet of the code to build the model.
 
-![](../img/MSE_LossFunction.png)
+![](../img/MSE_LossFunc.png)
 
 
 ```python
