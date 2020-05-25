@@ -23,9 +23,6 @@ const footerNavConfig = {
     target: '_blank',
     rel: 'noopener noreferrer'
   },
-  Contribute: {
-    href: 'https://www.orquestra.io/docs/community/'
-  },
   Events: {
     href: 'https://www.zapatacomputing.com/events/',
     target: '_blank',
