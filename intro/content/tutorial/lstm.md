@@ -1,6 +1,6 @@
 ---
 title: 4.  Prediction with LSTM
-description:  Prediction of a noisy sine function by means of Recurrent Neural Networks
+description:  Prediction of a noisy sine function by means of Recurrent Neural Networks.
 ---
 
 ## Introduction
