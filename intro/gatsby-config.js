@@ -23,9 +23,6 @@ const footerNavConfig = {
     target: '_blank',
     rel: 'noopener noreferrer'
   },
-  Contribute: {
-    href: 'https://www.orquestra.io/docs/community/'
-  },
   Events: {
     href: 'https://www.zapatacomputing.com/events/',
     target: '_blank',
@@ -54,7 +51,7 @@ module.exports = {
         logoLink: 'https://www.orquestra.io/docs/',
         sidebarCategories: {
           null: ['index','basics/platform','basics/why-workflows', 'basics/glossary'],
-          Tutorial: ['tutorial/helloworkflow','tutorial/hydrogen-vqe','tutorial/qcbm', 'tutorial/qaoa', 'tutorial/lstm'],
+          Tutorial: ['tutorial/helloworkflow','tutorial/hydrogen-vqe','tutorial/qcbm', 'tutorial/qaoa'],
           Resources: ['quantum-resources/interfaces', 'quantum-resources/variational_loop'],
         }
       }
