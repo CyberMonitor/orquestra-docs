@@ -22,15 +22,26 @@ The generated data looks like the plot below:
     
 ![](../img/SineFunc.png)
 
-From this raw dataset it is built the series of (input, output) pairs for supervising learning in the following manner:
+These raw data will be later on splitted in training and testing datasets, and both of them will be subjected to an operation that create the pair values of (input, output) of the supervised problem. On this respect, the x-values (inputs) correspond to a time rolling window of specified length, and the y-values (outputs) to the next value to be predicted. Below there is a snippet of the code realizing that operation.
+
+The series of (input, output) pairs for supervising learning are built in the following manner:
 - Select a *lookback window* value, which will represent the number of previous time steps values that will be used as infomation for predicting the bext value.
 - Create x-values: split up the data in batches of size the *lookback window* above in a rolling window manner across all available data.
 - Create y-values: pick up the next timestep value data for each of the batches of size *lookback window* above.
 
 You can find a snippet of the code to generate the series of (input, output) pairs.
 
-![](../img/Lookback_Code.png)
+```python
 
+  # Create pairs of a window of data and the next value after the window
+  xs, ys = [], []
+  for i in range(len(x) - window_size):
+      v = x.iloc[i:(i + window_size)].values
+      xs.append(v)
+      ys.append(y.iloc[i + window_size])
+
+    return np.array(xs), np.array(ys)
+```
 
 ## Neural Network Model
 The RNN model may be considered a computational black box that takes in a number of sequential values within a lookback window of values and forecast the next value. In this exercise the type of RNN used is that of LSTM, which is explicitly designed to capture long-term dependencies in sequential problems. Below there is an schematic ilustration of the computation that each LSTM represents.
@@ -109,18 +120,15 @@ To train the model the full original dataset is first divided into training and 
 ![](../img/TrainTest.png)
 
 
-After splitting the data, both training and testing datasets are subjected to an operation that create the pair values of (input, output) of a supervised problem. On this respect, the x-values (inputs) correspond to a time rolling window of specified length, and the y-values (outputs) to the next value to be predicted. Below there is a snippet of the code realizing that operation.
+Below shows a snippet of the code realizing that splitting operation of the raw data into training and test.
 
 ```python
-
-  # Create pairs of a window of data and the next value after the window
-  xs, ys = [], []
-  for i in range(len(x) - window_size):
-      v = x.iloc[i:(i + window_size)].values
-      xs.append(v)
-      ys.append(y.iloc[i + window_size])
-
-    return np.array(xs), np.array(ys)
+# Splitting up dataset into Training and Testing datsets
+#   trainperc: percentage of raw dataset to go to training set
+#   dfsize: size of raw dataset
+train_size = int(dfsize * trainperc)
+test_size = dfsize - train_size
+train, test = df.iloc[0:train_size], df.iloc[train_size:dfsize]
 ```
 
 ## Plotting Prediction vs Test values
