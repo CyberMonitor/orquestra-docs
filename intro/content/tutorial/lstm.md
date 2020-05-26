@@ -78,7 +78,7 @@ It is also possible to plot the model by means of importing package `from tensor
 
 ![](../img/ModelPlot.png)
 
-The meaning of the numbers in parenthesis is the following:
+The meaning of the values in parenthesis is the following:
 - `(?, 10, 1)`: the first location corresponds to the number of training dataset, and `?` states that the number is open, and does not need to be explicitly stated; the second position is the *lookback window*, which in this problem was set up to 10; finally, the third position means the number of input sequences, which it is just 1 in this problem.
 - `(?, 128)`: the first position corresponds, as above, to the number of training dataset; and the second position to the number of neurons in the layer, i.e. 128 LSTM neurons on this hidden layer of the problem.
 - `(?, 1))`: the first position, as above, is the number of training dataset; and the second corresponds to the number of output neurons, in this case just 1, as the model predicts only one value, i.e. the next time step value.
