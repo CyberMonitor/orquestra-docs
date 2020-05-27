@@ -7,18 +7,18 @@ description: The shareable units of Orquestra
 
 Resources are the building blocks for your workflows. They define what tasks you are able to perform and what data you will produce.
 
-By incorporating source code into a _resource_, it becomes easily usable and shareable within Orquestra. Through the use of _resources_, we hope to make it as easy as possible to navigate the minefield of bringing your own source code into harmony with others'.  
+By incorporating source code into a _resource_, it becomes easily usable and shareable within Orquestra. Through the use of _resources_, we hope to make it as easy as possible to navigate the minefield of bringing your own source code into harmony with others'.
 
-## What is a resource? 
+## What is a resource?
 
-You can think of resources as the "libraries" available in your workflow. A resource is made of two components: 
+You can think of resources as the "libraries" available in your workflow. A resource is made of two components:
 
 1. The **source code** that will be executed at the runtime of a step inside an Orquestra workflow - this can contain one or more functions that take in input parameters and data and produce output data
 2. The **template** that you can access in your workflow - it wraps your source code, making it "callable" from within your workflow
 
 ### Source Code
 
-The *source code* for a resource is exactly that: it contains all the code to run the process you want. This code will typically be a set of functions that take in inputs and then produce output objects that can be serialized into [artifact(s)](https://www.orquestra.io/docs/dcs/data/artifacts/). 
+The *source code* for a resource is exactly that: it contains all the code to run the process you want. This code will typically be a set of functions that take in inputs and then produce output objects that can be serialized into [artifact(s)](https://www.orquestra.io/docs/dcs/data/artifacts/).
 
 ###### Note: Currently, new resources must use Python 3.7 source code to be natively supported in Orquestra, however we will be expanding this support to other languages in the future.
 
@@ -46,14 +46,14 @@ An example of the full structure of a resource is below:
 ```bash
 .
 ├── README.md
-├── <font color="green"><b>src</b></font>
+├── src
 │   ├── README.md
-│   ├── <font color="green"><b>python</b></font>
-│   │   └── <font color="green"><b>orquestra</b></font>
+│   ├── python
+│   │   └── orquestra
 │   │       ├── __init__.py
 │   │       └── welcome.py
 │   └── setup.py
-└── <font color="green"><b>templates</b></font>
+└── templates
     └── hello.yaml
 ```
 
@@ -83,11 +83,11 @@ setuptools.setup(
 )
 ```
 
-For clarity, in this example: 
+For clarity, in this example:
 - `name` is the name of your package which you can reference in your template
-- `packages` tells the installer to look for a subdirectory called `python` 
+- `packages` tells the installer to look for a subdirectory called `python`
 which contains your source code
-- `package_dir` allows the contents of the `python` directory to be imported 
+- `package_dir` allows the contents of the `python` directory to be imported
 without the python path prefix, for example, with `from orquestra import all`
 
 For more information regarding how to make your source code available as a `package`, please refer to the [setuptools documentation](https://setuptools.readthedocs.io/en/latest/setuptools.html#developer-s-guide).
