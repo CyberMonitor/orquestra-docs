@@ -3,7 +3,7 @@ title: The Orquestra Platform
 description: How Orquestra helps you go from zero to hero with workflows
 ---
 
-Orquestra is dedicated to making writing and deploying workflows simple, shareable, and scalable to meet the needs of scientists and developers. It encourages an incremental approach that allows for swappable simulators and hardware backends, enabling collaboration to utilize best-of-breed quantum systems.
+Orquestra is dedicated to making, writing, and deploying workflows simple, shareable, and scalable to meet the needs of scientists and developers. It encourages an incremental approach that allows for swappable simulators and hardware backends, enabling collaboration to utilize best-of-breed quantum systems.
 
 Orquestra can be used as a new layer in your stack that sits between your infrastructure and your applications. It's a combination of open source components, commercial extensions, and cloud services.
 
@@ -13,7 +13,7 @@ The figure below shows the major components of Orquestra and how they work toget
 
 ![Orquestra Layers](../img/orquestra-overview.svg)
 
-Workflows are the blueprint for your experiment - describing which algorithms to run under which conditions. The Quantum Engine uses your workflows as step-by-step instructions in order to run your experiment, generate and process your data, and produce results for data analysis.
+Workflows are the blueprint for your experiment. They describe which algorithms to run under which conditions. The Quantum Engine uses your workflows as step-by-step instructions to run your experiment, generate and process your data, and produce results for data analysis.
 
 ### Workflows
 
