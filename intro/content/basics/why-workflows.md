@@ -9,7 +9,7 @@ Adopting workflows in your organization will ease these pain points considerably
 
 ## What are workflows?
 
-Workflows are text files that specify a sequence of actions necessary to go from nothing to results of scientific and business value. Orquestra's Quantum Engine uses these workflows as a set of instructions to execute your experiment - allowing you go from an idea to a set of results as quickly and easily as possible. 
+Workflows are text files that specify a sequence of actions necessary to go from nothing to results of scientific and business value. Orquestra's Quantum Engine uses these workflows as a set of instructions to execute your experiment - allowing you go from an idea to a set of results as quickly and easily as possible.
 
 ## Why workflows?
 
@@ -21,11 +21,9 @@ Using workflows in your organization via the Orquestra platform can help you dis
 
 Developing your workflow with the Orquestra platform gives you access to modern tooling that helps you uncover bugs quickly, gain visibility into your processes, and realize deeper insight into your data with confidence.
 
-[Orquestra ToolKit](https://github.com/zapatacomputing/zapos-workflow-toolkit) is the only tool in the workflow ecosystem that can provide instant visualization of your workflow. ToolKit displays tasks, artifacts, and the linkage between them, helping you pinpoint bugs and understand performance implications of a step in the workflow.
-
 ### Declarative workflow expression
 
-One of the main advantages of adopting workflows is their declarative approach to expressing a process. No longer will there be numerous files being moved around across virtual machines, HPC clusters, and containers. It is a common situation for scientists and engineers to spend whole days, if not weeks, managing these activities. With these tasks fully automated, the time is brought down to minutes. 
+One of the main advantages of adopting workflows is their declarative approach to expressing a process. No longer will there be numerous files being moved around across virtual machines, HPC clusters, and containers. It is a common situation for scientists and engineers to spend whole days, if not weeks, managing these activities. With these tasks fully automated, the time is brought down to minutes.
 
 With a workflow, there's no need to configure an environment for each step within a process, move code into each step, execute it, and finally aggregate the data manually. Instead, from a high-level, you specify the task you need in your workflow and the Quantum Engine orchestrates how that task meshes with the rest of your workflow.
 
