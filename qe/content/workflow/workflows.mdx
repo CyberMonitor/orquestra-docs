@@ -5,7 +5,7 @@ description: An overview of Orquestra workflows
 
 ## Overview
 
-Workflows are the language used to provide the Quantum Engine step-by-step instructions of which actions to perform on which data. 
+Workflows are the language used to provide the Quantum Engine step-by-step instructions of which actions to perform on which data.
 
 As explained in [Why Workflows?](https://orquestra.io/docs/basics/why-workflows/), here at Zapata we have found workflows to be a naturally expressive, easily extensible, and highly shareable means to perform our scientific experiments. With Orquestra, we hope to create a community of scientists and developers alike that will enable everyone to make quicker discoveries and achieve **real** value.
 
@@ -31,13 +31,13 @@ kind: Workflow
 
 ### Resources
 
-Resources contain the definitions and implementations of the functions that one can perform from within a workflow. To learn more about what comprises a resource and how to build one yourself, check out out the [Resources](https://orquestra.io/docs/qe/definingaworkflow/resources) page.
+Resources contain the definitions and implementations of the functions that one can perform from within a workflow. To learn more about what comprises a resource and how to build one yourself, check out out the [Resources](https://www.orquestra.io/docs/qe/workflow/resources/) page.
 
 To use a resource, there must be a reference to it in the `resources` section of your workflow. References to resources have 3 required fields:
 - `name`: this is the name of your resource and the way you can reference a
 given resource in your `step` declaration
 - `type`: currently only `git` resource types are supported
-- `parameters`: this is a list of various parameters specific to the type of 
+- `parameters`: this is a list of various parameters specific to the type of
 resource.
 
 For a `git` resource, there are two required fields under `parameters`:
@@ -58,7 +58,7 @@ resources:
 
 ### Metadata
 
-Each workflow run in Orquestra is assigned a randomly generated workflow ID. For the sake of clarity and record keeping, the `generateName` key inside of the `metadata` block allows you to set the prefix of each workflow ID. 
+Each workflow run in Orquestra is assigned a randomly generated workflow ID. For the sake of clarity and record keeping, the `generateName` key inside of the `metadata` block allows you to set the prefix of each workflow ID.
 
 ```YAML
 # Data to help you easily work with your workflow
@@ -72,7 +72,7 @@ Using this example workflow, a possible workflow ID would be: `welcome-to-orques
 
 ### Spec
 
-The `spec` block of the workflow file contains the majority of the information regarding the execution process defined by the workflow. This section contains 3 main components: 
+The `spec` block of the workflow file contains the majority of the information regarding the execution process defined by the workflow. This section contains 3 main components:
 1. `entrypoint`
 2. `arguments`
 3. `templates`
@@ -81,7 +81,7 @@ Below, we will describe what each component is responsible for.
 
 #### Entrypoint
 
-The `entrypoint` key is simple. It tells the Quantum Engine which template your workflow starts with. 
+The `entrypoint` key is simple. It tells the Quantum Engine which template your workflow starts with.
 
 In the example below, the `entrypoint` is set to `saluations`, indicating that the workflow begins with the `salutations` template.
 
@@ -95,7 +95,7 @@ spec:
 
 #### Arguments
 
-Inside of the `arguments` section of the `spec`, we have a set of "workflow parameters" that we can both create and define. 
+Inside of the `arguments` section of the `spec`, we have a set of "workflow parameters" that we can both create and define.
 
 These "workflow parameters" can be thought of as global parameters for the workflow and can be referenceed in any `step` using the syntax: `{{workflow.parameters.<parameter name>}}`.
 
@@ -121,17 +121,17 @@ spec:
 
 #### Templates
 
-The `templates` block is the most important section of a workflow. This is where you define the step-by-step instructions of your workflow for the Quantum Engine to execute. 
+The `templates` block is the most important section of a workflow. This is where you define the step-by-step instructions of your workflow for the Quantum Engine to execute.
 
-In this section, we define two new terms: `templates` and `steps`. 
-Although similar, there are both semantic and syntactical 
-differences between the two. 
+In this section, we define two new terms: `templates` and `steps`.
+Although similar, there are both semantic and syntactical
+differences between the two.
 
-- A `template` is the like definition of a function - it defines the inputs, 
-outputs, and series of instructions to be performed. 
+- A `template` is the like definition of a function - it defines the inputs,
+outputs, and series of instructions to be performed.
 
-- In contrast, a `step` is the invocation of a `template`, passing objects and 
-parameter values to the `template` to be executed. 
+- In contrast, a `step` is the invocation of a `template`, passing objects and
+parameter values to the `template` to be executed.
 
 For further distinction between the two, please refer to the [Templates page](https://www.orquestra.io/docs/qe/workflow/templates/) and the [Steps page](https://www.orquestra.io/docs/qe/workflow/steps/).
 
