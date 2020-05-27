@@ -29,12 +29,12 @@ Using either the GitHub UI or by cloning your repo and using the command line, c
 
 def create_diatomic_molecule_geometry(species1, species2, bond_length):
     """Create a molecular geometry for a diatomic molecule.
-    
+
     Args:
         species1 (str): Chemical symbol of the first atom, e.g. 'H'.
         species2 (str): Chemical symbol of the second atom.
         bond_length (float): bond distance.
-        
+
     Returns:
         dict: a dictionary containing the coordinates of the atoms.
     """
@@ -88,8 +88,8 @@ spec:
             from diatomicmolecule import create_diatomic_molecule_geometry
             geometry = create_diatomic_molecule_geometry('{{inputs.parameters.species1}}',
                                                          '{{inputs.parameters.species2}}',
-                                                         {{inputs.parameters.bond-length}}) 
-            
+                                                         {{inputs.parameters.bond-length}})
+
             geometry['schema'] = "molecular_geometry"
             with open('molecule.json', 'w') as f:
               f.write(json.dumps(geometry))
@@ -98,7 +98,7 @@ spec:
       - name: geometry
         path: /app/molecule.json
 ```
- 
+
 **5. Commit and push your resource**
 
 Commit your changes and push them to GitHub.
@@ -236,14 +236,14 @@ Created:             Tue Apr 07 17:35:31 +0000 (2 minutes ago)
 Started:             Tue Apr 07 17:35:31 +0000 (2 minutes ago)
 Finished:            Tue Apr 07 17:37:45 +0000 (41 seconds ago)
 Duration:            2 minutes 14 seconds
-Parameters:          
+Parameters:
   s3-bucket:         quantum-engine
   s3-key:            tutorials/hartree-fock/
 
 STEP                                               STEPNAME                        DURATION  MESSAGE
- ✔ hartree-fock-4772f (run-h2)                                                              
- ├---✔ create-molecule (create-diatomic-molecule)  hartree-fock-4772f-1985307964  19s       
- └---✔ run-psi4 (run-psi4)                         hartree-fock-4772f-1924622246  1m  
+ ✔ hartree-fock-4772f (run-h2)
+ ├---✔ create-molecule (create-diatomic-molecule)  hartree-fock-4772f-1985307964  19s
+ └---✔ run-psi4 (run-psi4)                         hartree-fock-4772f-1924622246  1m
  ```
 
 This output shows the status of the execution of the steps in your workflow.
@@ -252,7 +252,7 @@ This output shows the status of the execution of the steps in your workflow.
 
 To get the results of your workflow, run `qe get workflowresult <workflow-ID>` with your workflow ID.
 
-After a workflow runs, it takes time for the data to be processed. This results file cannot be created until the data is done being processed. You can try running the above command every few minutes until it returns a link to download a file. 
+After a workflow runs, it takes time for the data to be processed. This results file cannot be created until the data is done being processed. You can try running the above command every few minutes until it returns a link to download a file.
 
 Once finished, the output will look like the following:
 ```Bash
@@ -565,22 +565,65 @@ To see details of the execution of your workflow, run `qe get workflow <workflow
 
  The output will look like:
 ```Bash
-Name:                welcome-to-orquestra-d9djf
+Name:                h2-example-pgjqn
 Namespace:           default
 ServiceAccount:      default
 Status:              Succeeded
-Created:             Thu Mar 19 21:14:33 +0000 (5 minutes ago)
-Started:             Thu Mar 19 21:14:33 +0000 (5 minutes ago)
-Finished:            Thu Mar 19 21:19:49 +0000 (19 seconds ago)
-Duration:            5 minutes 16 seconds
+Created:             Wed May 27 20:01:14 +0000 (13 minutes ago)
+Started:             Wed May 27 20:01:14 +0000 (13 minutes ago)
+Finished:            Wed May 27 20:14:15 +0000 (53 seconds ago)
+Duration:            13 minutes 1 seconds
 Parameters:
   s3-bucket:         quantum-engine
-  s3-key:            tutorials/welcome/
+  s3-key:            projects/examples/hydrogen/data
+  docker-image:      z-quantum-default
+  docker-tag:        latest
 
-STEP                                         STEPNAME                                DURATION  MESSAGE
- ✔ welcome-to-orquestra-d9djf (salutations)
- ├---✔ greeting (welcome-to-orquestra)       welcome-to-orquestra-d9djf-2235995037  5m
- └---✔ transform-welcome (z-transformation)  welcome-to-orquestra-d9djf-1289017430  13s
+STEP                                          TEMPLATE                        STEPNAME                      DURATION  MESSAGE
+ ✔ h2-example-pgjqn                           basis-set-loop
+ └---✔ bond-length-loop(0:STO-3G)             bond-length-loop
+     └-·-✔ run-h2(0:0.5)                      run-h2
+       | ├---✔ create-molecule                create-diatomic-molecule        h2-example-pgjqn-459287451   13s
+       | ├---✔ run-psi4                       run-psi4                        h2-example-pgjqn-3701025175  1m
+       | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-pgjqn-227587627   39s
+       | ├---✔ build-vqe-circuit-template     build-vqe-circuit-template      h2-example-pgjqn-2915280385  4m
+       | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-pgjqn-1258479298  18s
+       | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-pgjqn-277052611   5m
+       ├-✔ run-h2(1:0.6)                      run-h2
+       | ├---✔ create-molecule                create-diatomic-molecule        h2-example-pgjqn-3859637789  17s
+       | ├---✔ run-psi4                       run-psi4                        h2-example-pgjqn-2429965665  1m
+       | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-pgjqn-1835944885  1m
+       | ├---✔ build-vqe-circuit-template     build-vqe-circuit-template      h2-example-pgjqn-1962660295  52s
+       | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-pgjqn-2820032448  25s
+       | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-pgjqn-2019040637  1m
+       ├-✔ run-h2(2:0.7)                      run-h2
+       | ├---✔ create-molecule                create-diatomic-molecule        h2-example-pgjqn-2056975651  16s
+       | ├---✔ run-psi4                       run-psi4                        h2-example-pgjqn-3288310255  2m
+       | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-pgjqn-1414541955  27s
+       | ├---✔ build-vqe-circuit-template     build-vqe-circuit-template      h2-example-pgjqn-2657700217  36s
+       | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-pgjqn-1647483866  22s
+       | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-pgjqn-1326408107  1m
+       ├-✔ run-h2(3:0.8)                      run-h2
+       | ├---✔ create-molecule                create-diatomic-molecule        h2-example-pgjqn-2149814865  27s
+       | ├---✔ run-psi4                       run-psi4                        h2-example-pgjqn-2559710341  1m
+       | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-pgjqn-1140246545  1m
+       | ├---✔ build-vqe-circuit-template     build-vqe-circuit-template      h2-example-pgjqn-1795518539  4m
+       | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-pgjqn-3399831252  20s
+       | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-pgjqn-408735425   1m
+       ├-✔ run-h2(4:0.9)                      run-h2
+       | ├---✔ create-molecule                create-diatomic-molecule        h2-example-pgjqn-1553207875  32s
+       | ├---✔ run-psi4                       run-psi4                        h2-example-pgjqn-3522094607  1m
+       | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-pgjqn-2104670115  4m
+       | ├---✔ build-vqe-circuit-template     build-vqe-circuit-template      h2-example-pgjqn-2453503897  37s
+       | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-pgjqn-3758409978  3m
+       | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-pgjqn-2209202635  1m
+       └-✔ run-h2(5:1)                        run-h2
+         ├---✔ create-molecule                create-diatomic-molecule        h2-example-pgjqn-2628476742  1m
+         ├---✔ run-psi4                       run-psi4                        h2-example-pgjqn-1014206440  1m
+         ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-pgjqn-3314116694  30s
+         ├---✔ build-vqe-circuit-template     build-vqe-circuit-template      h2-example-pgjqn-3876819994  41s
+         ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-pgjqn-1434761943  19s
+         └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-pgjqn-1218854764  1m
 ```
 
 This output shows the status of the execution of the steps in your workflow.
@@ -589,7 +632,7 @@ This output shows the status of the execution of the steps in your workflow.
 
 To get the results of your workflow, run `qe get workflowresult <workflow-ID>` with your workflow ID.
 
-After a workflow runs, it takes time for the data to be processed. This results file cannot be created until the data is done being processed. You can try running the above command every few minutes until it returns a link to download a file. 
+After a workflow runs, it takes time for the data to be processed. This results file cannot be created until the data is done being processed. You can try running the above command every few minutes until it returns a link to download a file.
 
 Once finished, the output will look like the following:
 ```Bash
