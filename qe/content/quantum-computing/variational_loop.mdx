@@ -43,7 +43,7 @@ The `optimize-variational-circuit` template requires the following inputs:
   - `initial-parameters` (artifact)
   - `qubit-operator` (artifact)
 
-`backend-specs` and `optimizer-specs` are dictionaries which specify what backend and optimizer will be used. You can read more about them on the [integrations page](https://www.orquestra.io/docs/qe/quantum_resources/integrations).
+`backend-specs` and `optimizer-specs` are dictionaries which specify what backend and optimizer will be used. You can read more about them on the [interfaces page](https://www.orquestra.io/docs/qe/quantum-computing/interfaces/).
 
 `ansatz` corresponds to a dictionary representing given ansatz. Such dictionary should have the following fields (though it may have additional fields):
   - `ansatz_type` - specifies what type of the ansatz we want to used
@@ -57,45 +57,48 @@ The `optimize-variational-circuit` template requires the following inputs:
 
 ### Python code
 
-To better understand how variational loop can be implemented in Orquestra, you can look at a basic implementation in [`optimize_variational_circuit`](https://github.com/zapatacomputing/z-quantum-optimizers/blob/master/src/python/zquantum/optimizers/variational_circuits.py):
+To better understand how variational loop can be used inside the template, take a look at the python code inside the [optimize-variational-circuit](https://github.com/zapatacomputing/z-quantum-optimizers/blob/master/templates/optimizers.yaml) (slightly simplified for clarity):
 
 ```python
-from zquantum.core.circuit import build_ansatz_circuit
-from qeopenfermion import evaluate_qubit_operator
-import copy
+import os
+from zquantum.optimizers.utils import save_optimization_results
+from zquantum.core.cost_function import EvaluateOperatorCostFunction
+from zquantum.core.circuit import load_circuit_template, load_circuit_template_params, save_circuit_template_params
+from qeopenfermion import load_qubit_operator
+from zquantum.core.utils import create_object
+import json
 
-def optimize_variational_circuit(ansatz, operator, initial_params,
-    backend, optimizer):
-    def get_cost_function(target_operator):
-        # 1. Define cost function
-        def cost_function(params):
-            circuit = build_ansatz_circuit(ansatz, params)
+# 1. Load the input data
+ansatz = load_circuit_template('ansatz.json')
+initial_parameters = load_circuit_template_params('initial_parameters.json')
+operator = load_qubit_operator('qubitop.json')
 
-            # 2. Get simplified operator
-            operator_no_coeff = copy.deepcopy(target_operator)
-            for term in target_operator.terms:
-                operator_no_coeff.terms[term] = 1
-            # 3. Calculate expectation values
-            expectation_values = backend.get_expectation_values(circuit, operator_no_coeff)
-            # 4. Get value estimate
-            value_estimate = evaluate_qubit_operator(target_operator, expectation_values)
-            return value_estimate.value
+# 2. Define optimizer
+optimizer_specs = {'module_name': 'zquantum.optimizers.scipy_optimizer', 'function_name': 'ScipyOptimizer', 'method': 'L-BFGS-B'}
+optimizer = create_object(optimizer_specs)
 
-        return cost_function
-    # 5. Create cost function object for given operator
-    cost_function = get_cost_function(operator)
-    # 6. Find optimal parameters
-    optimization_results = optimizer.minimize(cost_function, initial_params)
-    return optimization_results
+# 3. Define backend
+backend_specs = {'module_name': 'qeqhipster.simulator', 'function_name': 'QHipsterSimulator'}
+backend = create_object(backend_specs)
+
+# 4. Define cost function
+cost_function = EvaluateOperatorCostFunction(operator, ansatz, backend)
+
+# 5. Find the optimal parameters
+opt_results = optimizer.minimize(cost_function, initial_parameters)
+
+# 6. Save the results
+save_optimization_results(opt_results, 'optimization-results.json')
+save_circuit_template_params(opt_results.opt_params, 'optimized_parameters.json')
 ```
 
 Let's see what happens in each step:
 
-1. Define a cost function which depends only on the parameters.
-2. Create a simplified operator with the same terms but all the coefficients equal to one.
-3. Pass circuit and simplified operator to the backend to get the expectation values.
-4. Calculate value estimate for the target operator given the expectation values for the simplified one.
-5. Instantiate the cost_function function.
-6. Find parameters which minimize the cost function using given optimizer.
+1. Load input objects from files to python objects.
+2. Type and parameters of the optimizer are specified by entries in the dictionary and the python object conforming to this specification is created.
+3. Type and parameters of the backend are specified by entries in the dictionary and the python object conforming to this specification is created.
+4. A cost function object is created. Since we want to find parameters of the ansatz which minimize the expectation value of the operator, we use `EvaluateOperatorCostFunction`, designed for that purpose.
+5. Uses objects defined earlier to find the optimal parameters
+6. Saves the results of the optimization to the files.
 
-It's worth noting that in principle steps 2 and 4 could be omitted and performing step 3 for `target_operator` would suffice. However, in some cases, we might have multiple operators with the same structure but different coefficients. In such cases extending this procedure would save many calls to backend.
+The whole variational loops happens in step 5 and is handled by the optimizer.

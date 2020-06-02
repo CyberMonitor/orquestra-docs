@@ -1,6 +1,6 @@
 ---
 title: Interfaces
-description: Integrating a backend or optimizer with Orquestra
+description: Integrating external code with Orquestra
 ---
 
 ## Introduction
@@ -11,21 +11,18 @@ One of the biggest strengths of Orquestra is its modularity. Integrating new bac
 
 Orquestra interfaces are defined in the [`z-quantum-core` repository](https://github.com/zapatacomputing/z-quantum-core/tree/master/src/python/zquantum/core/interfaces).
 
-
-Orquestra defines the following interfaces:
+Right now Orquestra defines the following interfaces:
 - `QuantumBackend`
 - `QuantumSimulator` (subclass of `QuantumBackend`)
 - `Optimizer`
+- `CostFunction`
 
 ## Integrating Backends & Optimizers
 
-### How to integrate your own backend / optimizer
-In order to integrate a new quantum backend or optimizer into Orquestra you need to create a class which inherits after `QuantumBackend`/`QuantumSimulator` or `Optimizer`.
-All you need to do is just implement the methods specified by the interface. In some cases implementing a new backend might also require installing additional software and therefore need a special docker container to work.
+### How to integrate your own code
+In order to integrate code which fits the some of the interfaces, you need to create a class which inherits after appropriate interface. All you need to do is just implement the methods specified by the interface. In some cases implementing a new backend might also require installing additional software and therefore need a special docker container to work.
 
-With optimizers, the object return should be of type `scipy.optimize.OptimizeResult` and needs to have the following fields:
-- `opt_value`: the optimal value of the cost function
-- `opt_params`: parameters corresponding to the `opt_value`.
+
 
 ### Using integration
 
@@ -72,11 +69,11 @@ For example, for the `MockSimulator` it might look like this:
 
 ### Integrated backends
 
-Each hardware integrate lives in a separate repository:
+Each backend integration lives in a separate repository:
 
 - [qHiPSTER](https://github.com/zapatacomputing/qe-qhipster)
-- Forest QVM (pending)
-- qulacs (pending)
+- [Forest QVM](https://github.com/zapatacomputing/qe-forest)
+- [qulacs](https://github.com/zapatacomputing/qe-qulacs)
 
 
 ### Integrated optimizers
@@ -86,3 +83,13 @@ All the currently implemented optimizers live in the [z-quantum-optimizers repos
 - grid search - brute-force approach checking all the values from a grid.
 - scipy optimizers - integration with `scipy.minimize` optimizers.
 - CMA-ES - Covariance Matrix Adaptation Evolution Strategy
+
+
+### Cost functions
+
+In Orquestra we also have interfaces for the cost functions that are being minimized by the optimizers.
+
+Right now the following cost functions are implemented in Orquestra:
+- [`BasicCostFunction`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/cost_function.py) – it allows to use an arbitrary python function as cost function we want to minimize.
+- [`EvaluateOperatorCostFunction`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/cost_function.py) - cost function which evaluates an operator using given ansatz and backend, useful for variational quantum algorithms.
+- [`QCBMCostFunction`](https://github.com/zapatacomputing/z-quantum-qcbm/blob/master/src/python/zquantum/qcbm/cost_function.py) - similar to the `EvaluateOperatorCostFunction`, but tuned towards the Quantum Circuit Born Machine algorithm.

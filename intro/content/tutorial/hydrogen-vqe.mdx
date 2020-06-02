@@ -474,9 +474,9 @@ spec:
           - species1: H
           - species2: H
           - bond-length: '{{inputs.parameters.bond-length}}'
-          - resources: [diatomic-molecule]
-          - docker-image: z-quantum-default
-          - docker-tag: latest
+          - resources: [z-quantum-core, diatomic-molecule]
+          - docker-image: "{{workflow.parameters.docker-image}}"
+          - docker-tag: "{{workflow.parameters.docker-tag}}"
 
     - - name: run-psi4
         template: run-psi4
@@ -678,7 +678,7 @@ for task in data:
         geometry = data[interaction_op_creator]['inputArtifact:geometry']
         geometry_creator = geometry.split('/')[0]
         bond_lengths.append(float(data[geometry_creator]['inputParam:bond-length']))
-        energies.append(data[task]['optimization-results']['fun'])
+        energies.append(data[task]['optimization-results']['opt_value'])
         basis_sets.append(data[interaction_op_creator]['inputParam:basis'])
 
 # Group the bond lengths and energies according to the basis set, and sort by
