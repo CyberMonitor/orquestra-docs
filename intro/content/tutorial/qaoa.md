@@ -523,7 +523,7 @@ To monitor the progress run `qe get workflow <workflow-ID>` and once it's ready 
 
 * Copy the python script below into the same directory as the JSON file.
 * In the python script, replace the name of the JSON file with the name of the JSON file that you have downloaded.
-* Run the python script to plot the calculated binding energy curve.
+* Run the python script to plot the optimization trajectories. 
 
 
 ```python
