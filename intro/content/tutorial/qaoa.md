@@ -30,7 +30,7 @@ In this tutorial we will see how to solve this problem using layer-by-layer opti
 
 **1. Building workflow**
 
-Let's start from the ready-to-go workflow. Just copy the workflow below and save it in `qaoa_lbl_example.yaml` file. In the following sectiosn we will explain what the steps in this workflow mean. You can also find this workflow [here](https://github.com/zapatacomputing/z-quantum-qaoa/blob/stable/examples/qaoa_lbl_example.yaml).
+Let's start from the ready-to-go workflow. Just copy the workflow below and save it in `qaoa_lbl_example.yaml` file. In the following sectiosn we will explain what the steps in this workflow mean. You can also find this workflow [here](https://github.com/zapatacomputing/z-quantum-qaoa/blob/master/examples/qaoa_lbl_example.yaml).
 
 ```yaml
 ZapOSApiVersion: v1alpha1
@@ -41,27 +41,27 @@ resources:
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/z-quantum-core.git"
-    branch: "stable"
+    branch: "master"
 - name: z-quantum-qaoa
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/z-quantum-qaoa.git"
-    branch: "stable"
+    branch: "master"
 - name: z-quantum-optimizers
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/z-quantum-optimizers.git"
-    branch: "stable"
+    branch: "master"
 - name: qe-qhipster
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/qe-qhipster.git"
-    branch: "stable"
+    branch: "master"
 - name: qe-openfermion
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/qe-openfermion.git"
-    branch: "stable"
+    branch: "master"
 
 
 metadata:
@@ -90,16 +90,6 @@ spec:
             - docker-tag: "{{workflow.parameters.docker-tag}}"
     - - name: get-maxcut-hamiltonian
         template: get-maxcut-hamiltonian
-        arguments:
-          parameters:
-          - resources: [z-quantum-core, qe-openfermion, z-quantum-qaoa]
-          - docker-image: "{{workflow.parameters.docker-image}}"
-          - docker-tag: "{{workflow.parameters.docker-tag}}"
-          artifacts:
-          - graph:
-              from: '{{steps.generate-graph.outputs.artifacts.graph}}'
-      - name: solve-maxcut-by-exhaustive-search
-        template: solve-maxcut-by-exhaustive-search
         arguments:
           parameters:
           - resources: [z-quantum-core, qe-openfermion, z-quantum-qaoa]
@@ -391,27 +381,27 @@ resources:
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/z-quantum-core.git"
-    branch: "stable"
+    branch: "master"
 - name: z-quantum-qaoa
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/z-quantum-qaoa.git"
-    branch: "stable"
+    branch: "master"
 - name: z-quantum-optimizers
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/z-quantum-optimizers.git"
-    branch: "stable"
+    branch: "master"
 - name: qe-qhipster
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/qe-qhipster.git"
-    branch: "stable"
+    branch: "master"
 - name: qe-openfermion
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/qe-openfermion.git"
-    branch: "stable"
+    branch: "master"
 
 metadata:
   generateName: qaoa-example-
