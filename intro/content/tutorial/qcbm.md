@@ -595,7 +595,7 @@ resources:
 - name: qcbm
   type: git
   parameters:
-    url: <your-github-username>/<your-git-repo-name>
+    url: "git@github.com:<your-github-username>/<your-git-repo-name>.git"
     branch: "master"
 - name: z-quantum-optimizers
   type: git
