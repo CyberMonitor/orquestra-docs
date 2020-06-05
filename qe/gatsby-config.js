@@ -70,6 +70,7 @@ module.exports = {
             'machine-learning/ml'
           ],
           'Quantum Computing':[
+            'quantum-computing/resources',
             'quantum-computing/interfaces',
             'quantum-computing/variational_loop',
           ]
