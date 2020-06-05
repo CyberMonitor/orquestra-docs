@@ -595,7 +595,7 @@ resources:
 - name: qcbm
   type: git
   parameters:
-    url: "git@github.com:mstechly/qcbm-test.git"
+    url: <your-github-username>/<your-git-repo-name>
     branch: "master"
 - name: z-quantum-optimizers
   type: git
@@ -640,7 +640,7 @@ spec:
           - min-val: "-1.57"
           - max-val: "1.57"
           - resources: [z-quantum-core, qcbm]
-          - docker-image: z-quantum-default
+          - docker-image: "{{workflow.parameters.docker-image}}"
     - - name: optimize-circuit
         template: optimize-variational-qcbm-circuit
         arguments:
@@ -653,7 +653,7 @@ spec:
           - optimizer-specs: "{'module_name': 'zquantum.optimizers.cma_es_optimizer', 'function_name': 'CMAESOptimizer', 'options': {'popsize': 5, 'sigma_0': 0.1, 'tolx': 1e-6}}"
           # - optimizer-specs: "{'module_name': 'zquantum.optimizers.scipy_optimizer', 'function_name': 'ScipyOptimizer', 'method': 'L-BFGS-B'}"
           - resources: [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-forest, qcbm]
-          - docker-image: z-quantum-default
+          - docker-image: "{{workflow.parameters.docker-image}}"
           - memory: 2048Mi
           artifacts:
           - initial-parameters:
