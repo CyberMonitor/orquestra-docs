@@ -52,7 +52,7 @@ where the **x**'s represent the set of values of size *lookback window* that cor
 
 Therefore, the idea of an RNN model as a computational black box can be substantiated by looking at the NN model as a machine accepting a series of inputs, **x**'s, to produce an output **y**.
 
-The model here used consists of a neural network with a single hidden layer of *LSTM* neurons and a final *Dense* layer for the output, where *Dense* in this context means that all neurons from the previous layer are connected to the current one. In this case, the output layer with one single neuron, which corresponds to the **y** predicted value. Additionally, to prevent overfitting in the training process, a [*Dropout*] (http://www.cs.toronto.edu/~rsalakhu/papers/srivastava14a.pdf) operation is added to the LSTM layer, which can be seen as a form of regularization.
+The model here used consists of a neural network with a single hidden layer of *LSTM* neurons and a final *Dense* layer for the output, where *Dense* in this context means that all neurons from the previous layer are connected to the current one. In this case, the output layer with one single neuron, which corresponds to the **y** predicted value. Additionally, to prevent overfitting in the training process, a [*Dropout*](http://www.cs.toronto.edu/~rsalakhu/papers/srivastava14a.pdf) operation is added to the LSTM layer, which can be seen as a form of regularization.
 
 The code to create the model reads as follows:
 
