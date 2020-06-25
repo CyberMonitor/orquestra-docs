@@ -868,7 +868,7 @@ spec:
         path: /app/training_data_windows.json
       - name: testing-data-windows
         path: /app/testing_data_windows.json
-`"
+```
 
 - `build-model.yaml`:
 ```YAML
