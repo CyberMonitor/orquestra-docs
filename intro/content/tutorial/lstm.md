@@ -84,7 +84,7 @@ After having created the model, it is possible to print out its main characteris
 
 ![](../img/Model_Summary.png)
 
-It is also possible to plot the model by means of importing package `from tensorflow.keras.utils import plot_model`, and by usng the command `plot_model({your_model_name}, to_file='{plot_name}.png', `
+It is also possible to plot the model by means of importing package `from tensorflow.keras.utils import plot_model`, and by using the command `plot_model({your_model_name}, to_file='{plot_name}.png', `
 `how_shapes=True, show_layer_names=False)`. The output for this model is shown below:
 
 ![](../img/ModelPlot.png)
@@ -94,28 +94,28 @@ The meaning of the values in parenthesis is the following:
 - `(?, 128)`: the first position corresponds, as above, to the number of training dataset; and the second position to the number of neurons in the layer, i.e. 128 LSTM neurons on this hidden layer of the problem.
 - `(?, 1))`: the first position, as above, is the number of training dataset; and the second corresponds to the number of output neurons, in this case just 1, as the model predicts only one value, i.e. the next time step value.
 
-Now, it can be stated how the NN model can be used to solve the supervised learning problem in hand:
+Now, it can be stated how the RNN model can be used to solve the supervised learning problem in hand:
 - Initialize the values of all the parameters involved in the RNN model
-- Using a value, **x**, from each of the values on the left side in (input, output) pairs in the dataset
-- Passing that input into the NN model produces a *predicted* value, **y**, out of it
-- Compares the predicted **y** value from with the **y** value from the right side in the pairs (input, output) in the dataset, and compute the error between them
+- Use a value, **x**, from each of the values on the left side in (input, output) pairs in the dataset
+- Pass that input into the RNN model produces a *predicted* value, **y**, out of it
+- Compare the predicted **y** value from with the **y** value from the right side in the pairs (input, output) in the dataset, and compute the error between them
 - Update the parameters of the model in order to minimize (optimize) the error computed above
 
-Therefore, to complete the model, and in order to enable it to learn from data, it is required to specify a *Loss function*, which measures the deviation between the predicted values of the model and the ground truth values (the **y**'s from the dataset pairs), and an *Optimizer* as the computational object to drive the search in paraneter space aims to minimize that deviation. In the implementation for this problem ss loss function it is used a *mean squared error (MSE)* function, and an extension of stochastic gradient descent, named *Adam*, as optimizer. Below is the MSE loss function, and the snippet of the code to build the model.
+Therefore, to complete the model, and to enable it to learn from data, it is required to specify a *Loss function*, which measures the deviation between the predicted values of the model and the ground truth values (the **y** values from the dataset pairs), and an *Optimizer* as the computational object to drive the search in parameter space aims to minimize that deviation. In the implementation for this problem, we use the a *mean squared error (MSE)* as the loss function, and an extension of stochastic gradient descent, named *Adam*, as optimizer. Below is the MSE loss function, and the snippet of the code to build the model.
 
 ![](../img/MSE_LossFunc.png)
 
-The model may save its architecture and weights as a JSON file, which enables it to be utilized a posteriori as a black-box predictor, or even as initialization condition for further training, as in the case of *transfer learning*, for instance.
+As part of this tutorial, we save the model's architecture and weights as a JSON file. This allows us to use this model as an Orquestra artifact which can be later utilized a posteriori as a black-box predictor, or even as initialization condition for further training, as in the case of *transfer learning*, for instance.
 
 ## Test-Train Split
 
 To train the model the full original dataset is first divided into training and testing sets, where the first dataset will be used for training the model, and the second one to check the generalization capability of the model. In general terms:
 
-- *Train dataset* is used to train the model, i.e. weights and biases in the LSTM layers. The model learns from this data.
+- The *train dataset* is used to train the model, i.e. weights and biases in the LSTM layers. The model learns from this data.
 
-- *Valuation dataset* it is a percentage of the training dataset used to provide an unbiased evaluation of the model along the training process, and it is a means to assess a potential overfitting of the model. This percentage value is a hyperparameter of the model, which in our example is initially set up to 0.1, i.e. 10% of the training data.
+- The *valuation dataset* is a percentage of the training dataset used to provide an unbiased evaluation of the model along the training process, and it is a means to assess a potential overfitting of the model. This percentage value is a hyperparameter of the model, which in our example is initially set up to 0.1, i.e. 10% of the training data.
 
-- *Test dataset* is used to provide an unbiased evaluation of the model. It is only used once a model is completely trained.
+- The *test dataset* is used to provide an unbiased evaluation of the model. It is only used once a model is completely trained.
 
 ![](../img/TrainTest.png)
 
@@ -131,8 +131,8 @@ test_size = dfsize - train_size
 train, test = df.iloc[0:train_size], df.iloc[train_size:dfsize]
 ```
 
-## Plotting Prediction vs Test values
-Below it is shown a plot representing the training history, i.e. the Loss function (MSE), defined at the time of model compilation above, for both during validation and training stages. It can be noted that the validation error is less than the training error, which can be understood as the training error is calculated for the entire epoch - where at its begining is worse than at the end -, whereas the validation error is taken from the last batch  -after the model is improved by the training process.
+## Plotting prediction vs test values
+Below it is shown a plot representing the training history, i.e. the loss function (MSE), defined at the time of model compilation above, for both during validation and training stages. It can be noted that the validation error is less than the training error, which can be understood as the training error is calculated for the entire epoch - where at its beginning is worse than at the end -, whereas the validation error is taken from the last batch  -after the model is improved by the training process.
 
 ![](../img/CostFunction.png)
 
@@ -141,7 +141,7 @@ Below it is shown a plot representing the training history, i.e. the Loss functi
 In the next steps it will be stated the code necessary to build and train this RNN model in Orquestra. The code consists of the following main parts:
 - `generate-data.yaml`: generates the dataset and runs the entire workflow.
 - `data_manipulator.py`: builds and preprocesses the data.
-- `lstm_model.py`: builds and trains the Network model.
+- `lstm_model.py`: builds and trains the network model.
 
 **1. Create a GitHub repository**
 
