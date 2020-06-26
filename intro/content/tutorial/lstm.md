@@ -67,7 +67,7 @@ def build_model(hnodes=32, dropout=0.2):
         input_shape=(xtrain.shape[1], xtrain.shape[2])
     ))
 
-    # Adding Dropuut
+    # Adding dropout
     model.add(keras.layers.Dropout(dropout))
 
     # Adding a Dense layer at the end
@@ -123,7 +123,7 @@ To train the model the full original dataset is first divided into training and 
 Below is a snippet of the code implementing the splitting operation of the raw data into training and test.
 
 ```python
-# Splitting up dataset into Training and Testing datsets
+# Splitting up dataset into training and testing datsets
 #   trainperc: percentage of raw dataset to go to training set
 #   dfsize: size of raw dataset
 train_size = int(dfsize * trainperc)
