@@ -1059,15 +1059,15 @@ The structure of your repository should look like this:
 ```
 .
 ├── src
-│   ├── python/lstm
-│   │   ├── data_manipulator.py
-│   │   └── lstm_model.py
-│   └── setup.py
+│   ├── python/lstm
+│   │   ├── data_manipulator.py
+│   │   └── lstm_model.py
+│   └── setup.py
 └── templates
-    └── generate-data.yaml
-    └── preprocess-data.yaml
-    └── build-model.yaml
-    └── train-model.yaml
+    └── generate-data.yaml
+    └── preprocess-data.yaml
+    └── build-model.yaml
+    └── train-model.yaml
 ```
 
 **6. Building a Workflow**

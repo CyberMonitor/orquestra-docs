@@ -51,7 +51,8 @@ module.exports = {
         logoLink: 'https://www.orquestra.io/docs/',
         sidebarCategories: {
           null: ['index','basics/platform','basics/why-workflows', 'basics/glossary'],
-          Tutorial: ['tutorial/helloworkflow','tutorial/hydrogen-vqe','tutorial/qcbm', 'tutorial/qaoa'],
+          Tutorial: ['tutorial/helloworkflow','tutorial/hydrogen-vqe','tutorial/qcbm', 'tutorial/qaoa', 'tutorial/lstm' ],
+          Resources: ['quantum-resources/interfaces', 'quantum-resources/variational_loop'],
         }
       }
     }
