@@ -50,7 +50,7 @@ RNNs model may be considered a computational black box that takes in a number of
 
 
 
-where the **x**'s represent the set of values of size *lookback window* that corresponds to the input data, and the **h**'s are the state values of the neurons in the RNN layer, which summarize the information from all the previous steps within the lookback window seen thus far. Please note that, as is standard practice, the initialization of the hidden layer output is set up to zero, i.e., `h_0 = 0`. Last, **y** represents the output data to be predicted.
+where the **x**'s represent the set of values of size *lookback window* that corresponds to the input data, and the **h**'s are the state values of the neurons in the RNN layer, which summarize the information from all the previous steps within the lookback window seen thus far. Please note that, as is standard practice, the initialization of the hidden layer output is set up to zero, i.e., `h0 = 0`. Last, **y** represents the output data to be predicted.
 
 
 Therefore, the idea of an RNN model as a computational black box can be substantiated by looking at the NN model as a machine accepting a series of inputs, **x**'s, to produce an output **y**.
