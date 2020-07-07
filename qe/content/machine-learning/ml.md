@@ -18,6 +18,8 @@ The following libraries are included in Zapata's Machine Learning Image:
 - torch v1.3.0
 - gym v0.16.0
 - tensorboard v2.1.1
+- gpyopt v1.2.6
+- cvxopt v1.2.5
 
 ## Using the image
 
