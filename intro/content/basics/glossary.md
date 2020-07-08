@@ -19,3 +19,4 @@ description: A list of helpful definitions for Orquestra
 - `Workflow Parameter`: A parameter which can be referred to anywhere inside of the workflow. 
 - `Entrypoint`: The template that is called when the workflow begins.
 - `generateName`: A string that is used as a prefix for the generation of the `workflowID` and `stepID`'s associated with the given workflow.
+- `quantum-engine-uri`: A link to the server where your `Quantum Engine` is
