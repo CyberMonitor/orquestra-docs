@@ -11,24 +11,10 @@ pygmentsUseClasses = true
 # See https://gohugo.io/content-management/summaries/
 summaryLength = 30
 
-[[menu.main]]
-    name = "Home"
-    url = "/"
-    weight = 1
-
-[[menu.main]]
-    name = "Docs"
-    url = "/docs/"
-    weight = 2
-
-[[menu.main]]
-    name = "Docs 2"
-    url = "/docs_2/"
-    weight = 3
 
 [params]
   google_analytics_id=""
-  homepage_button_link = '/qe_basics'
+  homepage_button_link = '/basics/'
   homepage_button_text = 'Read The Docs'
   homepage_intro = 'Whisper is a documentation theme built with Hugo. The design and functionality is intentionally minimal.'
   homepage_image = '/images/terminal.gif'
@@ -50,3 +36,6 @@ summaryLength = 30
   [params.logo]
       mobile = "/images/logo-mobile.svg"
       standard  = "/images/logo.svg"
+
+[markup.goldmark.renderer]
+unsafe= true

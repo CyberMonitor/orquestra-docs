@@ -13,5 +13,5 @@ Orquestra workflows allow you to combine tasks, algorithms, libraries, and tools
 repeatable experiments. Workflows can be used alongside your existing code (e.g. a Jupyter notebook),
 letting you build complex workflows over time.
 
-<<HELP ME MAKE A BUTTON FOR WORKFLOWS>>
-<<HELP ME MAKE A BUTTON FOR PLATFORM>>
+<a class="button button-primary mb-2" href="/">Start the tutorial!</a>
+<a class="button button-primary mb-2" href="/">Learn More</a>
