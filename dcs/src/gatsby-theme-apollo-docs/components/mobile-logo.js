@@ -1,1 +1,0 @@
-export {ReactComponent as MobileLogo} from '../../../static/orquestra-logo.svg';
