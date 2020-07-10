@@ -1,0 +1,14 @@
+{{$currentNode := .}}
+<div class="docs-menu">
+  {{ range .Site.Sections }}
+  <h4>{{ .Section | humanize | title }}</h4>
+  <ul>
+    {{ range where .Site.RegularPages "Section" .Section }}
+    <li class="{{ if eq .File.UniqueID $currentNode.File.UniqueID }}active {{ end }}">
+      <a href="{{ .Permalink }}">{{ .Title }}</a>
+    </li>
+    {{ end }}
+  </ul>
+  <br/>
+  {{ end }}
+</div>
