@@ -1,8 +1,11 @@
 .docs-menu {
-    h4 {
+    h4, h5{
       text-align: left;
       font-size: 1rem;
       font-weight: bold;
+    }
+    h5{
+      color: $black;
     }
     ul {
       text-align: left;
