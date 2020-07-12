@@ -6,3 +6,8 @@ package-lock.json
 .cache/
 node_modules/
 public/
+
+### Hugo ###
+# Generated files by hugo
+hugo/public/
+hugo/resources/_gen/
