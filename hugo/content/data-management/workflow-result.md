@@ -1,6 +1,7 @@
 ---
-title: Fetching Data
-description: How to view and analyze workflow results in JSON format.
+title: Workflow Result
+description: View and analyze workflow results in JSON format
+weight: 4
 ---
 
 ## Workflow Results via JSON

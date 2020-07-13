@@ -1,19 +1,12 @@
 ---
-title: Data Management
-description: Transformation of output data for data analysis.
+title: Data Aggregation
+description: Transformation of workflow artifacts for further data analysis
+weight: 3
 ---
-
-## Correlation
-
-Correlation is one of the main two data management functions of Orquestra.
-
-The function of correlation is to collect output [artifacts](/data/artifacts/) from a workflow execution, create [task data objects](/data/taskdataobjects/), and persist both the artifacts and task data objects for subsequent processing.
-
-When workflows finish running, their output artifacts are automatically correlated by Orquestra.
 
 ## Aggregation
 
-Aggregation is one of the main two data management functions of Orquestra.
+Aggregation is one of the two main data management functions of Orquestra.
 
 The function of aggregation is to transform all of the [artifacts](/data/artifacts/) from one execution of a workflow into a format that is cohesive and suitable for data analysis.
 

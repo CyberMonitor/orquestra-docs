@@ -1,6 +1,6 @@
 ---
-title: Data
-description: 
+title: Workflow Artifacts
+description: Input and output of data from steps of a workflow
 weight: 1
 ---
 ## Artifacts
@@ -13,8 +13,8 @@ By bundling data into artifacts, outputs of one task in a workflow can be sent a
 Artifacts are also key components of a workflow results file as described on [the aggregation page](/data/aggregation/).
 
 
-## Task Data Objects
+## Task Artifact
 
-A **Task Data Object** is a unit of data that contains information about one task that was run by a workflow. It is created by the [correlation](/data/correlation/) process.
+A **Task Artifact** is a special type of artifact that contains information about one task that was run by a workflow. It is created by the [correlation](/data/correlation/) process.
 
 Tasks are also key components of a workflow results file as described on [the aggregation page](/data/aggregation/).
