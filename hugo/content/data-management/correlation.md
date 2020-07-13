@@ -1,6 +1,6 @@
 ---
 title: Data Correlation
-description: The process of correlating workflow outputs for further analysis
+description: Linking together workflow outputs for further analysis
 weight: 2
 ---
 
