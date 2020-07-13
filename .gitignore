@@ -1,13 +1,13 @@
 .DS_Store
 
 # node
-npm-debug.log
-package-lock.json
-.cache/
-node_modules/
-public/
+v0/npm-debug.log
+v0/package-lock.json
+v0/.cache/
+v0/node_modules/
+v0/public/
 
 ### Hugo ###
 # Generated files by hugo
-hugo/public/
-hugo/resources/_gen/
+v1/public/
+v1/resources/_gen/
