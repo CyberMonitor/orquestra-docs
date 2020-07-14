@@ -4,8 +4,6 @@ summary: Start here to learn how to build workflows with Orquestra.
 weight: 1
 ---
 
-## Introduction
-
 This tutorial will cover the key components in a Quantum Engine workflow and walk you through the process of building your first workflow.
 
 ## Concepts

@@ -4,8 +4,6 @@ summary: Calculate the equilibrium bond length of H₂ with a variational quantu
 weight: 2
 ---
 
-## Introduction
-
 This tutorial will walk through using Quantum Engine to use the Variational Quantum Eigensolver (VQE) to calculate the binding energy curve of a H₂ molecule.
 
 ## Composing a workflow to calculate the Hartree-Fock energy

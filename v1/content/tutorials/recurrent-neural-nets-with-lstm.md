@@ -4,8 +4,6 @@ summary: Prediction of a noisy sine function by means of Recurrent Neural Networ
 weight: 3
 ---
 
-## Introduction
-
 This tutorial will walk through the implementation of a neural network model that can learn how to reconstruct the shape of a noisy sine function using *Recurrent Neural Networks (RNNs)*.
 
 RNNs are one of the canonical approaches for dealings with sequence problems since they can retain the state from one iteration to the next by using their own output as additional input for the next step, i.e., the input for RNNs correspond to the data and the state of the network one previous step. Simple RNNs suffer from the fundamental problem of not being able to capture long-term dependencies in a sequence, and to tackle that issue in the late '90s, the so-called Long Short-Term Memory networks (LSTMs) were proposed by [**Sepp Hochreiter** and **Jurgen Schmidhuber**](https://www.mitpressjournals.org/doi/abs/10.1162/neco.1997.9.8.1735). This exercise will make use of LSTMs as neurons type in the model.

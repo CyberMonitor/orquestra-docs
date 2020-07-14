@@ -4,8 +4,6 @@ summary: Generate the Bars and Stripes dataset  utilizing a quantum distribution
 weight: 4
 ---
 
-## Introduction
-
 This tutorial will walk through an implementation of a quantum circuit Born machine (QCBM) using Quantum Engine to find a distribution that generates the Bars and Stripes (BAS) dataset that fit in a 2 × 2 pixel image.
 
 ## The quantum circuit Born machine

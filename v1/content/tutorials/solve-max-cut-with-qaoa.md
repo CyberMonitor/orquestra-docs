@@ -6,8 +6,6 @@ summary: Learn how to find the maximum cut whose size is at least the size of an
 weight: 5
 ---
 
-## Introduction
-
 This tutorial will walk through using Quantum Engine to use Quantum Approximate Optimization Algorithm to solve MaxCut problem and use different optimizers to solve it.
 
 In addition to that we'll cover some advanced workflow features (e.g. recursive tasks) and using Orquestra interfaces.
