@@ -14,8 +14,10 @@ summaryLength = 30
 
 [params]
   google_analytics_id=""
-  homepage_button_link = '/basics/'
-  homepage_button_text = 'Read The Docs'
+  homepage_button_link1 = '/tutorials/hello-workflow/'
+  homepage_button_text1 = 'Start the tutorial'
+  homepage_button_link2 = '/getting-started/platform-overview/'
+  homepage_button_text2 = 'Learn More'
   homepage_intro = 'Whisper is a documentation theme built with Hugo. The design and functionality is intentionally minimal.'
   homepage_image = '/images/terminal.gif'
 
