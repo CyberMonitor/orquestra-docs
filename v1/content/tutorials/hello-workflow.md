@@ -1,7 +1,5 @@
 ---
 title: "Hello Workflow"
-date: 2020-07-10T14:19:38-04:00
-draft: false
 summary: Start here to learn how to build workflows with Orquestra.
 weight: 1
 ---

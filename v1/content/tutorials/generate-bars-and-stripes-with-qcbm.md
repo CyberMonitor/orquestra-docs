@@ -1,8 +1,7 @@
 ---
 title: "Generate Bars and Stripes With QCBM"
-date: 2020-07-10T14:27:18-04:00
-draft: false
 summary: Generate the Bars and Stripes dataset  utilizing a quantum distribution obtained from a Quantum Circuit Born Machine
+weight: 4
 ---
 
 ## Introduction

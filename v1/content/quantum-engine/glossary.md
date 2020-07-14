@@ -3,7 +3,7 @@ title: "Glossary"
 date: 2020-07-10T14:14:06-04:00
 summary: A list of helpful definitions for Orquestra
 draft: false
-weight: 4
+weight: 5
 ---
 - `Workflow`: An instruction pattern of steps to be performed that is easily reproduceable, distributed, and shareable. 
 - `workflowID`: A randomly generated string that is used as an identifier for a specific run of a workflow. Although not guaranteed to be unique, the chance of two repeated workflowIDs is negligible. 

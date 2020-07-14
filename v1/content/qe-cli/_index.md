@@ -1,9 +1,10 @@
 ---
-title: Install
-description: The first step to using Orquestra
-weight: 1
+title: 'QE CLI'
+date: 
+weight: 2
 ---
 
+# Installing the QE CLI
 
 The first step to getting started with Orquestra is to install the `qe` CLI tool. 
 

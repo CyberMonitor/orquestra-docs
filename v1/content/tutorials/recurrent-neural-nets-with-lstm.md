@@ -1,7 +1,7 @@
 ---
 title: "Recurrent Neural Networks with LSTM"
-date: 2020-07-10T14:22:32-04:00
-draft: Prediction of a noisy sine function by means of Recurrent Neural Networks
+summary: Prediction of a noisy sine function by means of Recurrent Neural Networks
+weight: 3
 ---
 
 ## Introduction

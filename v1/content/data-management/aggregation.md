@@ -1,7 +1,7 @@
 ---
 title: Data Aggregation
 description: Transformation of workflow artifacts for further data analysis
-weight: 3
+weight: 100
 ---
 
 ## Aggregation
