@@ -15,4 +15,4 @@ Orquestra has two distinct functions that it performs on workflow data: correlat
 - The function of [correlation](data/correlation/) is to collect output artifacts from a workflow execution, create task data objects, and persist both the artifacts and task data objects for subsequent processing.
 - The function of [aggregation](data/aggregation/) is to transform all of the artifacts from one execution of a workflow into a format that is suitable for data analysis. The format of the output is described in more detail on [the workflow results as JSON page](/data/json/).
 
-![Data management](./img/dataintro4.png)
+![Data management](../img/dataintro4.png)

@@ -10,10 +10,8 @@
   {{ .Content }}
 </div>
 
-{{ if not .Content}}
 {{ range.Pages }}
 
 {{ .Render "summary" }}
-{{ end }}
 {{ end }}
 {{ end }}
