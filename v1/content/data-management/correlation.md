@@ -1,7 +1,7 @@
 ---
 title: Data Correlation
-description: Linking together workflow outputs for further analysis
-weight: 100
+summary: Linking workflow outputs together for further analysis
+weight: 2
 ---
 
 ## Correlation

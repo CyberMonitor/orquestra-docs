@@ -1,6 +1,6 @@
 ---
 title: 'Steps' 
-description: The functional units of Orquestra
+summary: The functional units of Orquestra.
 weight: 4
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: Resources
-description: The shareable units of Orquestra
+summary: Resources are one of the key building blocks of an Orquestra workflow and allow you to resuse common components and integrations.
 weight: 2
 ---
 

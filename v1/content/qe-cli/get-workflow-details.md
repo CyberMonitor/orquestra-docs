@@ -1,6 +1,6 @@
 ---
 title: Get Workflow Details
-description: How to get a detailed visual output of your workflow execution
+summary: Check in on the status of your workflow in the quantum engine
 weight: 4
 ---
 

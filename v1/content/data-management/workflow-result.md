@@ -1,7 +1,7 @@
 ---
 title: Workflow Result
-description: View and analyze workflow results in JSON format
-weight: 100
+summary: View and analyze workflow results in JSON format
+weight: 4
 ---
 
 ## Workflow Results via JSON

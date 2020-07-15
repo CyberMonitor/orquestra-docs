@@ -1,6 +1,6 @@
 ---
 title: Workflow Basics
-description: An overview of Orquestra workflows
+summary: An overview of Orquestra workflows.
 weight: 1
 ---
 

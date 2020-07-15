@@ -1,6 +1,6 @@
 ---
 title: Get Logs
-description: How to get a logs from your workflow execution
+summary: Retrieving error logs from your workflow execution
 weight: 6
 ---
 

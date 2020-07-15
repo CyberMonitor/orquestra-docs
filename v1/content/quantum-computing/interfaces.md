@@ -1,14 +1,12 @@
 ---
 title: Interfaces
-description: Integrating external code with Orquestra
+summary: Orquestra Interfaces allow you to integrate workflows across quantum backends, simulators, optimizers and cost functions.
 weight: 2
 ---
 
-## Introduction
-
 One of the biggest strengths of Orquestra is its modularity. Integrating new backends, optimizers, compilers, etc. does not require changing the core code – it requires only creating a new module that conforms to existing interfaces and therefore can be used across the whole platform.
 
-### Interfaces in Orquestra
+## Interfaces in Orquestra
 
 Orquestra interfaces are defined in the [`z-quantum-core` repository](https://github.com/zapatacomputing/z-quantum-core/tree/master/src/python/zquantum/core/interfaces).
 

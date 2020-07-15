@@ -1,6 +1,6 @@
 ---
 title: 'Docker Images'
-description: Access libraries in workflow steps
+summary: Docker Images are used in workflow steps to give your scripts access to library dependencies and tools/
 weight: 5
 ---
 

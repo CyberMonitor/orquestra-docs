@@ -1,6 +1,6 @@
 ---
 title: Workflow Submission
-description: How to run workflows on the Quantum Engine
+summary: Submit workflows to the Quantum Engine for execution
 weight: 3
 ---
 

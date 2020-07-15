@@ -1,6 +1,6 @@
 ---
 title: Install
-description: Install the Quantum Engine CLI to interface with Orquestra
+summary: Install the Quantum Engine CLI to interface with Orquestra
 weight: 1
 ---
 

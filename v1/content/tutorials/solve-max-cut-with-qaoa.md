@@ -2,7 +2,7 @@
 title: "Solve Max Cut With QAOA"
 date: 2020-07-10T14:25:20-04:00
 draft: false
-summary: Learn how to find the maximum cut whose size is at least the size of any other cut using the Quantum Approximate Optimization Algorithm
+summary: Find the maximum cut whose size is at least the size of any other cut using the Quantum Approximate Optimization Algorithm
 weight: 5
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: Get Workflow Results
-description: How to get the results of your workflow
+summary: Getting the results of your completed workflow
 weight: 5
 ---
 

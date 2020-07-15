@@ -1,6 +1,6 @@
 ---
 title: Logging In
-description: How to log in to Quantum Engine
+summary: Use the QE CLI to access the Quantum Engine
 weight: 2
 ---
 

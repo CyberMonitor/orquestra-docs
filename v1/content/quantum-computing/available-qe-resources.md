@@ -1,8 +1,11 @@
 ---
 title: Available QE resources
-description: List of open-source Quantum Engine resources.
-weight: 1
+summary: List of open-source Quantum Engine resources.
+weight: 4
 ---
+
+The following QE resources are available for workflow authors:
+
 - [pl-qe](https://github.com/XanaduAI/pl-qe): Integration with PennyLane.
 - [qe-forest](https://github.com/zapatacomputing/qe-forest): Integration with pyquil and the Rigetti circuit simulator.
 - [qe-openfermion](https://github.com/zapatacomputing/qe-openfermion): integration with OpenFermion.

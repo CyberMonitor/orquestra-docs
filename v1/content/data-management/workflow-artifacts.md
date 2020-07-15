@@ -1,7 +1,7 @@
 ---
 title: Workflow Artifacts
-description: Input and output of data from steps of a workflow
-weight: 100
+summary: Input and output of data from steps of a workflow
+weight: 3
 ---
 ## Artifacts
 
