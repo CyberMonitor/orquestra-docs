@@ -10,7 +10,7 @@ Aggregation is one of the two main data management functions of Orquestra.
 
 The function of aggregation is to transform all of the [artifacts](/data/artifacts/) from one execution of a workflow into a format that is cohesive and suitable for data analysis.
 
-## **Format of Aggregation Result**
+## Format of Aggregation Result
 
 The top level of a workflow result file has [task data objects](/data/taskdataobjects/). Each task is labeled uniquely by its ID. To retrieve the IDs corresponding to tasks run in a workflow, run
 
