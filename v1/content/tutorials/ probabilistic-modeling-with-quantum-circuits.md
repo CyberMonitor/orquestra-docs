@@ -1,6 +1,6 @@
 ---
-title: "Generate Bars and Stripes With QCBM"
-summary: Generate the Bars and Stripes dataset  utilizing a quantum distribution obtained from a Quantum Circuit Born Machine.
+title: " Probabilistic Modeling with Quantum Circuits"
+summary: Find a quantum distribution which generates the Bars and Stripes dataset with a Quantum Circuit Born Machine.
 weight: 4
 ---
 This tutorial will walk through an implementation of a quantum circuit Born machine (QCBM) using Quantum Engine to find a distribution that generates the Bars and Stripes (BAS) dataset that fit in a 2 × 2 pixel image.
