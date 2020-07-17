@@ -13,7 +13,7 @@ Orquestra can be used as a new layer in your stack that sits between your infras
 
 The figure below shows the major components of Orquestra and how they work together.
 
-![Orquestra Layers](../../img/orquestra-overview.svg)
+![Orquestra Layers](/img/orquestra-overview.svg)
 
 Workflows are the blueprint for your experiment. They describe which algorithms to run under which conditions. The Quantum Engine uses your workflows as step-by-step instructions to run your experiment, generate and process your data, and produce results for data analysis.
 
