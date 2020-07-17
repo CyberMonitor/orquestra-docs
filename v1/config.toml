@@ -18,22 +18,22 @@ summaryLength = 30
   homepage_button_text1 = 'Start the tutorial'
   homepage_button_link2 = '/getting-started/platform'
   homepage_button_text2 = 'Learn More'
-  homepage_intro = 'Whisper is a documentation theme built with Hugo. The design and functionality is intentionally minimal.'
+  homepage_intro = 'Orquestra is a platform for building repeatable workflows, orchestrated by a quantum engine that systematically organizes experiment data and resources.'
   homepage_image = '/images/terminal.gif'
 
   ## You can enable to add anchor links to header elements
   # enable_anchor_link = true
 
   [params.homepage_meta_tags]
-    meta_description = "Hugo Whisper is a documentation theme built with Hugo."
-    meta_og_title = "Hugo Whisper Theme"
+    meta_description = "Orquestra is a platform for building repeatable workflows, orchestrated by a quantum engine that systematically organizes experiment data and resources."
+    meta_og_title = "Orquestra Docs"
     meta_og_type = "website"
-    meta_og_url = "https://hugo-whisper.netlify.com"
-    meta_og_image = "https://raw.githubusercontent.com/JugglerX/hugo-whisper-theme/master/images/tn.png"
-    meta_og_description = "Hugo Whisper is a documentation theme built with Hugo."
+    meta_og_url = "http://orquestra.io/docs/"
+    meta_og_image = "https://raw.githubusercontent.com/zapatacomputing/orquestra-docs/master/v1/static/orquestra-logo.svg"
+    meta_og_description = "Orquestra is a platform for building repeatable workflows, orchestrated by a quantum engine that systematically organizes experiment data and resources."
     meta_twitter_card = "summary"
-    meta_twitter_site = "@zerostaticio"
-    meta_twitter_creator = "@zerostaticio"
+    meta_twitter_site = "@ZapataComputing"
+    meta_twitter_creator = "@ZapataComputing"
 
   [params.logo]
       mobile = "/orquestra-logo-mobile.svg"
