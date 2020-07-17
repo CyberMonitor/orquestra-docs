@@ -9,7 +9,7 @@
 
 ### Build
 * `cd` into `v1` folder
-* Run `hugo server -D` to render markdown
+* Run `hugo server -D --baseURL ""` to render markdown
 
 Server should now be running and servring on localhost. Default path is http://localhost:1313/
 
