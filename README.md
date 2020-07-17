@@ -1,28 +1,15 @@
 # Orquestra Documentation
-
-This is where you will find the documentation for Orquestra documentation and the [orquestra.io/docs](http://orquestra.io/docs/) website. Docs are powered by [Gatsby.js engine](https://www.gatsbyjs.org/)
+- The deployed and up to date site is found under `v1` and is deployed with [Hugo](https://gohugo.io/). 
+- The previous version which is deployed with [Gatsby JS](https://www.gatsbyjs.org/) can be found under `v0`.
 
 ## Building Docs Locally
 
-### Prerequisites
-
-* [nodejs](https://nodejs.org) v10+
-* [npm](https://www.npmjs.com) v6+
-* [Gatsby JS](https://www.gatsbyjs.org) v2.20+
+### Pre-requisites
+* [Hugo](https://gohugo.io/getting-started/installing/) (latest) 
 
 ### Build
+* `cd` into `v1` folder
+* Run `hugo server -D` to render markdown
 
-* `cd` into one into the content directories e.g. `intro`
-* `npm install`
-* `gatsby develop`
+Server should now be running and servring on localhost. Default path is http://localhost:1313/
 
-The site is now running locally at http://localhost:8000/ 
-
-### CI/CD
-CI pipeline is found https://cicd.zapos.io/teams/platform/pipelines/orquestra-docs
-
-# Content Structure
-
-* `intro/` Orquestra Basics
-* `dcs/` Orquestra Data Management
-* `qe/` Orquestra Quantum Engine

@@ -1,0 +1,146 @@
+---
+title: Resources
+summary: Resources are one of the key building blocks of an Orquestra workflow and allow you to resuse common components and integrations.
+weight: 2
+---
+
+## Overview
+
+Resources are the building blocks for your workflows. They define what tasks you are able to perform and what data you will produce.
+
+By incorporating source code into a _resource_, it becomes easily usable and shareable within Orquestra. Through the use of _resources_, we hope to make it as easy as possible to navigate the minefield of bringing your own source code into harmony with others'.
+
+## What is a resource?
+
+You can think of resources as the "libraries" available in your workflow. A resource is made of two components:
+
+1. The **source code** that will be executed at the runtime of a step inside an Orquestra workflow - this can contain one or more functions that take in input parameters and data and produce output data
+2. The **template** that you can access in your workflow - it wraps your source code, making it "callable" from within your workflow
+
+### Source Code
+
+The *source code* for a resource is exactly that: it contains all the code to run the process you want. This code will typically be a set of functions that take in inputs and then produce output objects that can be serialized into [artifact(s)](https://www.orquestra.io/docs/dcs/data/artifacts/).
+
+###### Note: Currently, new resources must use Python 3.7 source code to be natively supported in Orquestra, however we will be expanding this support to other languages in the future.
+
+### Resource Templates
+
+*Resource Templates* are the wrappers around your source code that expose it to the wonderful world of Orquestra workflows. By taking a function and wrapping it into a template, it is able to be referenced in your workflow as a *task*.
+
+A resource template definition contains:
+1. The optional and necessary inputs, delineating between input parameters and input [*artifacts*](https://www.orquestra.io/docs/dcs/data/artifacts/)
+2. The expected output *artifacts*
+3. A short script that will call your source code
+
+Resource templates are explained in detail on the [Templates page](https://www.orquestra.io/docs/qe/workflow/templates).
+
+## How do I build my own resource?
+
+### Structure
+
+To be used by Orquestra, resources must contain two folders:
+- A `src/` folder, containing your source code
+- A `templates/` folder, containing the templates that can be called from within your workflow
+
+An example of the full structure of a resource is below:
+
+```bash
+.
+├── README.md
+├── src
+│   ├── README.md
+│   ├── python
+│   │   └── orquestra
+│   │       ├── __init__.py
+│   │       └── welcome.py
+│   └── setup.py
+└── templates
+    └── hello.yaml
+```
+
+### Source Code Installation
+
+Orquestra provides automatic installation of your source code. By configuring your resource with the structure outlined above, you will be able to reference your source code (marked by `welcome.py` in the above example) easily from within your template. The source code can be any valid python code.
+
+#### Setup File
+
+The setup file must be called `setup.py`. It is responsible for installing your code before being called by the template.
+
+An example is shown below:
+
+```Python
+import setuptools
+
+setuptools.setup(
+    name                            = "orquestra",
+    packages                        = setuptools.find_packages(where = "python"),
+    package_dir                     = {
+        "" : "python"
+    },
+    classifiers                     = (
+        "Programming Language :: Python :: 3",
+        "Operating System :: OS Independent",
+    ),
+)
+```
+
+For clarity, in this example:
+- `name` is the name of your package which you can reference in your template
+- `packages` tells the installer to look for a subdirectory called `python`
+which contains your source code
+- `package_dir` allows the contents of the `python` directory to be imported
+without the python path prefix, for example, with `from orquestra import all`
+
+For more information regarding how to make your source code available as a `package`, please refer to the [setuptools documentation](https://setuptools.readthedocs.io/en/latest/setuptools.html#developer-s-guide).
+
+
+#### Initialization File
+
+The initialization file must be called `__init__.py`. An example is shown below:
+
+```Python
+from .welcome import welcome
+```
+
+Only the functions that are imported in this file will be accessible when using your source code as a package. Here you will want to import any functions that you need to call from the script in your template.
+
+### Resource Templates
+
+As mentioned above, your resource template is responsible for wrapping your source code into a callable object that can be referenced from within your workflow. Typically, there will be a one-to-one correspondence between the resource templates that you write and the functions from your source code that you want to expose to Orquestra.
+
+All resource templates are expected to be in various files under the `templates` directory in a resource and must have the `.yaml` file extension. For these templates to be compiled, the file must begin with the `spec` and `templates` headers, with your templates defined below.
+
+Templates are described in detail on the [Templates page](https://www.orquestra.io/docs/qe/workflow/templates).
+
+Below is an example of a file containing a resource template named `welcome-to-orquestra` that calls the source code shown above.
+
+```YAML
+# Every template YAML file must begin with a `spec` and `templates`, without which your template won't compile.
+spec:
+  templates:
+
+  # Definition for the "welcome-to-orquestra" template
+  - name: welcome-to-orquestra
+    parent: generic-task
+    inputs:
+      artifacts:
+      - name: main-script
+        path: /app/main.py  # The `path` value for artifacts is where they are placed and they must be under the `app` directory
+        raw:
+          data: |
+            from orquestra import welcome
+            welcome()
+      parameters:
+      - name: command
+        value: python3 main.py
+    outputs:
+      artifacts:
+      - name: welcome
+        path: /app/welcome.json
+```
+
+### Referencing a Resource in a Workflow
+
+For a detailed explanataion of how to reference a resource from within a workflow, please refer to the "Resources" section in [Workflow Basics](https://www.orquestra.io/docs/qe/workflow/workflows/#resources).
+
+To see an example of a resource, check out Zapata's [Open Pack Core resource](https://github.com/zapatacomputing/open-pack-core) on GitHub.
