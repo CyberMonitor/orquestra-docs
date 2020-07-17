@@ -1,4 +1,4 @@
-baseURL = "www.orquestra.io"
+baseURL = "docs"
 languageCode = "en-us"
 title = "Orquestra"
 theme = "whisper"
