@@ -11,9 +11,8 @@ This is where you will find the documentation for Orquestra v1 documentation. Do
 ### Build
 
 * `cd` into the v1 directory
-* `hugo server --disableFastRender -v`
-
-The site is now running locally at http://localhost:1313/ 
+* run `hugo` to build html
+* run `hugo server --disableFastRender -v` to view the site at http://localhost:1313/ 
 
 ### CI/CD
 CI pipeline is found https://cicd.zapos.io/teams/platform/pipelines/orquestra-docs

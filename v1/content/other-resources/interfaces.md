@@ -2,6 +2,8 @@
 title: Interfaces
 summary: Orquestra Interfaces allow you to integrate workflows across quantum backends, simulators, optimizers and cost functions.
 weight: 2
+math: "true"
+markup: "mmark"
 ---
 
 One of the biggest strengths of Orquestra is its modularity. Integrating new backends, optimizers, compilers, etc. does not require changing the core code – it requires only creating a new module that conforms to existing interfaces and therefore can be used across the whole platform.
@@ -15,6 +17,7 @@ Right now Orquestra defines the following interfaces:
 - `QuantumSimulator` (subclass of `QuantumBackend`)
 - `Optimizer`
 - `CostFunction`
+- `Estimator`
 
 ## Integrating Backends & Optimizers
 
@@ -92,3 +95,18 @@ Right now the following cost functions are implemented in Orquestra:
 - [`BasicCostFunction`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/cost_function.py) – it allows to use an arbitrary python function as cost function we want to minimize.
 - [`EvaluateOperatorCostFunction`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/cost_function.py) - cost function which evaluates an operator using given ansatz and backend, useful for variational quantum algorithms.
 - [`QCBMCostFunction`](https://github.com/zapatacomputing/z-quantum-qcbm/blob/master/src/python/zquantum/qcbm/cost_function.py) - similar to the `EvaluateOperatorCostFunction`, but tuned towards the Quantum Circuit Born Machine algorithm.
+
+### Estimators 
+
+An `Estimator` is used to estimate the expectation value of an observable. 
+As input, an `Estimator` takes a `QuantumBackend`, a circuit $$C$$, and an observable $$O$$ and returns an estimate of the expectation value. 
+Specifically, say the state $$\ket{\psi}$$ is prepared by the circuit $$C$$. 
+Then, the `Estimator` returns an estimate of $$\braket{\psi \vert O \vert \psi}$$, the expectation value of the observable on the state prepared by the input circuit. 
+There are also optional inputs, depending on the `Estimator` being used.  
+
+Here is a list of the `Estimator` implementations available on Orquestra: 
+
+- **[`BasicEstimator`](https://github.com/zapatacomputing/z-quantum-core/blob/dev/src/python/zquantum/core/estimator.py#L43):** 
+Estimates expectation values with standard estimation techniques. 
+- **[`ExactEstimator`](https://github.com/zapatacomputing/z-quantum-core/blob/dev/src/python/zquantum/core/estimator.py#L108):** 
+Exactly computes expectation value. The backend must be a `QuantumSimulator`.  

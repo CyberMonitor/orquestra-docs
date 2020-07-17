@@ -19,6 +19,9 @@
 
   {{ block "header_css" . }}{{ end }}
 
+  {{ if or .Params.math .Site.Params.math }}
+  {{ partial "math.html" . }}
+  {{ end }}
 </head>
 
 <body class='page {{ block "body_classes" . }}{{ end }}'>
