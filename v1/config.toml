@@ -1,4 +1,3 @@
-baseURL = "/docs/"
 languageCode = "en-us"
 title = "Orquestra"
 theme = "whisper"
@@ -7,7 +6,7 @@ pygmentsCodeFences = true
 pygmentsCodefencesGuessSyntax = true
 pygmentsUseClasses = true
 
-canonifyurls = true
+RelativeURLs=true
 
 # Controls how many words are printed in the content summary on the docs homepage.
 # See https://gohugo.io/content-management/summaries/
