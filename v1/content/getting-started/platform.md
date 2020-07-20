@@ -13,13 +13,13 @@ Orquestra can be used as a new layer in your stack that sits between your infras
 
 The figure below shows the major components of Orquestra and how they work together.
 
-![Orquestra Layers](/img/orquestra-overview.svg)
+![Orquestra Layers](img/orquestra-overview.svg)
 
 Workflows are the blueprint for your experiment. They describe which algorithms to run under which conditions. The Quantum Engine uses your workflows as step-by-step instructions to run your experiment, generate and process your data, and produce results for data analysis.
 
 ### Workflows
 
-Your workflow is a description of the different steps required to get the desired experiment's results. The Quantum Engine kicks into gear, spinning up machines, fetching required resources, and executing steps in your workflow until successful completion. Please see the following tutorials that demonstrate how to run quantum experiments on Orquestra: [Bond Length Estimation of H₂](/tutorials/simulate-h2-with-vqe/)
+Your workflow is a description of the different steps required to get the desired experiment's results. The Quantum Engine kicks into gear, spinning up machines, fetching required resources, and executing steps in your workflow until successful completion. Please see the following tutorials that demonstrate how to run quantum experiments on Orquestra: [Bond Length Estimation of H₂](tutorials/simulate-h2-with-vqe/)
 
 ### Quantum Engine
 
