@@ -7,7 +7,7 @@ pygmentsCodefencesGuessSyntax = true
 pygmentsUseClasses = true
 
 RelativeURLs=true
-BaseURL=https://orquestra.io/docs/
+BaseURL=https://www.orquestra.io/docs/
 # Controls how many words are printed in the content summary on the docs homepage.
 # See https://gohugo.io/content-management/summaries/
 summaryLength = 30
