@@ -8,7 +8,7 @@ weight: 1
 
 Workflows are the language used to provide the Quantum Engine step-by-step instructions of which actions to perform on which data.
 
-As explained in [Why Workflows?](/docs/basics/why-workflows/), here at Zapata we have found workflows to be a naturally expressive, easily extensible, and highly shareable means to perform our scientific experiments. With Orquestra, we hope to create a community of scientists and developers alike that will enable everyone to make quicker discoveries and achieve **real** value.
+As explained in [why workflows?](../../getting-started/why-workflows/), here at Zapata we have found workflows to be a naturally expressive, easily extensible, and highly shareable means to perform our scientific experiments. With Orquestra, we hope to create a community of scientists and developers alike that will enable everyone to make quicker discoveries and achieve **real** value.
 
 ## One Step at a Time
 
@@ -32,7 +32,7 @@ kind: Workflow
 
 ### Resources
 
-Resources contain the definitions and implementations of the functions that one can perform from within a workflow. To learn more about what comprises a resource and how to build one yourself, check out out the [Resources](https://www.orquestra.io/docs/qe/workflow/resources/) page.
+Resources contain the definitions and implementations of the functions that one can perform from within a workflow. To learn more about what comprises a resource and how to build one yourself, check out out the [resources](../../quantum-engine/resources/) page.
 
 To use a resource, there must be a reference to it in the `resources` section of your workflow. References to resources have 3 required fields:
 - `name`: this is the name of your resource and the way you can reference a
@@ -134,7 +134,7 @@ outputs, and series of instructions to be performed.
 - In contrast, a `step` is the invocation of a `template`, passing objects and
 parameter values to the `template` to be executed.
 
-For further distinction between the two, please refer to the [Templates page](https://www.orquestra.io/docs/qe/workflow/templates/) and the [Steps page](https://www.orquestra.io/docs/qe/workflow/steps/).
+For further distinction between the two, please refer to the [templates page](../../quantum-engine/templates/) and the [steps page](../../quantum-engine/steps/).
 
 
 In the example below, we define a template named `salutaions` - the entrypoint template for this workflow. Below in the "Steps" section we will show how to define what this template does.
@@ -152,7 +152,7 @@ spec:
 
 #### Steps
 
-If a template is not executing source code, it will contain a list of steps. The `steps` section of a template declares which actions to perform on which data. For more information about what steps are and what functionality exists around steps, please refer the [Steps](https://www.orquestra.io/docs/qe/workflow/steps/) page.
+If a template is not executing source code, it will contain a list of steps. The `steps` section of a template declares which actions to perform on which data. For more information about what steps are and what functionality exists around steps, please refer to the [steps](../../quantum-engine/steps/) page.
 
 In the example below, we add the step `greeting` to the `salutations` template so that when the salutations template is run, the first step is to call the greeting template.
 
