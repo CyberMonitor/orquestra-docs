@@ -13,7 +13,7 @@ BaseURL="https://orquestra.io/docs"
 summaryLength = 30
 
 [params]
-  homepage_url="https://www.orquestra.io/docs"
+  homepage_url="https://orquestra.io/docs"
   google_analytics_id=""
   homepage_button_link1 = '/tutorials/hello-workflow/'
   homepage_button_text1 = 'Start the tutorial'
