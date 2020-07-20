@@ -9,6 +9,6 @@ Orquestra workflows allow you to combine tasks, algorithms, libraries, and tools
 To get started:
 
 * Learn about the components of the [Orquestra Platform](getting-started/platform/)
-* Install the [CLI](/qe-cli)
-* Build an Orquestra workflow by following the [HelloWorkflow](/tutorials/hello-workflow/) tutorial
+* Install the [CLI](qe-cli)
+* Build an Orquestra workflow by following the [HelloWorkflow](tutorials/hello-workflow/) tutorial
 * Try one of our other applied [Tutorials](/tutorials/)
