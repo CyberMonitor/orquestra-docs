@@ -13,13 +13,13 @@ Every workflow is built with a `spec` that executes `templates`. A `template` is
 
 Templates are analogous to functions. They define the inputs they take in, the actions to be performed, and the outputs they produce. Templates can be defined once and reused multiple times within a workflow.
 
-There are also two kinds of templates, **resource templates** and **workflow templates**. To understand more about both types as well as the similarities and differences between the two, refer to the [Templates page](../../quantum-engine/templates/).
+There are also two kinds of templates, **resource templates** and **workflow templates**. To understand more about both types as well as the similarities and differences between the two, refer to the [templates page](../../quantum-engine/templates/).
 
 ### Resources
 
 Resources are a way of making both templates and source code reusable and shareable.
 
-A resource is made of two components: the source code that will be executed and the template that calls that code. To learn more about what comprises a resource as well as how to build your own, please refer to the [Resources page](../../quantum-engine/resources/).
+A resource is made of two components: the source code that will be executed and the template that calls that code. To learn more about what comprises a resource as well as how to build your own, please refer to the [resources page](../../quantum-engine/resources/).
 
 ## Building a Workflow
 
@@ -60,7 +60,7 @@ In order to be recognized by Orquestra, a resource must contain two folders:
 Using either the GitHub UI or by cloning your repo and using the command line create two folders at the root level of the repository, `src/` and `templates/`.
 
 ___
-The structure we want to have is shown in more detail on the [Resources page](../../quantum-engine/resources/).
+The structure we want to have is shown in more detail on the [resources page](../../quantum-engine/resources/).
 
 ___
 
@@ -192,7 +192,7 @@ spec:
         path: /app/welcome.json
 ```
 
-Please refer to the [Templates page](../../quantum-engine/templates/) for a more in-depth explanation of each of the fields in the above resource template.
+Please refer to the [templates page](../../quantum-engine/templates/) for a more in-depth explanation of each of the fields in the above resource template.
 
 
 **7. Push Your Resource**
@@ -274,7 +274,7 @@ ___
 
 ___
 
-Please refer to the [Workflow Basics page](../../quantum-engine/workflow-basics/) for a more in-depth explanation of each of the fields in the sample workflow above.
+Please refer to the [workflow basics page](../../quantum-engine/workflow-basics/) for a more in-depth explanation of each of the fields in the sample workflow above.
 
 
 **9. Adding Resources to the Workflow**
@@ -333,7 +333,7 @@ The following is the `templates` section of `welcome-workflow.yaml` with the new
             from: '{{steps.greeting.outputs.artifacts.welcome}}'
 ```
 
-There is now a second step with the name `transform-welcome`. This step uses the resource template `z-transformation` from the resource you just added. The template `z-transformation` takes in an artifact as input. To understand how the `welcome` artifact is passed from the `greeting` step to the `transform-welcome` step, check out the "Referencing Step Outputs" section of the [Steps page](../../quantum-engine/steps/).
+There is now a second step with the name `transform-welcome`. This step uses the resource template `z-transformation` from the resource you just added. The template `z-transformation` takes in an artifact as input. To understand how the `welcome` artifact is passed from the `greeting` step to the `transform-welcome` step, check out the "Referencing Step Outputs" section of the [steps page](../../quantum-engine/steps/).
 
 **10. Running the Workflow**
 
@@ -446,7 +446,7 @@ This file will look like the following (except for the comments, which were adde
 }
 ```
 
-The sections `welcome-to-orquestra-d9djf-1289017430` and `welcome-to-orquestra-d9djf-2235995037` correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the template that was executed for the given step, any input parameters or input artifacts, and the output artifacts. The artifact `welcome` is the output of the `greeting` template, and the artifact `zessage` is the output of the `transform-welcome` template. More information on the contents of this file are found on the [Workflow Results via JSON page](../../data-management/workflow-result/).
+The sections `welcome-to-orquestra-d9djf-1289017430` and `welcome-to-orquestra-d9djf-2235995037` correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the template that was executed for the given step, any input parameters or input artifacts, and the output artifacts. The artifact `welcome` is the output of the `greeting` template, and the artifact `zessage` is the output of the `transform-welcome` template. More information on the contents of this file are found on the [workflow results via JSON page](../../data-management/workflow-result/).
 
 ___
 **Note:** The sections in this results file will not necessarily be in the order that they were executed.
