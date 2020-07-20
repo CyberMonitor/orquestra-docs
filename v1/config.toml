@@ -6,13 +6,14 @@ pygmentsCodeFences = true
 pygmentsCodefencesGuessSyntax = true
 pygmentsUseClasses = true
 
-RelativeURLs=true
-homepageURL="https://www.orquestra.io/docs"
+#RelativeURLs=true
+BaseURL="https://www.orquestra.io"
 # Controls how many words are printed in the content summary on the docs homepage.
 # See https://gohugo.io/content-management/summaries/
 summaryLength = 30
 
 [params]
+  homepage_url="https://www.orquestra.io/docs"
   google_analytics_id=""
   homepage_button_link1 = '/tutorials/hello-workflow/'
   homepage_button_text1 = 'Start the tutorial'
