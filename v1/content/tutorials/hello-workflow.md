@@ -13,13 +13,13 @@ Every workflow is built with a `spec` that executes `templates`. A `template` is
 
 Templates are analogous to functions. They define the inputs they take in, the actions to be performed, and the outputs they produce. Templates can be defined once and reused multiple times within a workflow.
 
-There are also two kinds of templates, **resource templates** and **workflow templates**. To understand more about both types as well as the similarities and differences between the two, refer to the [Templates page](quantum-engine/templates/).
+There are also two kinds of templates, **resource templates** and **workflow templates**. To understand more about both types as well as the similarities and differences between the two, refer to the [Templates page](../quantum-engine/templates/).
 
 ### Resources
 
 Resources are a way of making both templates and source code reusable and shareable.
 
-A resource is made of two components: the source code that will be executed and the template that calls that code. To learn more about what comprises a resource as well as how to build your own, please refer to the [Resources page](quantum-engine/resources/).
+A resource is made of two components: the source code that will be executed and the template that calls that code. To learn more about what comprises a resource as well as how to build your own, please refer to the [Resources page](../quantum-engine/resources/).
 
 ## Building a Workflow
 
@@ -60,7 +60,7 @@ In order to be recognized by Orquestra, a resource must contain two folders:
 Using either the GitHub UI or by cloning your repo and using the command line create two folders at the root level of the repository, `src/` and `templates/`.
 
 ___
-The structure we want to have is shown in more detail on the [Resources page](quantum-engine/resources/).
+The structure we want to have is shown in more detail on the [Resources page](../quantum-engine/resources/).
 
 ___
 
@@ -104,7 +104,7 @@ def welcome():
 
 **Note:**
 
-- All artifacts must have a `schema` field. More details on artifacts are found on the [artifacts page](data-management/workflow-artifacts/).
+- All artifacts must have a `schema` field. More details on artifacts are found on the [artifacts page](../data-management/workflow-artifacts/).
 
 - We create the file `welcome.json` because any output has to be saved in a file in order to be passed on to the next step or to be accessible for data analysis after the workflow has completed. We will see how to pass it on to another step later in this tutorial.
 
@@ -333,7 +333,7 @@ The following is the `templates` section of `welcome-workflow.yaml` with the new
             from: '{{steps.greeting.outputs.artifacts.welcome}}'
 ```
 
-There is now a second step with the name `transform-welcome`. This step uses the resource template `z-transformation` from the resource you just added. The template `z-transformation` takes in an artifact as input. To understand how the `welcome` artifact is passed from the `greeting` step to the `transform-welcome` step, check out the "Referencing Step Outputs" section of the [Steps page](quantum-engine/steps/).
+There is now a second step with the name `transform-welcome`. This step uses the resource template `z-transformation` from the resource you just added. The template `z-transformation` takes in an artifact as input. To understand how the `welcome` artifact is passed from the `greeting` step to the `transform-welcome` step, check out the "Referencing Step Outputs" section of the [Steps page](../quantum-engine/steps/).
 
 **10. Running the Workflow**
 
