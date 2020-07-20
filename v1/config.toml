@@ -12,7 +12,6 @@ BaseURL=https://orquestra.io/docs/
 # See https://gohugo.io/content-management/summaries/
 summaryLength = 30
 
-
 [params]
   google_analytics_id=""
   homepage_button_link1 = '/tutorials/hello-workflow/'
