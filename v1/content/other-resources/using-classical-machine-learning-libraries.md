@@ -4,7 +4,7 @@ summary: Accessing common machine learning libraries in a workflow.
 weight: 3
 ---
 
-Zapata provides a pre-made Docker image to make common classical machine learning libraries available for use in workflows. It is called `zapatacomputing/z-ml`. To learn more about using Docker images in Quantum Engine, go to the [Docker images page](../workflow/images).
+Zapata provides a pre-made Docker image to make common classical machine learning libraries available for use in workflows. It is called `zapatacomputing/z-ml`. To learn more about using Docker images in Quantum Engine, go to the [Docker images page](../../quantum-engine/docker-images/).
 
 ## Libraries available
 

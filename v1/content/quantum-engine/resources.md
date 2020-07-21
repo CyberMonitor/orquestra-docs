@@ -19,7 +19,7 @@ You can think of resources as the "libraries" available in your workflow. A reso
 
 ### Source Code
 
-The *source code* for a resource is exactly that: it contains all the code to run the process you want. This code will typically be a set of functions that take in inputs and then produce output objects that can be serialized into [artifact(s)](https://www.orquestra.io/docs/dcs/data/artifacts/).
+The *source code* for a resource is exactly that: it contains all the code to run the process you want. This code will typically be a set of functions that take in inputs and then produce output objects that can be serialized into [artifact(s)](../../data-management/workflow-artifacts/).
 
 ###### Note: Currently, new resources must use Python 3.7 source code to be natively supported in Orquestra, however we will be expanding this support to other languages in the future.
 
@@ -28,11 +28,11 @@ The *source code* for a resource is exactly that: it contains all the code to ru
 *Resource Templates* are the wrappers around your source code that expose it to the wonderful world of Orquestra workflows. By taking a function and wrapping it into a template, it is able to be referenced in your workflow as a *task*.
 
 A resource template definition contains:
-1. The optional and necessary inputs, delineating between input parameters and input [*artifacts*](https://www.orquestra.io/docs/dcs/data/artifacts/)
+1. The optional and necessary inputs, delineating between input parameters and input [*artifacts*](../../data-management/workflow-artifacts/)
 2. The expected output *artifacts*
 3. A short script that will call your source code
 
-Resource templates are explained in detail on the [Templates page](https://www.orquestra.io/docs/qe/workflow/templates).
+Resource templates are explained in detail on the [Templates page](../../quantum-engine/templates/).
 
 ## How do I build my own resource?
 
@@ -110,7 +110,7 @@ As mentioned above, your resource template is responsible for wrapping your sour
 
 All resource templates are expected to be in various files under the `templates` directory in a resource and must have the `.yaml` file extension. For these templates to be compiled, the file must begin with the `spec` and `templates` headers, with your templates defined below.
 
-Templates are described in detail on the [Templates page](https://www.orquestra.io/docs/qe/workflow/templates).
+Templates are described in detail on the [Templates page](../../quantum-engine/templates/).
 
 Below is an example of a file containing a resource template named `welcome-to-orquestra` that calls the source code shown above.
 
@@ -141,6 +141,5 @@ spec:
 
 ### Referencing a Resource in a Workflow
 
-For a detailed explanataion of how to reference a resource from within a workflow, please refer to the "Resources" section in [Workflow Basics](https://www.orquestra.io/docs/qe/workflow/workflows/#resources).
-
+For a detailed explanataion of how to reference a resource from within a workflow, please refer to the "Resources" section in [Workflow Basics](../../quantum-engine/workflow-basics).
 To see an example of a resource, check out Zapata's [Open Pack Core resource](https://github.com/zapatacomputing/open-pack-core) on GitHub.

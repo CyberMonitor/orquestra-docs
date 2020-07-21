@@ -6,7 +6,7 @@ weight: 4
 
 ## Overview
 
-In contrast to a [template](https://www.orquestra.io/docs/qe/workflow/templates) declaration, a step declaration is the invocation of a given template. When defining a step in your workflow, you must pass the required `arguments` declared by the template.
+In contrast to a [template](../../quantum-engine/templates/) declaration, a step declaration is the invocation of a given template. When defining a step in your workflow, you must pass the required `arguments` declared by the template.
 
 The basic outline of a step is shown below:
 
@@ -47,11 +47,11 @@ Parameters are typically simple values (e.g. strings, integers, floats, etc) tha
 
 The `resources` parameter is a required value when calling any template that is defined outside of the current workflow file or **resource template** that uses external source code. It is used to both tell our workflow compiler where your template exists, as well as to install the necessary resources that you would like to be accessible in your step at runtime.
 
-For example, in the [Simulating H₂ with VQE](https://orquestra.io/docs/tutorial/hydrogen-vqe/) tutorial, the `create-molecule` step references both the `diatomic-molecule` resource and the `open-pack-core` resource. The `diatomic-molecule` resource contains the template definition as well as source code, however, it also references source code in `open-pack-core`, so we have to declare it as a resource as well.
+For example, in the [Simulating H₂ with VQE](../../tutorials/simulate-h2-with-vqe/) tutorial, the `create-molecule` step references both the `diatomic-molecule` resource and the `open-pack-core` resource. The `diatomic-molecule` resource contains the template definition as well as source code, however, it also references source code in `open-pack-core`, so we have to declare it as a resource as well.
 
 #### Artifacts
 
-Artifacts are the more complex data structures used by Orquestra. Check out our section on [Artifacts](https://www.orquestra.io/docs/dcs/data/artifacts/) for more information about them from a data management perspective. 
+Artifacts are the more complex data structures used by Orquestra. Check out our section on [Artifacts](../../data-management/workflow-artifacts/) for more information about them from a data management perspective. 
 
 In this section of a step, we must declare the specific artifacts that we want to use in the current step. It is currently only possible to use artifacts produced by the execution of the current workflow. These must be referenced by name. 
 

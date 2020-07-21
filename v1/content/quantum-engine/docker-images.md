@@ -9,7 +9,7 @@ When writing workflows, you often need to use certain libraries. These libraries
 
 ## How to use Docker images in a workflow
 
-In your [resource template](../workflow/templates), add parameters for `docker-image` and `docker-tag` and set their `value`s to the name of the image and the image tag, as shown in the following example:
+In your [resource template](../templates/), add parameters for `docker-image` and `docker-tag` and set their `value`s to the name of the image and the image tag, as shown in the following example:
 
 ```YAML
 spec:
@@ -37,7 +37,7 @@ spec:
         path: /app/welcome.json
 ```
 
-When you use this [resource](./resources) in a [workflow](./workflows), it will use the referenced Docker image.
+When you use this [resource](../resources) in a [workflow](../workflow-basics/), it will use the referenced Docker image.
 
 A full list of pages for Zapata's pre-made images, which contain the `docker-image` and `docker-tag` values, is below:
-- [Machine Learning image](../machine-learning/ml)
+- [Machine Learning image](../../other-resources/using-classical-machine-learning-libraries/)

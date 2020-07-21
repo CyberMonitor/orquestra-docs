@@ -10,8 +10,8 @@ To get a visual representation of your workflow execution, please run the follow
 qe get workflow <workflow ID>
 ```
 
-The workflow ID is provided when you [submit a workflow](./submit).
+The workflow ID is provided when you [submit a workflow](../workflow-submission/).
 
 ___
-**Note**: Before you run this command, please make sure you're logged in (see [Logging In](./login)).
+**Note**: Before you run this command, please make sure you're logged in (see [Logging In](../logging-in)).
 ___

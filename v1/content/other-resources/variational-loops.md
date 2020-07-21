@@ -42,7 +42,7 @@ The `optimize-variational-circuit` template requires the following inputs:
   - `initial-parameters` (artifact)
   - `qubit-operator` (artifact)
 
-`backend-specs` and `optimizer-specs` are dictionaries which specify what backend and optimizer will be used. You can read more about them on the [interfaces page](https://www.orquestra.io/docs/qe/quantum-computing/interfaces/).
+`backend-specs` and `optimizer-specs` are dictionaries which specify what backend and optimizer will be used. You can read more about them on the [interfaces page](../interfaces/).
 
 `ansatz` corresponds to a dictionary representing given ansatz. Such dictionary should have the following fields (though it may have additional fields):
   - `ansatz_type` - specifies what type of the ansatz we want to used

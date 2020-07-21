@@ -79,4 +79,4 @@ The basic outline for a workflow template is as follows:
 
 Every workflow must contain **at least** one `template`, the "entrypoint" template. This is where the Quantum Engine begins the execution of your workflow. 
 
-As seen in the [Simulating H₂ with VQE](https://www.orquestra.io/docs/tutorial/hydrogen-vqe/) tutorial, more complex workflows will often consist of workflow templates calling other workflow templates. This allows for the expression of more complex workflows, even including recursion! 
+As seen in the [Simulating H₂ with VQE](../../tutorials/simulate-h2-with-vqe/) tutorial, more complex workflows will often consist of workflow templates calling other workflow templates. This allows for the expression of more complex workflows, even including recursion! 

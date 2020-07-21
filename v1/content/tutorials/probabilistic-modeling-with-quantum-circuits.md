@@ -331,7 +331,7 @@ def get_number_of_parameters_by_layer(n_qubits, n_layers, topology):
     return num_params_by_layer
 ```
 
-Now, in the same fashion, create a file `src/python/zquantum/qcbm/cost_function.py`. It contains implemention of a class representing the cost function, which is used by optimizers in Orquestra (you can read more about interfaces in Orquestra [here](https://www.orquestra.io/docs/qe/quantum-computing/interfaces)).
+Now, in the same fashion, create a file `src/python/zquantum/qcbm/cost_function.py`. It contains implemention of a class representing the cost function, which is used by optimizers in Orquestra (you can read more about interfaces in Orquestra [here](../../other-resources/interfaces)).
 
 ```python
 from zquantum.core.interfaces.cost_function import CostFunction
@@ -771,7 +771,7 @@ This file will look like the following:
   "workflowId":"qcbm-opt-58d9k"},
 ```
 
-The sections `qcbm-opt-58d9k-3616022042` and `qcbm-opt-58d9k-688593504` (which we don't show for brevity) correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the template that was executed for the given step, any input parameters or input artifacts, and the output artifacts. The artifact `parameters` is the output of the `generate-random-qcbm-params` template, and it stores the randomly generated parameters for the circuit. The artifact `optimized-parameters` is the output of the `optimize-variational-qcbm-circuit` template and it contains the trained parameters. More information on the contents of this file are found on the [Workflow Results via JSON page](https://www.orquestra.io/docs/dcs/data/json/).
+The sections `qcbm-opt-58d9k-3616022042` and `qcbm-opt-58d9k-688593504` (which we don't show for brevity) correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the template that was executed for the given step, any input parameters or input artifacts, and the output artifacts. The artifact `parameters` is the output of the `generate-random-qcbm-params` template, and it stores the randomly generated parameters for the circuit. The artifact `optimized-parameters` is the output of the `optimize-variational-qcbm-circuit` template and it contains the trained parameters. More information on the contents of this file are found on the [Workflow Results via JSON page](../../data-management/workflow-result/).
 
 ___
 

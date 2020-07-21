@@ -348,7 +348,7 @@ To make things simpler to visualize this time we will try to solve the problem f
 
 **Interfaces**
 
-One of the features that make Orquestra a really flexible tool are Interfaces. The main idea behind it is to be able to switch between different methods at the level of the workflow, without need to modify any code. You can read about it in more details in the [Interfaces section](https://www.orquestra.io/docs/quantum-resources/interfaces/), here we'll focus on the example of Optimizer Interface.
+One of the features that make Orquestra a really flexible tool are Interfaces. The main idea behind it is to be able to switch between different methods at the level of the workflow, without need to modify any code. You can read about it in more details in the [Interfaces section](../../other-resources/interfaces), here we'll focus on the example of Optimizer Interface.
 
 As you can see in the workflow, `optimize-variational-circuit` task has a field called `optimizer-specs`. It is a dictionary which specifies what type of optimizer do we want to use. It has two required keys:
 
