@@ -467,4 +467,4 @@ For your convenience, here are the completed resources and workflow:
 
 [ZTransform resource](https://github.com/zapatacomputing/tutorial-0-ztransform)
 
-[Complete workflow](http://orquestra.io/docs/hello-workflow.yaml)
+[Complete workflow](https://github.com/zapatacomputing/tutorial-0-welcome/blob/master/hello-workflow.yaml)
