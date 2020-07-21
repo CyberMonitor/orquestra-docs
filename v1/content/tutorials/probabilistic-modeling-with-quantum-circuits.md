@@ -1011,7 +1011,7 @@ After a workflow runs, it takes time for the data to be processed. This results 
 Once finished, the output will look like the following:
 ```Bash
 Name:        qcbm-opt-l2btk
-Location:    http://40.89.251.200:9000/workflow-results/3dcdd240-f5c6-5c78-a80a-9aa86a6941b5.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=zapata%2F20200407%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200407T191718Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%223dcdd240-f5c6-5c78-a80a-9aa86a6941b5.json%22&X-Amz-Signature=d1107e50f741c002c7fe0d328bafec5ef52afb3819a93c02ef1f19b4f56d59a4
+Location:    http://13.86.58.178:9000/workflow-results/6c1c82e0-ce10-5eb2-8842-7fe060a6b98c.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=zapata%2F20200721%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200721T195101Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%226c1c82e0-ce10-5eb2-8842-7fe060a6b98c.json%22&X-Amz-Signature=36f0c62810f4613fc2e15978ea5d97807dc59f92bca66465c4bd9b7319a8b59f
 ```
 ___
 **Note:** The above link is only valid temporarily and typically expires after 7 days.
@@ -1024,32 +1024,102 @@ When your workflow is completed, the `workflowresult` command will provide you w
 This file will look like the following:
 
 ```JSON
-"qcbm-opt-l2btk-2326122556":
-  {"class":"generate-random-ansatz-params",
-  "id":"qcbm-opt-l2btk-2326122556",
-  "inputParam:command":"python3 main_script.py","inputParam:cpu":"1000m",
-  "inputParam:disk":"10Gi",
-  "inputParam:docker-image":"open_pack_default",
-  "inputParam:docker-registry":"zapatacomputing",
-  "inputParam:docker-tag":"latest",
-  "inputParam:max-val":"1.57",
-  "inputParam:memory":"1024Mi",
-  "inputParam:min-val":"-1.57",
-  "inputParam:seed":"9",
-  "inputParam:topology":"all",
-  "inputParam:ansatz-specs": "{'module_name': 'zquantum.qcbm.ansatz', 'function_name': 'QCBMAnsatz', 'number_of_layers': 4, 'number_of_qubits': 4, 'topology': 'all'}",
-  "parameters":
-    {"id":"qcbm-opt-l2btk-2326122556/parameters",
-    "parameters":
-      {"real":[-0.9686289258102783,0.3834215410650721,-0.19553489951766045,0.8960259528612353,0.8791240374930431,-0.7140592194125054,-0.7019022388506764,0.9478786374599604,1.4385575705668343,1.1804284730901775,-0.44645377233229877,0.003124694143660234,0.5760736164405078,0.6678843647263066,-0.40741262995815997,0.19215602424606226,0.00968113906652257,-1.5267670682852579,0.8566755918628546,1.201493338597406,-0.42425801054969114,0.3623440002811702,-1.3333029012410538,-0.4118926211538001,1.3600599202251178,0.47532736973145284]},
-    "schema":"zapata-v1-circuit_template_params",
-    "taskClass":"generate-random-ansatz-params",
-    "taskId":"qcbm-opt-l2btk-2326122556",
-    "workflowId":"qcbm-opt-l2btk"},
-  "workflowId":"qcbm-opt-l2btk"},
+{
+    "qcbm-opt-l2btk-1634304231": {
+        "class": "generate-bars-and-stripes-target-distribution",
+        "distribution": {
+            "bitstring_distribution": {
+                "0000": 0.16666666666666666,
+                "0011": 0.16666666666666666,
+                "0101": 0.16666666666666666,
+                "1010": 0.16666666666666666,
+                "1100": 0.16666666666666666,
+                "1111": 0.16666666666666666
+            },
+            "id": "qcbm-opt-l2btk-1634304231/distribution",
+            "schema": "zapata-v1-bitstring-probability-distribution",
+            "taskClass": "generate-bars-and-stripes-target-distribution",
+            "taskId": "qcbm-opt-l2btk-1634304231",
+            "workflowId": "qcbm-opt-l2btk"
+        },
+        "id": "qcbm-opt-l2btk-1634304231",
+        "inputParam:command": "python3 main_script.py",
+        "inputParam:cpu": "1000m",
+        "inputParam:disk": "10Gi",
+        "inputParam:docker-image": "z-quantum-default",
+        "inputParam:docker-registry": "zapatacomputing",
+        "inputParam:docker-tag": "latest",
+        "inputParam:fraction": "1.0",
+        "inputParam:memory": "1024Mi",
+        "inputParam:method": "zigzag",
+        "inputParam:ncols": "2",
+        "inputParam:nrows": "2",
+        "workflowId": "qcbm-opt-l2btk"
+    },
+    "qcbm-opt-l2btk-2326122556": {
+        "class": "generate-random-ansatz-params",
+        "id": "qcbm-opt-l2btk-2326122556",
+        "inputParam:ansatz-specs": "{'module_name': 'zquantum.qcbm.ansatz', 'function_name': 'QCBMAnsatz', 'number_of_layers': 4, 'number_of_qubits': 4, 'topology': 'all'}",
+        "inputParam:command": "python3 main_script.py",
+        "inputParam:cpu": "1000m",
+        "inputParam:disk": "10Gi",
+        "inputParam:docker-image": "z-quantum-default",
+        "inputParam:docker-registry": "zapatacomputing",
+        "inputParam:docker-tag": "latest",
+        "inputParam:max-val": "1.57",
+        "inputParam:memory": "1024Mi",
+        "inputParam:min-val": "-1.57",
+        "inputParam:number-of-params": "None",
+        "inputParam:seed": "9",
+        "params": {
+            "id": "qcbm-opt-l2btk-2326122556/params",
+            "parameters": {
+                "real": [
+                    -1.5374251567989021,
+                    0.005886219347039701,
+                    -0.013271859558781296,
+                    -1.1497752790678715,
+                    -1.123771191672749,
+                    -0.8837257585341144,
+                    -0.2558843131971793,
+                    -0.7909623311814244,
+                    -1.3060526953408007,
+                    -0.4851342702417438,
+                    -1.0463222718885108,
+                    1.1886755285725494,
+                    1.41602705930789,
+                    -1.4483300998865158,
+                    0.6251972089921096,
+                    0.2284658208879451,
+                    1.2497423512269699,
+                    0.524062774967659,
+                    0.1502106387659521,
+                    0.6356221115736933,
+                    -0.35646168740995066,
+                    0.6105374481803987,
+                    1.0200932585317213,
+                    -0.10780098734678512,
+                    1.3832466459137003,
+                    0.9537428778386781,
+                    1.517748039424404,
+                    -1.0373421511869714,
+                    0.06620599398376359,
+                    1.3989246893053957,
+                    0.4695570543238954,
+                    1.1330122389286876
+                ]
+            },
+            "schema": "zapata-v1-circuit_template_params",
+            "taskClass": "generate-random-ansatz-params",
+            "taskId": "qcbm-opt-l2btk-2326122556",
+            "workflowId": "qcbm-opt-l2btk"
+        },
+        "workflowId": "qcbm-opt-l2btk"
+    },
+}
 ```
 
-The sections `qcbm-opt-l2btk-2326122556`, `qcbm-opt-l2btk-1634304231` (which we don't show for brevity), and `qcbm-opt-l2btk-163168498` (which we don't show for brevity) correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the template that was executed for the given step, any input parameters or input artifacts, and the output artifacts. In `qcbm-opt-l2btk-2326122556`, the artifact `parameters` is the output of the `generate-random-ansatz-params` template, and it stores the randomly generated parameters for the circuit. More information on the contents of this file are found on the [Workflow Results via JSON page](../../data-management/workflow-result/).
+The sections `qcbm-opt-l2btk-2326122556`, `qcbm-opt-l2btk-1634304231`, and `qcbm-opt-l2btk-163168498` (which we don't show for brevity) correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the template that was executed for the given step, any input parameters or input artifacts, and the output artifacts. In `qcbm-opt-l2btk-2326122556`, the artifact `parameters` is the output of the `generate-random-ansatz-params` template, and it stores the randomly generated parameters for the circuit. More information on the contents of this file are found on the [Workflow Results via JSON page](../../data-management/workflow-result/).
 
 ___
 
