@@ -17,5 +17,5 @@ This will start the process of aggregating your results. Run this command every 
 For more information, see [Workflow Results via JSON](../../data-management/workflow-result/).
 
 ___
-**Note**: Before you run this command, please make sure you're logged in (see [Logging In](./logging-in)).
+**Note**: Before you run this command, please make sure you're logged in (see [Logging In](../logging-in)).
 ___
