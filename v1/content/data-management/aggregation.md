@@ -30,6 +30,6 @@ Each task data object has one or more [artifacts](../../data-management/workflow
 - `workflowId` - originating workflow ID
 - `schema` - type of the artifact
 
-![](/img/workflowresult.png)
+![](../../img/workflowresult.png)
 
 To initiate aggregation, see [Workflow Results via JSON](../../data-management/workflow-result/).
