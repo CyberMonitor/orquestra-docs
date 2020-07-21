@@ -682,7 +682,7 @@ spec:
 
 You are now ready to run the workflow!
 
-* Make sure you have installed the [Quantum Engine CLI](https://www.orquestra.io/docs/qe/cli/install/)
+* Make sure you have installed the [Quantum Engine CLI](../../qe-cli/install-cli/)
 
 * Log in to Quantum Engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your terminal. Contact support to register your email and/or receive the `quantum-engine-uri`.
 
