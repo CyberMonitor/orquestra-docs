@@ -18,11 +18,12 @@ Right now Orquestra defines the following interfaces:
 - `Optimizer`
 - `CostFunction`
 - `Estimator`
+- `Ansatz`
 
 ## Integrating Backends & Optimizers
 
 ### How to integrate your own code
-In order to integrate code which fits the some of the interfaces, you need to create a class which inherits after appropriate interface. All you need to do is just implement the methods specified by the interface. In some cases implementing a new backend might also require installing additional software and therefore need a special docker container to work.
+In order to integrate code which fits the some of the interfaces, you need to create a class which inherits after the appropriate interface. All you need to do is implement the methods required by the interface. In some cases implementing a new backend might also require installing additional software and therefore need a special docker container to work.
 
 
 
@@ -31,7 +32,7 @@ In order to integrate code which fits the some of the interfaces, you need to cr
 Once you've done your integration, there are two ways you can use it in your template.
 The first one is obvious – you can simply import from the module you've just created, create a python object and voila!
 
-However, this means that the backend/optimizer will be hardcoded in your template and using another one will require changes to the template.
+However, this means that the class that implements the interface will be hardcoded in your template and to use another one will require changing the template.
 That's why you can use `create_object` function from `zquantum.core.utils`. It takes a dictionary with specification of the object you'd like to create and creates it inside the template. Take a look at the following example:
 
 ```yaml
@@ -84,6 +85,7 @@ All the currently implemented optimizers live in the [z-quantum-optimizers repos
 
 - grid search - brute-force approach checking all the values from a grid.
 - scipy optimizers - integration with `scipy.minimize` optimizers.
+- qiskit optimizers - integration with `ADAM` and `SPSA`
 - CMA-ES - Covariance Matrix Adaptation Evolution Strategy
 
 
@@ -93,8 +95,8 @@ In Orquestra we also have interfaces for the cost functions that are being minim
 
 Right now the following cost functions are implemented in Orquestra:
 - [`BasicCostFunction`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/cost_function.py) – it allows to use an arbitrary python function as cost function we want to minimize.
-- [`EvaluateOperatorCostFunction`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/cost_function.py) - cost function which evaluates an operator using given ansatz and backend, useful for variational quantum algorithms.
-- [`QCBMCostFunction`](https://github.com/zapatacomputing/z-quantum-qcbm/blob/master/src/python/zquantum/qcbm/cost_function.py) - similar to the `EvaluateOperatorCostFunction`, but tuned towards the Quantum Circuit Born Machine algorithm.
+- [`AnsatzBasedCostFunction`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/cost_function.py) - cost function which evaluates an operator using given ansatz, useful for variational quantum algorithms.
+- [`QCBMCostFunction`](https://github.com/zapatacomputing/z-quantum-qcbm/blob/master/src/python/zquantum/qcbm/cost_function.py) - builds off of the `AnsatzBasedCostFunction`, but tuned towards the Quantum Circuit Born Machine algorithm.
 
 ### Estimators 
 
@@ -104,9 +106,24 @@ Specifically, say the state $$\ket{\psi}$$ is prepared by the circuit $$C$$.
 Then, the `Estimator` returns an estimate of $$\braket{\psi \vert O \vert \psi}$$, the expectation value of the observable on the state prepared by the input circuit. 
 There are also optional inputs, depending on the `Estimator` being used.  
 
-Here is a list of the `Estimator` implementations available on Orquestra: 
+Here is a list of the `Estimator` implementations currently available on Orquestra: 
 
 - **[`BasicEstimator`](https://github.com/zapatacomputing/z-quantum-core/blob/dev/src/python/zquantum/core/estimator.py#L43):** 
 Estimates expectation values with standard estimation techniques. 
 - **[`ExactEstimator`](https://github.com/zapatacomputing/z-quantum-core/blob/dev/src/python/zquantum/core/estimator.py#L108):** 
 Exactly computes expectation value. The backend must be a `QuantumSimulator`.  
+
+### Ansatzes 
+
+An `Ansatz` is used to produce circuits that all belong to a similar family and all contain similar structures and are commonly used in variational quantum algorithms. Ansatzes can take various things upon input (ranging from device specifications to hamiltonians), but all ansatzes share the same goal of producing Quantum Circuits.
+
+There are two very important properties of each `Ansatz`, the first being the `parameterized_circuit` attribute. This will return a parameterized version of the Quantum Circuit that matches the current attributs of the ansatz such as the `number_of_qubits` and `number_of_layers`. Since producing these circuits can sometimes be a costly operation, the `parameterized_circuit` is cached and reproduced when certain attributes of the ansatz are modified. The second important property of all ansatzes is the `get_executable_circuit` method. Since parameterizable circuits are not supported by every ansatz, this is a way to get a non-parameterized circuit that still adheres to the given ansatz.
+
+Here is a list of the `Ansatz` implementations currently available on Orquestra: 
+
+- **[`QAOAFarhiAnsatz`](https://github.com/zapatacomputing/z-quantum-qaoa/blob/dev/src/python/zquantum/qaoa/farhi_ansatz.py#L15):** 
+Ansatz class representing QAOA ansatz as described in "A Quantum Approximate Optimization Algorithm" by E. Farhi and J. Goldstone (https://arxiv.org/abs/1411.4028)
+- **[`QCBMAnsatz`](https://github.com/zapatacomputing/z-quantum-qcbm/blob/dev/src/python/zquantum/qcbm/ansatz.py#L15):** 
+An ansatz implementation used for running the Quantum Circuit Born Machine.
+- **[`SingletUCCSDAnsatz`](https://github.com/zapatacomputing/z-quantum-vqe/blob/dev/src/python/zquantum/vqe/singlet_uccsd.py#L14):** 
+Ansatz class representing Singlet UCCSD Ansatz.
