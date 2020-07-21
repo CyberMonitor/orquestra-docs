@@ -20,7 +20,7 @@ The fields that define a resource template are:
       - `main-script` (`inputs/artifacts`): For resource templates, the `main-script` input artifact is an executable script that calls your source code. This artifact - or an equivalent one - is required so that the `command` references an actual script.
  - `outputs`: This field defines the output `artifacts` that the task produces. By specifying files produced by your source code as an output artifacts, they will be processed by Orquestra and can be refered to as input artifacts in other templates. Anything produced by your source code that is not declared as an ourput artifact will be lost.
 
-Below is an example of a file containing a template named `welcome-to-orquestra` that calls the source code shown on the [Resources page](https://orquestra.io/docs/qe/definingaworkflow/resources).
+Below is an example of a file containing a template named `welcome-to-orquestra` that calls the source code shown on the [Resources page](../resources/).
 
 ```YAML
 # Every template YAML file must begin with a `spec` and `templates`, without which your template won't compile.
