@@ -207,7 +207,7 @@ spec:
 
 You are now ready to run the workflow!
 
-* Make sure you have installed the [Quantum Engine CLI](https://www.orquestra.io/docs/qe/cli/install/)
+* Make sure you have installed the [Quantum Engine CLI](../../qe-cli/install-cli/)
 
 * Log in to Quantum Engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your terminal. Contact support to register your email and/or receive the `quantum-engine-uri`.
 
@@ -357,7 +357,7 @@ This file will look like the following:
 }
 ```
 
-The sections `welcome-to-orquestra-d9djf-1289017430` and `welcome-to-orquestra-d9djf-2235995037` correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the template that was executed for the given step, any input parameters or input artifacts, and the output artifacts. The artifact `welcome` is the output of the `greeting` template, and the artifact `zessage` is the output of the `transform-welcome` template. More information on the contents of this file are found on the [Workflow Results via JSON page](https://www.orquestra.io/docs/dcs/data/json/).
+The sections `welcome-to-orquestra-d9djf-1289017430` and `welcome-to-orquestra-d9djf-2235995037` correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the template that was executed for the given step, any input parameters or input artifacts, and the output artifacts. The artifact `welcome` is the output of the `greeting` template, and the artifact `zessage` is the output of the `transform-welcome` template. More information on the contents of this file are found on the [Workflow Results via JSON page](../../data-management/workflow-result/).
 
 ___
 **Note:** The sections in this results file will not necessarily be in the order that they were executed.
