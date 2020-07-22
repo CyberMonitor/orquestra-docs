@@ -14,7 +14,7 @@ In addition to that we'll cover some advanced workflow features (e.g. recursive 
 Quantum Approximate Optimization Algorithm (QAOA) is a variational quantum algorithm which allows to solve combinatorial optimization problems. We'll make a very high-level overview of only those parts of QAOA that we need for this tutorial. If you're interested in a more detailed description of QAOA you can read either [the original paper](https://arxiv.org/abs/1411.4028) or [this article](https://www.mustythoughts.com/Quantum-Approximate-Optimization-Algorithm-Explained.html).
 
 
-In order to solve such problem we need to go through the following steps:
+In order to solve such a problem we need to go through the following steps:
 
 1. Translate our problem into an Ising Hamiltonian
 2. Prepare QAOA ansatz
@@ -76,6 +76,8 @@ spec:
     - s3-key: projects/qaoa/
     - docker-image: z-quantum-default
     - docker-tag: latest
+    - n-nodes: "5"
+    - total-n-layers: "3"
 
   templates:
   - name: main
@@ -84,7 +86,7 @@ spec:
         template: generate-erdos-renyi-graph
         arguments:
           parameters:
-            - n-nodes: "5"
+            - n-nodes: "{{workflow.parameters.n-nodes}}"
             - edge-probability: "0.8"
             - resources: [z-quantum-core]
             - docker-image: "{{workflow.parameters.docker-image}}"
@@ -99,34 +101,12 @@ spec:
           artifacts:
           - graph:
               from: '{{steps.generate-graph.outputs.artifacts.graph}}'
-    - - name: build-circuit-template
-        template: build-farhi-qaoa-circuit-template
-        arguments:
-          parameters:
-          - resources: [z-quantum-core, qe-openfermion, z-quantum-qaoa]
-          - docker-image: "{{workflow.parameters.docker-image}}"
-          - docker-tag: "{{workflow.parameters.docker-tag}}"
-          artifacts:
-          - hamiltonian:
-              from: '{{steps.get-maxcut-hamiltonian.outputs.artifacts.hamiltonian}}'
-    - - name: generate-random-ansatz-params
-        template: generate-random-ansatz-params
-        arguments:
-          parameters:
-          - min-val: "-0.01"
-          - max-val: "0.01"
-          - n-layers: "0"
-          - resources: [z-quantum-core]
-          - docker-image: "{{workflow.parameters.docker-image}}"
-          - docker-tag: "{{workflow.parameters.docker-tag}}"
-          artifacts:
-          - ansatz:
-              from: '{{steps.build-circuit-template.outputs.artifacts.ansatz}}'
 
-    - - name: build-uniform-parameter-grid
+      - name: build-uniform-parameter-grid
         template: build-uniform-parameter-grid
         arguments:
           parameters:
+          - number-of-params-per-layer: "2"
           - n-layers: "1"
           - min-value: "0"
           - max-value: "3.14159265359"
@@ -134,53 +114,94 @@ spec:
           - resources: [z-quantum-core]
           - docker-image: "{{workflow.parameters.docker-image}}"
           - docker-tag: "{{workflow.parameters.docker-tag}}"
-          artifacts:
-          - ansatz:
-              from: '{{steps.build-circuit-template.outputs.artifacts.ansatz}}'
+
+
+    - - name: generate-random-initial-ansatz-params
+        template: generate-random-ansatz-params
+        arguments:
+          parameters:
+          - number-of-params: "2"
+          - min-val: "-0.01"
+          - max-val: "0.01"
+          - resources: [z-quantum-core]
+          - docker-image: "{{workflow.parameters.docker-image}}"
+          - docker-tag: "{{workflow.parameters.docker-tag}}"
+
+      - name: generate-fixed-ansatz-params
+        template: generate-random-ansatz-params
+        arguments:
+          parameters:
+          - number-of-params: "0"
+          - min-val: "-0.01"
+          - max-val: "0.01"
+          - resources: [z-quantum-core]
+          - docker-image: "{{workflow.parameters.docker-image}}"
+          - docker-tag: "{{workflow.parameters.docker-tag}}"
+
 
     - - name: optimize-lbl
         template: optimize-lbl
         arguments:
           parameters:
-          - n-layers: "2"
+          - total-n-layers: "{{workflow.parameters.total-n-layers}}"
+          - current-n-layers: "1"
           artifacts:
           - params:
-              from: '{{steps.generate-random-ansatz-params.outputs.artifacts.params}}'
-          - ansatz:
-              from: '{{steps.build-circuit-template.outputs.artifacts.ansatz}}'
+              from: '{{steps.generate-random-initial-ansatz-params.outputs.artifacts.params}}'
+          - fixed-params:
+              from: '{{steps.generate-fixed-ansatz-params.outputs.artifacts.params}}'
           - hamiltonian:
               from:  '{{steps.get-maxcut-hamiltonian.outputs.artifacts.hamiltonian}}'
           - parameter-grid:
               from: '{{steps.build-uniform-parameter-grid.outputs.artifacts.parameter-grid}}'
-
+    
   # Optimize a variational circuit layer-by-layer
   - name: optimize-lbl
     inputs:
       parameters:
-      - name: n-layers
+      - name: current-n-layers
       artifacts:
       - name: params
-      - name: ansatz
+      - name: fixed-params
       - name: hamiltonian
       - name: parameter-grid
 
     steps:
+    # Optimize the active layer and all preceding layers using black-box optimization
+    - - name: optimize-variational-circuit
+        template: optimize-variational-circuit
+        arguments:
+          parameters:
+          - ansatz-specs: "{'module_name': 'zquantum.qaoa.farhi_ansatz', 'function_name': 'QAOAFarhiAnsatz', 'number_of_layers': {{inputs.parameters.current-n-layers}}}"
+          - backend-specs: "{'module_name': 'qeqhipster.simulator', 'function_name': 'QHipsterSimulator'}"
+          - optimizer-specs: "{'module_name': 'zquantum.optimizers.grid_search', 'function_name': 'GridSearchOptimizer', 'options': {'keep_value_history': True}}"
+          - cost-function-specs: "{'module_name': 'zquantum.core.cost_function', 'function_name': 'AnsatzBasedCostFunction', 'estimator-specs': { 'module_name': 'zquantum.core.estimator', 'function_name': 'ExactEstimator'}}"
+          - resources: [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-qhipster, z-quantum-qaoa]
+          - docker-image: qe-qhipster
+          - docker-tag: latest
+          artifacts:
+          - initial-parameters:
+              from: '{{inputs.artifacts.params}}'
+          - fixed-parameters:
+              from: '{{inputs.artifacts.fixed-params}}'
+          - qubit-operator:
+              from: '{{inputs.artifacts.hamiltonian}}'
+          - parameter-grid:
+              from: '{{inputs.artifacts.parameter-grid}}'
+
     - - name: generate-random-ansatz-params
         template: generate-random-ansatz-params
         arguments:
           parameters:
           - min-val: "-0.01"
           - max-val: "0.01"
-          - n-layers: "{{inputs.parameters.n-layers}}"
+          - number-of-params: "2"
           - resources: [z-quantum-core]
           - docker-image: "{{workflow.parameters.docker-image}}"
           - docker-tag: "{{workflow.parameters.docker-tag}}"
-          artifacts:
-          - ansatz:
-              from: '{{inputs.artifacts.ansatz}}'
 
     # Append the parameters for the active layer to parameters for previous layers
-    - - name: combine-ansatz-params
+      - name: combine-fixed-ansatz-params
         template: combine-ansatz-params
         arguments:
           parameters:
@@ -189,67 +210,27 @@ spec:
           - docker-tag: "{{workflow.parameters.docker-tag}}"
           artifacts:
           - params1:
-              from: '{{inputs.artifacts.params}}'
+              from: '{{inputs.artifacts.fixed-params}}'
           - params2:
-              from: '{{steps.generate-random-ansatz-params.outputs.artifacts.params}}'
+              from: '{{steps.optimize-variational-circuit.outputs.artifacts.optimized-parameters}}'
 
-    # Optimize the active layer and all preceding layers using black-box optimization
-    - - name: optimize-variational-circuit
-        template: optimize-variational-circuit
-        arguments:
-          parameters:
-          - backend-specs: "{'module_name': 'qeqhipster.simulator', 'function_name': 'QHipsterSimulator'}"
-          - optimizer-specs: "{'module_name': 'zquantum.optimizers.grid_search', 'function_name': 'GridSearchOptimizer'}"
-          - resources: [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-qhipster, z-quantum-qaoa]
-          - docker-image: qe-qhipster
-          - docker-tag: latest
-          artifacts:
-          - ansatz:
-              from: '{{inputs.artifacts.ansatz}}'
-          - initial-parameters:
-              from: '{{steps.combine-ansatz-params.outputs.artifacts.combined-params}}'
-          - qubit-operator:
-              from: '{{inputs.artifacts.hamiltonian}}'
-          - parameter-grid:
-              from: '{{inputs.artifacts.parameter-grid}}'
-
-    # Decrement the number of layers to be added
-    - - name: decrement-n-layers
-        template: evaluate-python-expression
-        arguments:
-          parameters:
-          - expression: '{{inputs.parameters.n-layers}} - 1'
-          - resources: [z-quantum-core]
-          - docker-image: "{{workflow.parameters.docker-image}}"
-          - docker-tag: "{{workflow.parameters.docker-tag}}"
-
-    # Check if we have added the number of layers requested
-    - - name: check-if-done
-        template: evaluate-python-expression
-        arguments:
-          parameters:
-          - expression: '{{steps.decrement-n-layers.outputs.parameters.result}} == 0'
-          - resources: [z-quantum-core]
-          - docker-image: "{{workflow.parameters.docker-image}}"
-          - docker-tag: "{{workflow.parameters.docker-tag}}"
 
     # Recursively call another optimization if there are more layers to add
     - - name: optimize-lbl
         template: optimize-lbl
         arguments:
           parameters:
-            - n-layers: '{{steps.decrement-n-layers.outputs.parameters.result}}'
+            - current-n-layers: '{{inputs.parameters.current-n-layers}} + 1'
           artifacts:
           - params:
-              from: '{{steps.optimize-variational-circuit.outputs.artifacts.optimized-parameters}}'
-          - ansatz:
-              from: '{{inputs.artifacts.ansatz}}'
+              from: '{{steps.generate-random-ansatz-params.outputs.artifacts.params}}'
+          - fixed-params:
+              from: '{{steps.combine-fixed-ansatz-params.outputs.artifacts.combined-params}}'
           - hamiltonian:
               from: '{{inputs.artifacts.hamiltonian}}'
           - parameter-grid:
               from: '{{inputs.artifacts.parameter-grid}}'
-        when: '{{steps.check-if-done.outputs.parameters.result}} == False'
-
+        when: '{{workflow.parameters.total-n-layers}} != {{inputs.parameters.current-n-layers}}'
 ```
 
 **2. Running workflow**
@@ -299,11 +280,11 @@ This workflow might take a couple of minutes to finish, so in the meantime let's
 
 - `generate-graph` - generates a random graph for which we will be solving MaxCut problem.
 - `get-maxcut-hamiltonian` - creates a Hamiltonian describing our problem for given graph.
-- `build-circuit-template` - prepares a template for the circuit (ansatz) – later we will fill it in with the parameters.
-- `generate-random-ansatz-params` - creates some starting parameters for the ansatz.
 - `build-uniform-parameter-grid` - creates an object representing a parameter grid for the grid search optimization.
+- `generate-random-initial-ansatz-params` - creates some starting parameters for the ansatz.
+- `generate-fixed-ansatz-params` - creates some fixed parameters for the ansatz.
 
-All of these are just initial steps we need to define our problem and build the circuit. Now that we have this set up, we can take a look into how we do optimization.
+All of these are just initial steps we need to define our problem, ansatz, and initial parameters. Now that we have this set up, we can take a look into how we do optimization.
 
 
 **5. Workflow explanation: optimization**
@@ -314,12 +295,10 @@ In order to optimize the angles we use method called "grid search" – it is a v
 
 All of this happens in the `optimize-lbl` task. Contrary to all the other tasks we used here, this one is defined inside the same file as workflow and consists of the following steps:
 
+- `optimize-variational-circuit` - finds optimal parameters for the circuit.
 - `generate-random-ansatz-params` - creates random initial parameters for the new layer.
 - `combine-ansatz-params` - creates one "params" object by combining parameters from previous layers with the newly created ones.
-- `optimize-variational-circuit` - finds optimal parameters for the circuit.
-- `decrement-n-layers` – decrements the layer counter.
-- `check-if-done` – checks if layer counter is equal to zero.
-- `optimize-lbl` - launches the whole task again depending on the output of the previous step.
+- `optimize-lbl` - launches the whole task again depending on if there are still more layers to optimize over
 
 
 
@@ -348,7 +327,7 @@ To make things simpler to visualize this time we will try to solve the problem f
 
 **Interfaces**
 
-One of the features that make Orquestra a really flexible tool are Interfaces. The main idea behind it is to be able to switch between different methods at the level of the workflow, without need to modify any code. You can read about it in more details in the [Interfaces section](../../other-resources/interfaces), here we'll focus on the example of Optimizer Interface.
+One of the features that makes Orquestra a really flexible tool are Interfaces. The main idea behind it is to be able to switch between different methods at the level of the workflow, without need to modify any code. You can read about it in more details in the [Interfaces section](../../other-resources/interfaces), here we'll focus on the example of Optimizer Interface.
 
 As you can see in the workflow, `optimize-variational-circuit` task has a field called `optimizer-specs`. It is a dictionary which specifies what type of optimizer do we want to use. It has two required keys:
 
@@ -368,8 +347,9 @@ To do that you need to:
 2. Copy `optimize-variational-circuit` and paste it after `build-uniform-parameter-grid`.
 3. Modify its input artifacts to reflect data dependencies (should be the same paths as inputs of `optimize-lbl`)
 4. Remove `optimize-lbl` task (and its definition)
-5. Change parameters in `generate-random-ansatz-params` to `min-val: "1"`, `max-val: "2"`, `n-layers: "1"`
-6. Change parameters in `build-uniform-parameter-grid` to `max-value: "3.14159265359+0.05"` and `step: "0.1047197551"`.
+5. Change the workflow parameter `total-n-layers` to `"1"`
+6. Change parameters in `build-uniform-parameter-grid` to `n-layers: "{{workflow.parameters.total-n-layers}}"` and `step: "0.1047197551"`.
+7. Change parameters in `generate-random-initial-ansatz-params` to `min-val: "1"` and `max-val: "2"`
 
 Here's how it should look like:
 
@@ -404,6 +384,7 @@ resources:
     url: "git@github.com:zapatacomputing/qe-openfermion.git"
     branch: "master"
 
+
 metadata:
   generateName: qaoa-example-
 
@@ -415,6 +396,8 @@ spec:
     - s3-key: projects/qaoa/
     - docker-image: z-quantum-default
     - docker-tag: latest
+    - n-nodes: "5"
+    - total-n-layers: "1"
 
   templates:
   - name: main
@@ -423,7 +406,7 @@ spec:
         template: generate-erdos-renyi-graph
         arguments:
           parameters:
-            - n-nodes: "5"
+            - n-nodes: "{{workflow.parameters.n-nodes}}"
             - edge-probability: "0.8"
             - resources: [z-quantum-core]
             - docker-image: "{{workflow.parameters.docker-image}}"
@@ -438,60 +421,62 @@ spec:
           artifacts:
           - graph:
               from: '{{steps.generate-graph.outputs.artifacts.graph}}'
-    - - name: build-circuit-template
-        template: build-farhi-qaoa-circuit-template
-        arguments:
-          parameters:
-          - resources: [z-quantum-core, qe-openfermion, z-quantum-qaoa]
-          - docker-image: "{{workflow.parameters.docker-image}}"
-          - docker-tag: "{{workflow.parameters.docker-tag}}"
-          artifacts:
-          - hamiltonian:
-              from: '{{steps.get-maxcut-hamiltonian.outputs.artifacts.hamiltonian}}'
-    - - name: generate-random-ansatz-params
-        template: generate-random-ansatz-params
-        arguments:
-          parameters:
-          - min-val: "1"
-          - max-val: "2"
-          - n-layers: "1"
-          - resources: [z-quantum-core]
-          - docker-image: "{{workflow.parameters.docker-image}}"
-          - docker-tag: "{{workflow.parameters.docker-tag}}"
-          artifacts:
-          - ansatz:
-              from: '{{steps.build-circuit-template.outputs.artifacts.ansatz}}'
 
       - name: build-uniform-parameter-grid
         template: build-uniform-parameter-grid
         arguments:
           parameters:
-          - n-layers: "1"
+          - number-of-params-per-layer: "2"
+          - n-layers: "{{workflow.parameters.total-n-layers}}"
           - min-value: "0"
-          - max-value: "3.14159265359+0.05"
+          - max-value: "3.14159265359"
           - step: "0.1047197551"
           - resources: [z-quantum-core]
           - docker-image: "{{workflow.parameters.docker-image}}"
           - docker-tag: "{{workflow.parameters.docker-tag}}"
-          artifacts:
-          - ansatz:
-              from: '{{steps.build-circuit-template.outputs.artifacts.ansatz}}'
+
+
+    - - name: generate-random-initial-ansatz-params
+        template: generate-random-ansatz-params
+        arguments:
+          parameters:
+          - number-of-params: "2"
+          - min-val: "1"
+          - max-val: "2"
+          - resources: [z-quantum-core]
+          - docker-image: "{{workflow.parameters.docker-image}}"
+          - docker-tag: "{{workflow.parameters.docker-tag}}"
+
+      - name: generate-fixed-ansatz-params
+        template: generate-random-ansatz-params
+        arguments:
+          parameters:
+          - number-of-params: "0"
+          - min-val: "-0.01"
+          - max-val: "0.01"
+          - resources: [z-quantum-core]
+          - docker-image: "{{workflow.parameters.docker-image}}"
+          - docker-tag: "{{workflow.parameters.docker-tag}}"
+
+    # Optimize the active layer and all preceding layers using black-box optimization
     - - name: optimize-variational-circuit
         template: optimize-variational-circuit
         arguments:
           parameters:
+          - ansatz-specs: "{'module_name': 'zquantum.qaoa.farhi_ansatz', 'function_name': 'QAOAFarhiAnsatz', 'number_of_layers': {{workflow.parameters.total-n-layers}}}"
           - backend-specs: "{'module_name': 'qeqhipster.simulator', 'function_name': 'QHipsterSimulator'}"
           - optimizer-specs: "{'module_name': 'zquantum.optimizers.grid_search', 'function_name': 'GridSearchOptimizer', 'options': {'keep_value_history': True}}"
+          - cost-function-specs: "{'module_name': 'zquantum.core.cost_function', 'function_name': 'AnsatzBasedCostFunction', 'estimator-specs': { 'module_name': 'zquantum.core.estimator', 'function_name': 'ExactEstimator'}}"
           - resources: [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-qhipster, z-quantum-qaoa]
           - docker-image: qe-qhipster
           - docker-tag: latest
           artifacts:
-          - ansatz:
-              from: '{{steps.build-circuit-template.outputs.artifacts.ansatz}}'
           - initial-parameters:
-              from: '{{steps.generate-random-ansatz-params.outputs.artifacts.params}}'
+              from: '{{steps.generate-random-initial-ansatz-params.outputs.artifacts.params}}'
+          - fixed-parameters:
+              from: '{{steps.generate-fixed-ansatz-params.outputs.artifacts.params}}'
           - qubit-operator:
-              from: '{{steps.get-maxcut-hamiltonian.outputs.artifacts.hamiltonian}}'
+              from:  '{{steps.get-maxcut-hamiltonian.outputs.artifacts.hamiltonian}}'
           - parameter-grid:
               from: '{{steps.build-uniform-parameter-grid.outputs.artifacts.parameter-grid}}'
 ```
@@ -582,7 +567,7 @@ grid_results = []
 initial_params = []
 
 for task in data:
-    if data[task]['class'] == 'generate-random-ansatz-params':
+    if data[task]['class'] == 'generate-random-ansatz-params' and data[task]['inputParam:number-of-params'] == 2:
         initial_params = data[task]['params']['parameters']['real']
 
 for task in data:
