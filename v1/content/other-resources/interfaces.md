@@ -20,11 +20,12 @@ Right now Orquestra defines the following interfaces:
 - `Estimator`
 - `Ansatz`
 
-## Integrating Backends & Optimizers
+## Integrating with interfaces
 
 ### How to integrate your own code
-In order to integrate code which fits the some of the interfaces, you need to create a class which inherits after the appropriate interface. All you need to do is implement the methods required by the interface. In some cases implementing a new backend might also require installing additional software and therefore need a special docker container to work.
+In order to integrate code which fits the interfaces, you need to create a class which inherits after the appropriate interface. All you need to do is implement the methods required by the interface. In some cases implementing a new backend might also require installing additional software and therefore need a special docker container to work.
 
+You might find very basic examples of such integrations in the [`mock_objects`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/interfaces/mock_objects.py) file in [`z-quantum-core`](https://github.com/zapatacomputing/z-quantum-core). Note that these are created only for testing purposes, but you'll find links to other implementations in appropriate sections.
 
 
 ### Using integration
@@ -32,7 +33,7 @@ In order to integrate code which fits the some of the interfaces, you need to cr
 Once you've done your integration, there are two ways you can use it in your template.
 The first one is obvious – you can simply import from the module you've just created, create a python object and voila!
 
-However, this means that the class that implements the interface will be hardcoded in your template and to use another one will require changing the template.
+However, this means that the class that implements the interface will be hardcoded in your template and using another one will require changing the template.
 That's why you can use `create_object` function from `zquantum.core.utils`. It takes a dictionary with specification of the object you'd like to create and creates it inside the template. Take a look at the following example:
 
 ```yaml
@@ -70,33 +71,37 @@ For example, for the `MockSimulator` it might look like this:
 - backend-specs: "{'module_name': 'zquantum.core.interfaces.mock_objects', 'function_name': 'MockQuantumSimulator', 'n_samples': 1000}"
 ```
 
-### Integrated backends
+### QuantumBackend and QuantumSimulator
 
-Each backend integration lives in a separate repository:
+`QuantumBackend` and `QuantumSimulator` are interfaces which allow you to integrate different bakcends for running quantum circuits. The main difference between the two of them is that `QuantumSimulator` allows using wavefunction representation of a quantum state.
+
+You can find [the interface definition here](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/interfaces/backend.py). Currently available integrations are:
 
 - [qHiPSTER](https://github.com/zapatacomputing/qe-qhipster)
 - [Forest QVM](https://github.com/zapatacomputing/qe-forest)
 - [qulacs](https://github.com/zapatacomputing/qe-qulacs)
 
 
-### Integrated optimizers
+### Optimizer
+
+Optimizer is an interface that allows using different optimizers within Orquestra, [here you can find the interface definition](https://github.com/zapatacomputing/z-quantum-core/blob/dev/src/python/zquantum/core/interfaces/optimizer.py).
 
 All the currently implemented optimizers live in the [z-quantum-optimizers repository](https://github.com/zapatacomputing/z-quantum-optimizers):
 
 - grid search - brute-force approach checking all the values from a grid.
 - scipy optimizers - integration with `scipy.minimize` optimizers.
-- qiskit optimizers - integration with `ADAM` and `SPSA`
-- CMA-ES - Covariance Matrix Adaptation Evolution Strategy
+- qiskit optimizers - integration with `ADAM`, `AMSGRAD` and `SPSA`.
+- CMA-ES - Covariance Matrix Adaptation Evolution Strategy.
 
 
 ### Cost functions
 
-In Orquestra we also have interfaces for the cost functions that are being minimized by the optimizers.
+In Orquestra we also have interfaces for the cost functions that are being minimized by the optimizers. Cost functions can vary in their complexity – from just calling a simple python function in `BasicCostFunction` to execution and evaluation of quantum circuits on any backend using `AnsatzBasedCostFunction`, but for evaluation they all should need just an array of numerical parameters. This interface can also be used for calculating gradients of given cost function – all cost function support finite differences method by default.
 
 Right now the following cost functions are implemented in Orquestra:
-- [`BasicCostFunction`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/cost_function.py) – it allows to use an arbitrary python function as cost function we want to minimize.
-- [`AnsatzBasedCostFunction`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/cost_function.py) - cost function which evaluates an operator using given ansatz, useful for variational quantum algorithms.
-- [`QCBMCostFunction`](https://github.com/zapatacomputing/z-quantum-qcbm/blob/master/src/python/zquantum/qcbm/cost_function.py) - builds off of the `AnsatzBasedCostFunction`, but tuned towards the Quantum Circuit Born Machine algorithm.
+- **[`BasicCostFunction`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/cost_function.py):** it allows to use an arbitrary python function as cost function we want to minimize.
+- **[`AnsatzBasedCostFunction`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/cost_function.py):** cost function which evaluates an operator using given ansatz, useful for variational quantum algorithms.
+- **[`QCBMCostFunction`](https://github.com/zapatacomputing/z-quantum-qcbm/blob/master/src/python/zquantum/qcbm/cost_function.py):** builds off of the `AnsatzBasedCostFunction`, but tuned towards the Quantum Circuit Born Machine algorithm.
 
 ### Estimators 
 
@@ -115,9 +120,9 @@ Exactly computes expectation value. The backend must be a `QuantumSimulator`.
 
 ### Ansatzes 
 
-An `Ansatz` is used to produce circuits that all belong to a similar family and all contain similar structures and are commonly used in variational quantum algorithms. Ansatzes can take various things upon input (ranging from device specifications to hamiltonians), but all ansatzes share the same goal of producing Quantum Circuits.
+An `Ansatz` is used to produce circuits that all belong to a similar family and all contain similar structures and are commonly used in variational quantum algorithms. Ansatzes can take various things as input (ranging from device specifications to hamiltonians), but all ansatzes share the same goal of producing Quantum Circuits.
 
-There are two very important properties of each `Ansatz`, the first being the `parameterized_circuit` attribute. This will return a parameterized version of the Quantum Circuit that matches the current attributs of the ansatz such as the `number_of_qubits` and `number_of_layers`. Since producing these circuits can sometimes be a costly operation, the `parameterized_circuit` is cached and reproduced when certain attributes of the ansatz are modified. The second important property of all ansatzes is the `get_executable_circuit` method. Since parameterizable circuits are not supported by every ansatz, this is a way to get a non-parameterized circuit that still adheres to the given ansatz.
+There are two very important properties of `Ansatz`, the first being the `parameterized_circuit` attribute. This will return a parameterized version of the Quantum Circuit that matches the current attributs of the ansatz such as the `number_of_qubits` and `number_of_layers`. Since producing these circuits can sometimes be a costly operation, the `parameterized_circuit` is cached and reproduced when certain attributes of the ansatz are modified. The second important property of all ansatzes is the `get_executable_circuit` method. Since parameterizable circuits are not supported by every ansatz, this is a way to get a non-parameterized circuit that still adheres to the given ansatz.
 
 Here is a list of the `Ansatz` implementations currently available on Orquestra: 
 

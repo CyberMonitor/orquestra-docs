@@ -99,4 +99,4 @@ Let's see what happens in each step:
 6. Uses objects defined earlier to find the optimal parameters
 7. Saves the results of the optimization to the files.
 
-The whole variational loops happens in step 5 and is handled by the optimizer.
+The whole variational loop happens in step 5 and is handled by the optimizer.
