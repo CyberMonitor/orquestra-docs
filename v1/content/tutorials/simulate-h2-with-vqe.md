@@ -406,11 +406,6 @@ resources:
   parameters:
     url: "git@github.com:zapatacomputing/z-quantum-optimizers.git"
     branch: "master"
-- name: qe-forest
-  type: git
-  parameters:
-    url: "git@github.com:zapatacomputing/qe-forest.git"
-    branch: "master"
 - name: qe-qhipster
   type: git
   parameters:
@@ -430,8 +425,8 @@ spec:
     parameters:
     - s3-bucket: quantum-engine
     - s3-key: projects/examples/hydrogen/data
-    - docker-image: z-quantum-default
-    - docker-tag: latest
+    - docker-image: 'z-quantum-default'
+    - docker-tag: 'latest'
 
   templates:
 
@@ -503,43 +498,31 @@ spec:
           - resources: [z-quantum-core, qe-openfermion]
           - docker-image: "{{workflow.parameters.docker-image}}"
           - docker-tag: "{{workflow.parameters.docker-tag}}"
-    - - name: build-vqe-circuit-template
-        template: build-vqe-circuit-template
-        arguments:
-          parameters:
-          - ansatz-type: singlet UCCSD
-          - n-alpha: "{{steps.run-psi4.outputs.parameters.n-alpha}}"
-          - n-beta: "{{steps.run-psi4.outputs.parameters.n-beta}}"
-          - n-mo: "{{steps.run-psi4.outputs.parameters.n-mo}}"
-          - transformation: Jordan-Wigner
-          - resources: [z-quantum-core, qe-openfermion, z-quantum-vqe]
-          - docker-image: "{{workflow.parameters.docker-image}}"
-          - docker-tag: "{{workflow.parameters.docker-tag}}"
+
     - - name: generate-random-ansatz-params
         template: generate-random-ansatz-params
         arguments:
           parameters:
+          - ansatz-specs: "{'module_name': 'zquantum.vqe.singlet_uccsd', 'function_name': 'SingletUCCSDAnsatz', 'number_of_spatial_orbitals': {{steps.run-psi4.outputs.parameters.n-mo}}, 'number_of_alpha_electrons': {{steps.run-psi4.outputs.parameters.n-alpha}}, 'transformation': 'Jordan-Wigner'}"
           - min-val: "-0.01"
           - max-val: "0.01"
-          - resources: [z-quantum-core]
+          - resources: [z-quantum-core, qe-openfermion, z-quantum-vqe]
           - docker-image: "{{workflow.parameters.docker-image}}"
           - docker-tag: "{{workflow.parameters.docker-tag}}"
-          artifacts:
-          - ansatz:
-              from: "{{steps.build-vqe-circuit-template.outputs.artifacts.ansatz}}"
+
     - - name: optimize-variational-circuit
         template: optimize-variational-circuit
         arguments:
           parameters:
+          - ansatz-specs: "{'module_name': 'zquantum.vqe.singlet_uccsd', 'function_name': 'SingletUCCSDAnsatz', 'number_of_spatial_orbitals': {{steps.run-psi4.outputs.parameters.n-mo}}, 'number_of_alpha_electrons': {{steps.run-psi4.outputs.parameters.n-alpha}}, 'transformation': 'Jordan-Wigner'}"
           - backend-specs: "{'module_name': 'qeqhipster.simulator', 'function_name': 'QHipsterSimulator'}"
           - optimizer-specs: "{'module_name': 'zquantum.optimizers.scipy_optimizer', 'function_name': 'ScipyOptimizer', 'method': 'L-BFGS-B'}"
+          - cost-function-specs: "{'module_name': 'zquantum.core.cost_function', 'function_name': 'AnsatzBasedCostFunction', 'estimator-specs': { 'module_name': 'zquantum.core.estimator', 'function_name': 'ExactEstimator'}}"
           - resources: [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-qhipster, z-quantum-vqe]
           - docker-image: qe-qhipster
           - docker-tag: latest
           - memory: 2048Mi
           artifacts:
-          - ansatz:
-              from: "{{steps.build-vqe-circuit-template.outputs.artifacts.ansatz}}"
           - qubit-operator:
               from: "{{steps.transform-hamiltonian.outputs.artifacts.transformed-op}}"
           - initial-parameters:
@@ -553,7 +536,7 @@ Submit your `vqe-workflow.yaml` by running `qe submit workflow <path/to/workflow
 This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
 ```Bash
 Successfully submitted workflow to quantum engine!
-Workflow ID: welcome-to-orquestra-d9djf
+Workflow ID: h2-example-p8l8z
 ```
 
 **3. Worfklow Progress**
@@ -564,65 +547,133 @@ To see details of the execution of your workflow, run `qe get workflow <workflow
 
  The output will look like:
 ```Bash
-Name:                h2-example-pgjqn
+Name:                h2-example-p8l8z
 Namespace:           default
 ServiceAccount:      default
 Status:              Succeeded
-Created:             Wed May 27 20:01:14 +0000 (13 minutes ago)
-Started:             Wed May 27 20:01:14 +0000 (13 minutes ago)
-Finished:            Wed May 27 20:14:15 +0000 (53 seconds ago)
-Duration:            13 minutes 1 seconds
-Parameters:
+Created:             Wed Jul 22 18:20:48 +0000 (32 minutes ago)
+Started:             Wed Jul 22 18:20:48 +0000 (32 minutes ago)
+Finished:            Wed Jul 22 18:43:15 +0000 (10 minutes ago)
+Duration:            22 minutes 27 seconds
+Parameters:          
   s3-bucket:         quantum-engine
   s3-key:            projects/examples/hydrogen/data
   docker-image:      z-quantum-default
   docker-tag:        latest
 
 STEP                                          TEMPLATE                        STEPNAME                      DURATION  MESSAGE
- ✔ h2-example-pgjqn                           basis-set-loop
- └---✔ bond-length-loop(0:STO-3G)             bond-length-loop
-     └-·-✔ run-h2(0:0.5)                      run-h2
-       | ├---✔ create-molecule                create-diatomic-molecule        h2-example-pgjqn-459287451   13s
-       | ├---✔ run-psi4                       run-psi4                        h2-example-pgjqn-3701025175  1m
-       | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-pgjqn-227587627   39s
-       | ├---✔ build-vqe-circuit-template     build-vqe-circuit-template      h2-example-pgjqn-2915280385  4m
-       | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-pgjqn-1258479298  18s
-       | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-pgjqn-277052611   5m
-       ├-✔ run-h2(1:0.6)                      run-h2
-       | ├---✔ create-molecule                create-diatomic-molecule        h2-example-pgjqn-3859637789  17s
-       | ├---✔ run-psi4                       run-psi4                        h2-example-pgjqn-2429965665  1m
-       | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-pgjqn-1835944885  1m
-       | ├---✔ build-vqe-circuit-template     build-vqe-circuit-template      h2-example-pgjqn-1962660295  52s
-       | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-pgjqn-2820032448  25s
-       | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-pgjqn-2019040637  1m
-       ├-✔ run-h2(2:0.7)                      run-h2
-       | ├---✔ create-molecule                create-diatomic-molecule        h2-example-pgjqn-2056975651  16s
-       | ├---✔ run-psi4                       run-psi4                        h2-example-pgjqn-3288310255  2m
-       | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-pgjqn-1414541955  27s
-       | ├---✔ build-vqe-circuit-template     build-vqe-circuit-template      h2-example-pgjqn-2657700217  36s
-       | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-pgjqn-1647483866  22s
-       | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-pgjqn-1326408107  1m
-       ├-✔ run-h2(3:0.8)                      run-h2
-       | ├---✔ create-molecule                create-diatomic-molecule        h2-example-pgjqn-2149814865  27s
-       | ├---✔ run-psi4                       run-psi4                        h2-example-pgjqn-2559710341  1m
-       | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-pgjqn-1140246545  1m
-       | ├---✔ build-vqe-circuit-template     build-vqe-circuit-template      h2-example-pgjqn-1795518539  4m
-       | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-pgjqn-3399831252  20s
-       | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-pgjqn-408735425   1m
-       ├-✔ run-h2(4:0.9)                      run-h2
-       | ├---✔ create-molecule                create-diatomic-molecule        h2-example-pgjqn-1553207875  32s
-       | ├---✔ run-psi4                       run-psi4                        h2-example-pgjqn-3522094607  1m
-       | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-pgjqn-2104670115  4m
-       | ├---✔ build-vqe-circuit-template     build-vqe-circuit-template      h2-example-pgjqn-2453503897  37s
-       | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-pgjqn-3758409978  3m
-       | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-pgjqn-2209202635  1m
-       └-✔ run-h2(5:1)                        run-h2
-         ├---✔ create-molecule                create-diatomic-molecule        h2-example-pgjqn-2628476742  1m
-         ├---✔ run-psi4                       run-psi4                        h2-example-pgjqn-1014206440  1m
-         ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-pgjqn-3314116694  30s
-         ├---✔ build-vqe-circuit-template     build-vqe-circuit-template      h2-example-pgjqn-3876819994  41s
-         ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-pgjqn-1434761943  19s
-         └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-pgjqn-1218854764  1m
+ ✔ h2-example-p8l8z                           basis-set-loop                                                           
+ └-·-✔ bond-length-loop(0:STO-3G)             bond-length-loop                                                         
+   | └-·-✔ run-h2(0:0.5)                      run-h2                                                                   
+   |   | ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-320671787   25s         
+   |   | ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-2276207559  1m          
+   |   | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-777027899   52s         
+   |   | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-2306285369  4m          
+   |   | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-4156831192  3m          
+   |   ├-✔ run-h2(1:0.6)                      run-h2                                                                   
+   |   | ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-1858781165  24s         
+   |   | ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-2844980177  1m          
+   |   | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-3241092549  52s         
+   |   | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-2925732603  4m          
+   |   | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-3771386018  1m          
+   |   ├-✔ run-h2(2:0.7)                      run-h2                                                                   
+   |   | ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-2489090355  23s         
+   |   | ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-1782402399  4m          
+   |   | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-2577316179  41s         
+   |   | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-367227601   36s         
+   |   | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-3310949536  3m          
+   |   ├-✔ run-h2(3:0.8)                      run-h2                                                                   
+   |   | ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-718502689   20s         
+   |   | ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-3296753909  53s         
+   |   | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-3276629793  53s         
+   |   | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-4024689623  1m          
+   |   | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-2004269862  3m          
+   |   ├-✔ run-h2(4:0.9)                      run-h2                                                                   
+   |   | ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-659958291   26s         
+   |   | ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-1077837631  4m          
+   |   | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-789538867   41s         
+   |   | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-2281753649  38s         
+   |   | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-3950100096  3m          
+   |   └-✔ run-h2(5:1)                        run-h2                                                                   
+   |     ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-3114661174  25s         
+   |     ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-626212344   4m          
+   |     ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-3286196550  42s         
+   |     ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-2806389460  1m          
+   |     └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-485685399   2m          
+   ├-✔ bond-length-loop(1:6-31G)              bond-length-loop                                                         
+   | └-·-✔ run-h2(0:0.5)                      run-h2                                                                   
+   |   | ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-2201321403  24s         
+   |   | ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-147427127   1m          
+   |   | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-619701451   2m          
+   |   | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-828786185   44s         
+   |   | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-985592200   3m          
+   |   ├-✔ run-h2(1:0.6)                      run-h2                                                                   
+   |   | ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-3112625597  27s         
+   |   | ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-498889601   2m          
+   |   | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-4020169301  34s         
+   |   | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-2730937611  4m          
+   |   | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-1118428050  3m          
+   |   ├-✔ run-h2(2:0.7)                      run-h2                                                                   
+   |   | ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-2039281475  3m          
+   |   | ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-55215375    6m          
+   |   | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-3648812195  29s         
+   |   | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-1885521121  31s         
+   |   | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-1587777616  2m          
+   |   ├-✔ run-h2(3:0.8)                      run-h2                                                                   
+   |   | ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-963451889   1m          
+   |   | ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-3837272869  1m          
+   |   | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-3111880625  31s         
+   |   | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-3371042023  5m          
+   |   | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-4045147670  1m          
+   |   ├-✔ run-h2(4:0.9)                      run-h2                                                                   
+   |   | ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-3189860195  2m          
+   |   | ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-1606785455  3m          
+   |   | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-3094855875  52s         
+   |   | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-1008295553  33s         
+   |   | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-948889456   2m          
+   |   └-✔ run-h2(5:1)                        run-h2                                                                   
+   |     ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-808302054   1m          
+   |     ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-2150190728  2m          
+   |     ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-2893748982  44s         
+   |     ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-1719652996  1m          
+   |     └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-989228711   2m          
+   └-✔ bond-length-loop(2:6-311G)             bond-length-loop                                                         
+     └-·-✔ run-h2(0:0.5)                      run-h2                                                                   
+       | ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-4150500325  2m          
+       | ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-1072637817  1m          
+       | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-4170937933  1m          
+       | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-4075034787  36s         
+       | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-3226937690  11m         
+       ├-✔ run-h2(1:0.6)                      run-h2                                                                   
+       | ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-26219435    1m          
+       | ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-2628181575  2m          
+       | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-1041197243  1m          
+       | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-2692445881  46s         
+       | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-3768791128  12m         
+       ├-✔ run-h2(2:0.7)                      run-h2                                                                   
+       | ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-206219261   2m          
+       | ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-4190137153  3m          
+       | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-1436588693  53s         
+       | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-593545547   3m          
+       | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-1910195794  12m         
+       ├-✔ run-h2(3:0.8)                      run-h2                                                                   
+       | ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-2218833135  2m          
+       | ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-757288811   6m          
+       | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-3592088935  2m          
+       | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-1817350341  37s         
+       | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-3063744844  10m         
+       ├-✔ run-h2(4:0.9)                      run-h2                                                                   
+       | ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-2798315261  2m          
+       | ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-1988032577  5m          
+       | ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-1143398805  30s         
+       | ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-2651385931  30s         
+       | └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-604431186   10m         
+       └-✔ run-h2(5:1)                        run-h2                                                                   
+         ├---✔ create-molecule                create-diatomic-molecule        h2-example-p8l8z-478082596   3m          
+         ├---✔ run-psi4                       run-psi4                        h2-example-p8l8z-1365653886  1m          
+         ├---✔ transform-hamiltonian          transform-interaction-operator  h2-example-p8l8z-3045958644  45s         
+         ├---✔ generate-random-ansatz-params  generate-random-ansatz-params   h2-example-p8l8z-1614823978  38s         
+         └---✔ optimize-variational-circuit   optimize-variational-circuit    h2-example-p8l8z-594085341   14m 
 ```
 
 This output shows the status of the execution of the steps in your workflow.
@@ -635,8 +686,8 @@ After a workflow runs, it takes time for the data to be processed. This results 
 
 Once finished, the output will look like the following:
 ```Bash
-Name:        welcome-to-orquestra-d9djf
-Location:    http://40.89.251.200:9000/workflow-results/bb2b58b4-b25d-59e3-9fee-e7b79f0c20d5.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=zapata%2F20200319%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200319T212017Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22bb2b58b4-b25d-59e3-9fee-e7b79f0c20d5.json%22&X-Amz-Signature=c4de1784b252fa6164aea8aa49a91bdd84c20c4dc55411e93f69a57b4ea62ac1
+Name:        h2-example-p8l8z
+Location:    http://13.86.58.178:9000/workflow-results/c7acd521-67ed-5f59-8af4-90039b947ed8.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=zapata%2F20200722%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200722T185615Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22c7acd521-67ed-5f59-8af4-90039b947ed8.json%22&X-Amz-Signature=52a6f99bace35826603e2247c98b368df3eeb3dc21b8a8801df000aaceacefd6
 ```
 ___
 **Note:** The above link is only valid temporarily and typically expires after 7 days.
