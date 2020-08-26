@@ -12,7 +12,7 @@ This is where you will find the documentation for Orquestra v1 documentation. Do
 
 * `cd` into the v1 directory
 * run `hugo` to build html
-* run `hugo server -D -v --baseURL "" to render markdown` to view the site at http://localhost:1313/ 
+* run `hugo server -D -v --baseURL ""` to render markdown and view the site at http://localhost:1313/ 
 
 ### CI/CD
 CI pipeline is found https://cicd.zapos.io/teams/platform/pipelines/orquestra-docs
