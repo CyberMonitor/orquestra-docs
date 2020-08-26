@@ -7,39 +7,25 @@ weight: 1
 This tutorial will cover the key components in a Quantum Engine workflow and walk you through the process of building your first workflow.
 
 ## Concepts
-Every workflow is built with a `spec` that executes `templates`. A `template` is a step in the workflow that describes the context of the work to be done, e.g. the code to be executed, the inputs, and outputs. Templates are distributed via `resources`, which represent a versioned set of templates from an external source.
-
-### Templates
-
-Templates are analogous to functions. They define the inputs they take in, the actions to be performed, and the outputs they produce. Templates can be defined once and reused multiple times within a workflow.
-
-There are also two kinds of templates, **resource templates** and **workflow templates**. To understand more about both types as well as the similarities and differences between the two, refer to the [templates page](../../quantum-engine/templates/).
-
-### Resources
-
-Resources are a way of making both templates and source code reusable and shareable.
-
-A resource is made of two components: the source code that will be executed and the template that calls that code. To learn more about what comprises a resource as well as how to build your own, please refer to the [resources page](../../quantum-engine/resources/).
+Every workflow executes a series of `steps`. A `step` is a task in the workflow that describes the context of the work to be done, e.g. the code to be executed, the inputs, and outputs. The `runtime` tag specifies how a `step` should be executed. Currently the only supported `runtime` is for Python 3. The `imports` tag specifies `resources` where the code to be executed in the `steps` is to be found. Currently, the only supported type of `resource` is a git repository.
 
 ## Building a Workflow
 
 There are three steps to building a workflow:
 
-1. Create one or more templates and associated source code (optional)
+1. Make code available as a resource (optional)
 
-1. Make templates and code available as a resource (optional)
+1. Incorporate the resource into a workflow using the `imports` tag
 
-1. Incorporate the resource into a workflow
-
-Note: Steps 1 and 2 are optional if you reuse existing resources.
+Note: Step 1 is optional if you reuse existing resources.
 
 ## Hello Workflow
 
 Let's put these concepts into practice by building our first workflow. In this tutorial we will be:
 - Building a resource. A new resource will let you incorporate existing code into the workflow.
-- Writing templates that utilize resources to create in the `step` of a workflow.
+- Writing workflows that utilize resources in their `steps`.
 
-We could create a very minimalistic workflow without using resources, but we would miss out on what makes Quantum Engine powerful: sharing reusable templates and source code. We will start by showing you how to build your own resource.
+We could create a very minimalistic workflow without using resources, but we would miss out on what makes Quantum Engine powerful: sharing reusable source code. We will start by showing you how to build your own resource.
 
 ### Building a Resource
 
@@ -49,40 +35,11 @@ Go to [GitHub](https://github.com/) and create a public repository called `welco
 
 This repository will be where you build your resource. [This GitHub repo](https://github.com/zapatacomputing/tutorial-0-welcome) can be used as a reference for how `welcome-resource` should look like throughout the tutorial.
 
-**2. Creating the Resource Folder Structure**
-
-In order to be recognized by Orquestra, a resource must contain two folders:
-- The `src/` folder which contains:
-  - A `setup.py` file that is responsible for installing your code in the machine where your workflow is executed. This installation is done automatically for you conforming to [Python3 setuptools standard](https://docs.python.org/3/distutils/setupscript.html) for Setup Scripts.
-  - A nested folder `python/` containing source code.
-- The `templates/` folder which will hold the templates used by code in the `src/` folder.
-
-Using either the GitHub UI or by cloning your repo and using the command line create two folders at the root level of the repository, `src/` and `templates/`.
-
-___
-The structure we want to have is shown in more detail on the [resources page](../../quantum-engine/resources/).
-
-___
-
-**3. Adding `welcome.py` to `src/`**
+**3. Adding `welcome.py` to `welcome-resource`**
 
 Our goal in the first part of this tutorial is to create a resource that produces an [artifact](../../data-management/workflow-artifacts/) with the text `Welcome to Orquestra!` when used within a workflow.
 
-We will start by adding some code to the `src/` folder. In general, Orquestra can support any Python3 source that is installable via `pip` using a `setup.py` script.
-
-Moving into the `src/` folder, create a folder structure `python/orquestra/` and with a python script in it called `welcome.py`. Your repo structure should now look like this:
-
-```
-.
-├── src
-│   ├── python
-│   │   └── orquestra
-│   │       └── welcome.py
-│   └── setup.py
-├── templates
-```
-
-Open `welcome.py` in an editor and add the following code:
+In order to be recognized by the Orquestra python runtime, a resource must contain a python source code file containing a callable. Create a new file in the root directory of the git repository and name it `welcome.py`. In an editor and add the following code:
 
 ```Python
 """
@@ -108,166 +65,53 @@ def welcome():
 
 - We create the file `welcome.json` because any output has to be saved in a file in order to be passed on to the next step or to be accessible for data analysis after the workflow has completed. We will see how to pass it on to another step later in this tutorial.
 
-**4. Initializing the Python Package**
-
-This `welcome` package will need an initialization file. Create a file called `__init__.py` under `src/python/orquestra/` with the following code snippet:
-
-```Python
-from .welcome import *
-```
-
-**5. Adding a `setup.py`**
-
-We need to create a `setup.py` file that lets Orquestra know how to install the `welcome.py` source code. Create a new file `setup.py` under `src/` with the following code snippet:
-
-```Python
-import setuptools
-
-setuptools.setup(
-    name                            = "orquestra",
-    packages                        = setuptools.find_packages(where = "python"),
-    package_dir                     = {
-        "" : "python"
-    },
-    classifiers                     = (
-        "Programming Language :: Python :: 3",
-        "Operating System :: OS Independent",
-    ),
-)
-```
-
-For clarity, in this example:
-- `name` is the name of your package which you can reference in your template
-- `packages` tells the installer to look for a subdirectory called `python`
-which contains your source code
-- `package_dir` allows the contents of the `python` directory to be imported
-without the python path prefix, for example, with `from orquestra import all`
-
-For more information regarding how to make your source code available as a `package`, please refer to the [setuptools documentation](https://setuptools.readthedocs.io/en/latest/setuptools.html#developer-s-guide).
-
-**6. Adding `templates`**
-
-Now that we have the code that we want the resource to execute, we'll work on defining the `welcome` template for this resource. Move into the `templates/` folder and create a new file called `welcome.yaml`.
-
-**Template**
-
-The `welcome.yaml` resource template is responsible for invoking Python code that lives under `src/`. This can be done using the following snippet:
-
-```YAML
-# Every template YAML file must begin with a `spec`, without which your template won't compile.
-spec:
-
-  # The `templates` section is where you list one or more templates
-  templates:
-
-  # This is the name of the template, which is used to reference it in the workflow. This field is required.
-  - name: welcome-to-orquestra
-
-    # `generic-task` is the supertemplate that all templates (that don't contain a `steps` section) must inherit from
-    parent: generic-task
-
-    # This section is for the inputs needed to run the template. This section is required.
-    inputs:
-
-      # `parameters` represent initialization values for a template.
-      parameters:
-
-      # The `command` parameter is required because that is what is run by `generic-task`.
-      - name: command
-        value: python3 main.py
-
-      # This section creates a script called `main.py` containing the code below under `data`. It must be under the `app` directory in order for the command above to locate it.
-      artifacts:
-      - name: main-script
-        path: /app/main.py
-        raw:
-          data: |
-            from orquestra import welcome
-            welcome()
-
-    # This section is where output artifacts are listed. They must be listed here, or else they will get deleted when the template completes. They must be under the `app` directory in order to be saved.
-    outputs:
-      artifacts:
-      - name: welcome
-        path: /app/welcome.json
-```
-
-Please refer to the [templates page](../../quantum-engine/templates/) for a more in-depth explanation of each of the fields in the above resource template.
-
 
 **7. Push Your Resource**
-
-Having added our code under `src/` and defined our template under `templates/`, the final structure of the resource should resemble the following:
-
-```
-.
-├── src
-│   ├── python
-│   │   └── orquestra
-│   │       ├── __init__.py
-│   │       └── welcome.py
-│   └── setup.py
-├── templates
-│   └── welcome.yaml
-```
 
 Once you are satisified with your work, commit your changes and push them to Github
 
 **8. Building a Workflow**
 
-We can now build a simple workflow that uses the `welcome` git resource to generate the welcome message artifact. Let's start by creating a `welcome-workflow.yaml` file with the following code:
+We can now build a simple workflow that uses the `welcome` git resource to generate the welcome message artifact. Let's start by creating a `welcome-workflow.zqwl` file with the following code:
 
 ```YAML
 # Workflow API version
-ZapOSApiVersion: v1alpha1
+apiVersion: io.orquestra.workflow/1.0.0
 
-# Declares this as workflow
-kind: Workflow
+# Prefix for workflow ID
+name: hello-workflow
 
 # List resources needed by workflow.
-resources:
+imports:
 
 # A resource named `welcome` that is a public git repo. All the fields here are required except branch, which defaults to master.
-- name: welcome
+- name: welcome-to-orquestra
   type: git
   parameters:
-    url: "git@github.com:<your-github-username>/<your-git-repo-name>.git"
+    repository: "git@github.com:<your-github-username>/<your-git-repo-name>.git"
     branch: "master"
 
-# Data to help you easily work with your workflow
-metadata:
+steps:
 
-  # Prefix for workflow ID
-  generateName: welcome-to-orquestra-
+# This step runs the `welcome` function in the `welcome-to-orquestra` resource
+- name: greeting
+  config:
+    runtime:
+      type: python3
+      imports: [welcome-to-orquestra]
+      parameters:
+        file: welcome-to-orquestra/welcome.py
+        function: welcome
+    resources:
+      cpu: "1000m"
+      memory: "1Gi"
+      disk: "15Gi"
+  outputs:
+  - name: welcome
+    type: message
 
-# Data for running the workflow
-spec:
-
-  # Think of this as identifying the `main` function -- this tells the workflow which template to start with
-  entrypoint: salutations
-
-  # Initializing global variables for use in workflow
-  arguments:
-    parameters:
-
-    # Where output data is stored -- Must be `quantum-engine` for compatibility with Orquestra data services
-    - s3-bucket: quantum-engine
-    # Path where output data is stored within the `s3-bucket` -- can be anything you want
-    - s3-key: tutorials/welcome/
-
-  # The steps of the workflow
-  templates:
-
-  # `salutations` is a template that just contains a list of `steps`, which are other templates
-  - name: salutations
-    steps:
-
-    # This template runs the `welcome-to-orquestra` template in the `welcome` resource
-    - - name: greeting
-        template: welcome-to-orquestra
-        arguments:
-          parameters:
-          - resources: [welcome]
+types:
+- message
 ```
 ___
 **Note**: Do not forget to update the resource url - `"git@github.com:<your-github-username>/<your-git-repo-name>.git"` - with the location of your resource.
@@ -281,7 +125,7 @@ Please refer to the [workflow basics page](../../quantum-engine/workflow-basics/
 
 Next, we will see how to use a pre-existing resource and explore one possible pattern for a workflow with multiple steps.
 
-For example, Zapata already has build a [transform message resource](https://github.com/zapatacomputing/tutorial-0-ztransform.git) with a git-URL of `https://github.com/zapatacomputing/tutorial-0-ztransform.git`. This resource translates a message you give it in a fun way.
+For example, Zapata already has built a [transform message resource](https://github.com/zapatacomputing/tutorial-0-ztransform.git) with a git-URL of `https://github.com/zapatacomputing/tutorial-0-ztransform.git`. This resource translates a message you give it in a fun way.
 
 Open up `welcome-workflow.yaml` and add a new block under `resources` after the `welcome` resource:
 
