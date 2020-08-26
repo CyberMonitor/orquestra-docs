@@ -84,7 +84,7 @@ name: hello-workflow
 # List resources needed by workflow.
 imports:
 
-# A resource named `welcome` that is a public git repo. All the fields here are required except branch, which defaults to master.
+# A resource named `welcome-to-orquestra` that is a public git repo. All the fields here are required except branch, which defaults to master.
 - name: welcome-to-orquestra
   type: git
   parameters:
@@ -127,7 +127,7 @@ Next, we will see how to use a pre-existing resource and explore one possible pa
 
 For example, Zapata already has built a [transform message resource](https://github.com/zapatacomputing/tutorial-0-ztransform.git) with a git-URL of `https://github.com/zapatacomputing/tutorial-0-ztransform.git`. This resource translates a message you give it in a fun way.
 
-Open up `welcome-workflow.yaml` and add a new block under `resources` after the `welcome` resource:
+Open up `welcome-workflow.zqwl` and add a new block under `imports` after the `welcome` resource:
 
 ```YAML
 # List resources needed by workflow.
@@ -244,6 +244,8 @@ When your workflow is completed, the `workflowresult` command will provide you w
 
 This file will look like the following (except for the comments, which were added in this tutorial for clarity):
 
+# TODO: Update this JSON
+
 ```JSON
 {
     "welcome-to-orquestra-d9djf-2235995037": { # The step that executed the `greeting` task
@@ -290,7 +292,7 @@ This file will look like the following (except for the comments, which were adde
 }
 ```
 
-The sections `welcome-to-orquestra-d9djf-1289017430` and `welcome-to-orquestra-d9djf-2235995037` correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the template that was executed for the given step, any input parameters or input artifacts, and the output artifacts. The artifact `welcome` is the output of the `greeting` template, and the artifact `zessage` is the output of the `transform-welcome` template. More information on the contents of this file are found on the [workflow results via JSON page](../../data-management/workflow-result/).
+The sections `welcome-to-orquestra-d9djf-1289017430` and `welcome-to-orquestra-d9djf-2235995037` correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the step that was executed, any input parameters or input artifacts, and the output artifacts. The artifact `welcome` is the output of the `greeting` step, and the artifact `zessage` is the output of the `transform-welcome` step. More information on the contents of this file are found on the [workflow results via JSON page](../../data-management/workflow-result/).
 
 ___
 **Note:** The sections in this results file will not necessarily be in the order that they were executed.
@@ -298,7 +300,7 @@ ___
 
 ## Summary
 
-We have now seen how to construct a working workflow from its elemental components: workflows, templates, and resources.
+We have now seen how to construct a working workflow from its elemental components: workflows and resources.
 
 Additionally, we submitted a workflow to Quantum Engine and got its result in JSON format.
 This hopefully introduced some of the key concepts and mechanics in using Orquestra Quantum Engine.
@@ -311,4 +313,4 @@ For your convenience, here are the completed resources and workflow:
 
 [ZTransform resource](https://github.com/zapatacomputing/tutorial-0-ztransform)
 
-[Complete workflow](https://github.com/zapatacomputing/tutorial-0-welcome/blob/master/hello-workflow.yaml)
+[Complete workflow](https://github.com/zapatacomputing/tutorial-0-welcome/blob/master/hello-workflow.zqwl)
