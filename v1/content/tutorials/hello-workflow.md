@@ -35,7 +35,7 @@ Go to [GitHub](https://github.com/) and create a public repository called `welco
 
 This repository will be where you build your resource. [This GitHub repo](https://github.com/zapatacomputing/tutorial-0-welcome) can be used as a reference for how `welcome-resource` should look like throughout the tutorial.
 
-**3. Adding `welcome.py` to `welcome-resource`**
+**2. Adding `welcome.py` to `welcome-resource`**
 
 Our goal in the first part of this tutorial is to create a resource that produces an [artifact](../../data-management/workflow-artifacts/) with the text `Welcome to Orquestra!` when used within a workflow.
 
@@ -66,11 +66,11 @@ def welcome():
 - We create the file `welcome.json` because any output has to be saved in a file in order to be passed on to the next step or to be accessible for data analysis after the workflow has completed. We will see how to pass it on to another step later in this tutorial.
 
 
-**7. Push Your Resource**
+**3. Push Your Resource**
 
 Once you are satisified with your work, commit your changes and push them to Github
 
-**8. Building a Workflow**
+**4. Building a Workflow**
 
 We can now build a simple workflow that uses the `welcome` git resource to generate the welcome message artifact. Let's start by creating a `welcome-workflow.zqwl` file with the following code:
 
@@ -121,7 +121,7 @@ ___
 Please refer to the [workflow basics page](../../quantum-engine/workflow-basics/) for a more in-depth explanation of each of the fields in the sample workflow above.
 
 
-**9. Adding Resources to the Workflow**
+**5. Adding Resources to the Workflow**
 
 Next, we will see how to use a pre-existing resource and explore one possible pattern for a workflow with multiple steps.
 
@@ -131,55 +131,66 @@ Open up `welcome-workflow.zqwl` and add a new block under `imports` after the `w
 
 ```YAML
 # List resources needed by workflow.
-resources:
+imports:
 
-# A resource named `welcome` that is a public git repo. All the fields here are required except branch, which defaults to master.
-- name: welcome
+# A resource named `welcome-to-orquestra` that is a public git repo. All the fields here are required except branch, which defaults to master.
+- name: welcome-to-orquestra
   type: git
   parameters:
-    url: "git@github.com:<your-github-username>/<your-git-repo-name>.git"
+    repository: "git@github.com:<your-github-username>/<your-git-repo-name>.git"
     branch: "master"
 
-- name: ztransform
+- name: ztransformation
   type: git
   parameters:
     url: "git@github.com:zapatacomputing/tutorial-0-ztransform.git"
     branch: "master"
 ```
 
-This pre-built resource has a resource template called `z-transformation` along with the associated source code. By putting this resource in your workflow, you can now reference the `z-transformation` resource template. We'll do this by adding a step, `transform-welcome`, under the salutations workflow template in `welcome-workflow.yaml`:
+This pre-built resource has a python script called `ztransform` with a function that's also called `ztransform`. By putting this resource in your workflow, you can now reference it in a step. Add a step, `transform-welcome`, under the `welcome` step in `welcome-workflow.zqwl`:
 
-The following is the `templates` section of `welcome-workflow.yaml` with the new step added:
+The following is the `steps` section of `welcome-workflow.zqwl` with the new step added:
+# TODO: Update this to match the correct step structure w/ passing artifacts from one to another
 ```YAML
-  # The steps of the workflow
-  templates:
+steps:
 
-  # `salutations` is a template that just contains a list of `steps`, which are other templates
-  - name: salutations
-    steps:
+# This step runs the `welcome` function in the `welcome-to-orquestra` resource
+- name: greeting
+  config:
+    runtime:
+      type: python3
+      imports: [welcome-to-orquestra]
+      parameters:
+        file: welcome-to-orquestra/welcome.py
+        function: welcome
+    resources:
+      cpu: "1000m"
+      memory: "1Gi"
+      disk: "15Gi"
+  outputs:
+  - name: welcome
+    type: message
 
-    # This template runs the `welcome-to-orquestra` template in the `welcome` resource
-    - - name: greeting
-        template: welcome-to-orquestra
-        arguments:
-          parameters:
-          - resources: [welcome]
-
-    # This template runs the `z-transformation` template in the `ztransform` resource
-    - - name: transform-welcome
-        template: z-transformation
-        arguments:
-          parameters:
-          - resources: [ztransform]
-          artifacts:
-          - name: message
-            # This template takes in the output artifact from the `welcome` template.
-            from: '{{steps.greeting.outputs.artifacts.welcome}}'
+# This step runs the `z-transform` script in the `ztransformation` resource
+- name: transform-welcome
+  config:
+    runtime: python3
+    imports: [ztransformation]
+    parameters:
+      file: ztransformation/src/python/orquestra/ztransform.py
+      function: ztransform
+    resources:
+      cpu: "1000m"
+      memory: "1Gi"
+      disk: "15Gi"
+    outputs:
+    - name: zessage
+      type: zessage
 ```
 
-There is now a second step with the name `transform-welcome`. This step uses the resource template `z-transformation` from the resource you just added. The template `z-transformation` takes in an artifact as input. To understand how the `welcome` artifact is passed from the `greeting` step to the `transform-welcome` step, check out the "Referencing Step Outputs" section of the [steps page](../../quantum-engine/steps/).
+There is now a second step with the name `transform-welcome`. This step uses the function `ztransform` from the resource `ztransformation` you just added. The function `ztransform` takes in an artifact as input. To understand how the `welcome` artifact is passed from the `greeting` step to the `transform-welcome` step, check out the "Referencing Step Outputs" section of the [steps page](../../quantum-engine/steps/).
 
-**10. Running the Workflow**
+**6. Running the Workflow**
 
 You are now ready to run the workflow!
 
@@ -195,7 +206,7 @@ Successfully submitted workflow to quantum engine!
 Workflow ID: welcome-to-orquestra-d9djf
 ```
 
-**11. Worfklow Progress**
+**7. Worfklow Progress**
 
 The workflow is now submitted to the Orquestra Quantum Engine and will be scheduled for execution when compute becomes available.
 
@@ -223,7 +234,7 @@ STEP                                         STEPNAME                           
 
 This output shows the status of the execution of the steps in your workflow.
 
-**12. Workflow Results**
+**8. Workflow Results**
 
 To get the results of your workflow, run `qe get workflowresult <workflow-ID>` with your workflow ID.
 
@@ -238,13 +249,13 @@ ___
 **Note:** The above link is only valid temporarily and typically expires after 7 days.
 ___
 
-**13. Downloading the Results**
+**9. Downloading the Results**
 
 When your workflow is completed, the `workflowresult` command will provide you with a http web-link under `Location` in the console output. Click on or copy and paste the link into your browser to download the file.
 
 This file will look like the following (except for the comments, which were added in this tutorial for clarity):
 
-# TODO: Update this JSON
+#TODO: Update this JSON
 
 ```JSON
 {
@@ -260,7 +271,7 @@ This file will look like the following (except for the comments, which were adde
         "inputParam:memory": "1024Mi",
         "welcome": { # An artifact called `welcome`
             "id": "welcome-to-orquestra-d9djf-2235995037/welcome",
-            "message": "Welcome to Orquestra!", # The message generated by this template
+            "message": "Welcome to Orquestra!", # The message generated by this step
             "schema": "message",
             "taskClass": "welcome-to-orquestra",
             "taskId": "welcome-to-orquestra-d9djf-2235995037",

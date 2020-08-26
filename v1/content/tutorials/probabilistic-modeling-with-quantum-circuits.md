@@ -3,7 +3,7 @@ title: "Probabilistic Modeling with Quantum Circuits"
 summary: Find a quantum distribution which generates the Bars and Stripes dataset with a Quantum Circuit Born Machine.
 weight: 4
 ---
-This tutorial will walk through an implementation of a quantum circuit Born machine (QCBM) using Quantum Engine to find a distribution that generates the Bars and Stripes (BAS) dataset that fit in a 2 × 2 pixel image.
+This tutorial will walk through an implementation of a quantum circuit Born machine (QCBM) using Orquestra to find a distribution that generates the Bars and Stripes (BAS) dataset that fit in a 2 × 2 pixel image.
 
 ## The quantum circuit Born machine
 A quantum circuit Born machine (QCBM) is an unsupervised generative model which represents the probability distribution of a dataset as a quantum state. [A quantum circuit Born machine (QCBM)](https://www.nature.com/articles/s41534-019-0157-8) model was proposed as an approach to load arbitrary probability distributions in noisy intermediate-scale quantum (NISQ) devices.
@@ -21,7 +21,7 @@ In this tutorial we use a QCBM to find a distribution that generates a particula
 
 ![The Bars and Stripes Dataset](../../img/tutorials/bars-and-stripes.png)*The Bars and Stripes (BAS) dataset inside a 2 × 2 pixel image.*
 
-The way we parametrize the elements of the BAS dataset is with four qubits, one corresponding to each of the pixels in the images (taken from top to bottom, and each row from left to right). More specifically, for the 2 × 2 example above, the BAS patters are represented by the bitstrings 0000, 1100, 0101, 1111, 0011, and 1010. For simplicity, we can choose to map them to their corresponding computational basis states.
+The way we parametrize the elements of the BAS dataset is with four qubits, one corresponding to each of the pixels in the images (taken from top to bottom, and each row from left to right). More specifically, for the 2 × 2 example above, the BAS patterns are represented by the bitstrings 0000, 1100, 0101, 1111, 0011, and 1010. For simplicity, we can choose to map them to their corresponding computational basis states.
 
 ## The cost function: Clipped negative log-likelihood
 To train the model, we need a cost function which tells us if the distribution we are obtaining is similar to the target distribution or not.
@@ -44,7 +44,7 @@ The training process of the QCBM is referred to as the data-driven quantum circu
 3. Compare the distribution obtained to that one of the dataset.
 4. Update the parameters using an optimizer.
 
-Steps 2-4 get repeated until we achieve a small enough error. Notice that Steps 1 and 2 are quantum steps, while 3, and 4 are classical.
+Steps 2-4 get repeated until we achieve a small enough error. Notice that Steps 1 and 2 are quantum steps, while 3 and 4 are classical.
 
 ![](../../img/tutorials/quantum-classical.png)
 *The training process.*
@@ -731,230 +731,106 @@ setuptools.setup(
     ]
 )
 ```
-**4. Adding `templates`**
 
-Create a file `templates/qcbm-optimization.yaml` with the following contents:
-
-```yaml
-spec:
-  templates:
-
-  - name: optimize-variational-qcbm-circuit
-    parent: generic-task
-    inputs:
-      parameters:
-      - name: n-qubits
-      - name: n-layers
-      - name: topology
-        default: "all"
-      - name: epsilon
-      - name: distance-measure-specs
-      - name: backend-specs
-      - name: optimizer-specs
-      - name: command
-        value: bash main_script.sh
-      artifacts:
-      - name: initial-parameters
-        path: /app/initial-parameters.json
-      - name: target-distribution
-        path: /app/target-distribution.json
-      - name: main-script
-        path: /app/main_script.sh
-        raw:
-          data: |
-            qvm -S &
-            quilc -S &
-            source /app/usr/local/bin/compilers_and_libraries.sh
-            python3 python_script.py
-      - name: python-script
-        path: /app/python_script.py
-        raw:
-          data: |
-            from zquantum.qcbm.cost_function import QCBMCostFunction
-            from zquantum.qcbm.ansatz import QCBMAnsatz
-            from zquantum.core.circuit import load_circuit_template_params, save_circuit_template_params
-            from zquantum.core.utils import create_object, get_func_from_specs
-            from zquantum.optimizers.utils import save_optimization_results
-            from zquantum.core.bitstring_distribution import load_bitstring_distribution
-
-            distance_measure = get_func_from_specs({{inputs.parameters.distance-measure-specs}})
-            ansatz = QCBMAnsatz({{inputs.parameters.n-layers}}, {{inputs.parameters.n-qubits}}, "{{inputs.parameters.topology}}")
-
-            backend_specs = {{inputs.parameters.backend-specs}}
-            backend = create_object(backend_specs)
-
-            optimizer_specs = {{inputs.parameters.optimizer-specs}}
-            optimizer = create_object(optimizer_specs)
-
-            initial_params = load_circuit_template_params("initial-parameters.json")
-            target_distribution = load_bitstring_distribution("target-distribution.json")
-
-            cost_function = QCBMCostFunction(ansatz, backend, distance_measure, target_distribution, {{inputs.parameters.epsilon}})
-            opt_results = optimizer.minimize(cost_function, initial_params)
-
-            save_optimization_results(opt_results, "optimization-results.json")
-            save_circuit_template_params(opt_results.opt_params, "optimized-parameters.json")
-    outputs:
-      artifacts:
-      - name: optimization-results
-        path: /app/optimization-results.json
-      - name: optimized-parameters
-        path: /app/optimized-parameters.json
-```
-
-In a separate file, `templates/target.yaml`, place the following snippet:
-
-```yaml
-spec:
-  templates:
-
-  - name: generate-bars-and-stripes-target-distribution
-    parent: generic-task
-    inputs:
-      parameters:
-      - name: nrows
-      - name: ncols
-      - name: fraction
-        default: "1.0"
-      - name: method
-        default: "zigzag"
-      - name: command
-        value: python3 main_script.py
-      artifacts:
-      - name: main-script
-        path: /app/main_script.py
-        raw:
-          data: |
-            from zquantum.qcbm.target import get_bars_and_stripes_target_distribution
-            from zquantum.core.bitstring_distribution import save_bitstring_distribution
-            
-            distribution = get_bars_and_stripes_target_distribution( {{inputs.parameters.nrows}},
-              {{inputs.parameters.ncols}}, fraction={{inputs.parameters.fraction}}, 
-              method="{{inputs.parameters.method}}")
-
-            save_bitstring_distribution(distribution, "distribution.json")
-    outputs:
-      artifacts:
-      - name: distribution
-        path: /app/distribution.json
-```
-
-**5. Commit and push your resource**
+**4. Commit and push your resource**
 
 Commit your changes and push them to GitHub.
 (Note that you will not need to do this if you are using the GitHub UI to modify the repository.)
 The structure of your repository should look like this:
 ```
 .
-├── src
-│   ├── python/zquantum/qcbm
-│   │   ├── ansatz.py
-│   │   └── ansatz_utils.py
-│   │   └── cost_function.py
-│   │   └── target.py
-│   └── setup.py
-└── templates
-    └── qcbm-optimization.yaml
-    └── target.yaml
+└── src
+   ├── python/zquantum/qcbm
+   │   ├── ansatz.py
+   │   └── ansatz_utils.py
+   │   └── cost_function.py
+   │   └── target.py
+   └── setup.py
 ```
 
-**6. Building a Workflow**
+**5. Building a Workflow**
 
-Create a file `optimize-qcbm-circuit.yaml` file with the code below, inserting the URL of your github repository in line 13. This file can go anywhere (except the `templates` folder) and is located under `examples` in the orquestra z-quantum-qcbm resource.
+Create a file `optimize-qcbm-circuit.zqwl` file with the code below, inserting the URL of your github repository in line 13. This file can go anywhere and is located under `examples` in the orquestra z-quantum-qcbm resource.
 
 ```YAML
-ZapOSApiVersion: v1alpha1
-kind: Workflow
+# Workflow API version
+apiVersion: io.orquestra.workflow/1.0.0
 
-resources:
+# Prefix for workflow ID
+name: qcbm-opt
+
+imports:
 - name: z-quantum-core
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/z-quantum-core.git"
+    repository: "git@github.com:zapatacomputing/z-quantum-core.git"
     branch: "master"
 - name: qcbm
   type: git
   parameters:
-    url: "git@github.com:<your-github-username>/<your-git-repo-name>.git"
+    repository: "git@github.com:<your-github-username>/<your-git-repo-name>.git"
     branch: "master"
 - name: z-quantum-optimizers
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/z-quantum-optimizers.git"
+    repository: "git@github.com:zapatacomputing/z-quantum-optimizers.git"
     branch: "master"
 - name: qe-forest
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/qe-forest.git"
+    repository: "git@github.com:zapatacomputing/qe-forest.git"
     branch: "master"
 - name: qe-openfermion
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/qe-openfermion.git"
+    repository: "git@github.com:zapatacomputing/qe-openfermion.git"
     branch: "master"
 
-# Specify the prefix to use when generating names of workflow executions.
-metadata:
-  generateName: qcbm-opt-
+steps:
 
-# The actual workflow specification
-spec:
-
-  entrypoint: main
-  arguments:
-    parameters:
-    - s3-bucket: quantum-engine
-    - s3-key: tutorial-2-qcbm
-
-    - n-qubits: "4"
-    - n-layers: "4"
-    - topology: "all"
-    - seed: "9"
-
-  templates:
-
-  - name: main
-    steps:
-    - - name: get-initial-parameters
-        template: generate-random-ansatz-params
-        arguments:
-          parameters:
-          - ansatz-specs: "{'module_name': 'zquantum.qcbm.ansatz', 'function_name': 'QCBMAnsatz', 'number_of_layers': {{workflow.parameters.n-layers}}, 'number_of_qubits': {{workflow.parameters.n-qubits}}, 'topology': '{{workflow.parameters.topology}}'}"
-          - min-val: "-1.57"
-          - max-val: "1.57"
-          - seed: "{{workflow.parameters.seed}}"
-          - resources: [z-quantum-core, qcbm]
-      - name: get-bars-and-stripes-distribution
-        template: generate-bars-and-stripes-target-distribution
-        arguments:
-          parameters:
-          - nrows: "2"
-          - ncols: "2"
-          - fraction: "1.0"
-          - method: "zigzag"
-          - resources: [z-quantum-core, qcbm]
-    - - name: optimize-circuit
-        template: optimize-variational-qcbm-circuit
-        arguments:
-          parameters:
-          - n-qubits: "{{workflow.parameters.n-qubits}}"
-          - n-layers: "{{workflow.parameters.n-layers}}"
-          - topology: "{{workflow.parameters.topology}}"
-          - epsilon: "0.000001"
-          - distance-measure-specs: "{'module_name': 'zquantum.core.bitstring_distribution', 'function_name': 'compute_clipped_negative_log_likelihood'}"
-          - backend-specs: "{'module_name': 'qeforest.simulator', 'function_name': 'ForestSimulator', 'device_name': 'wavefunction-simulator'}"
-          - optimizer-specs: "{'module_name': 'zquantum.optimizers.cma_es_optimizer', 'function_name': 'CMAESOptimizer', 'options': {'popsize': 5, 'sigma_0': 0.1, 'tolx': 1e-6}}"
-          # - optimizer-specs: "{'module_name': 'zquantum.optimizers.scipy_optimizer', 'function_name': 'ScipyOptimizer', 'method': 'L-BFGS-B'}"
-          - resources: [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-forest, qcbm]
-          - memory: 2048Mi
-          artifacts:
-          - initial-parameters:
-              from: "{{steps.get-initial-parameters.outputs.artifacts.params}}"
-          - target-distribution:
-              from: "{{steps.get-bars-and-stripes-distribution.outputs.artifacts.distribution}}"
+# TODO: format these steps correctly for zqwl v1
+- name: main
+steps:
+- - name: get-initial-parameters
+    template: generate-random-ansatz-params
+    arguments:
+        parameters:
+        - ansatz-specs: "{'module_name': 'zquantum.qcbm.ansatz', 'function_name': 'QCBMAnsatz', 'number_of_layers': {{workflow.parameters.n-layers}}, 'number_of_qubits': {{workflow.parameters.n-qubits}}, 'topology': '{{workflow.parameters.topology}}'}"
+        - min-val: "-1.57"
+        - max-val: "1.57"
+        - seed: "{{workflow.parameters.seed}}"
+        - resources: [z-quantum-core, qcbm]
+    - name: get-bars-and-stripes-distribution
+    template: generate-bars-and-stripes-target-distribution
+    arguments:
+        parameters:
+        - nrows: "2"
+        - ncols: "2"
+        - fraction: "1.0"
+        - method: "zigzag"
+        - resources: [z-quantum-core, qcbm]
+- - name: optimize-circuit
+    template: optimize-variational-qcbm-circuit
+    arguments:
+        parameters:
+        - n-qubits: "{{workflow.parameters.n-qubits}}"
+        - n-layers: "{{workflow.parameters.n-layers}}"
+        - topology: "{{workflow.parameters.topology}}"
+        - epsilon: "0.000001"
+        - distance-measure-specs: "{'module_name': 'zquantum.core.bitstring_distribution', 'function_name': 'compute_clipped_negative_log_likelihood'}"
+        - backend-specs: "{'module_name': 'qeforest.simulator', 'function_name': 'ForestSimulator', 'device_name': 'wavefunction-simulator'}"
+        - optimizer-specs: "{'module_name': 'zquantum.optimizers.cma_es_optimizer', 'function_name': 'CMAESOptimizer', 'options': {'popsize': 5, 'sigma_0': 0.1, 'tolx': 1e-6}}"
+        # - optimizer-specs: "{'module_name': 'zquantum.optimizers.scipy_optimizer', 'function_name': 'ScipyOptimizer', 'method': 'L-BFGS-B'}"
+        - resources: [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-forest, qcbm]
+        - memory: 2048Mi
+        artifacts:
+        - initial-parameters:
+            from: "{{steps.get-initial-parameters.outputs.artifacts.params}}"
+        - target-distribution:
+            from: "{{steps.get-bars-and-stripes-distribution.outputs.artifacts.distribution}}"
 ```
 
-**7. Running the Workflow**
+**6. Running the Workflow**
 
 You are now ready to run the workflow!
 
@@ -962,7 +838,7 @@ You are now ready to run the workflow!
 
 * Log in to Quantum Engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your terminal. Contact support to register your email and/or receive the `quantum-engine-uri`.
 
-* Submit your `optimize-qcbm-circuit.yaml` by running `qe submit workflow <path/to/workflow/optimize-qcbm-circuit.yaml>`
+* Submit your `optimize-qcbm-circuit.zqwl` by running `qe submit workflow <path/to/workflow/optimize-qcbm-circuit.zqwl>`
 
 This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
 ```Bash
@@ -970,13 +846,14 @@ Successfully submitted workflow to quantum engine!
 Workflow ID: qcbm-opt-l2btk
 ```
 
-**8. Worfklow Progress**
+**7. Worfklow Progress**
 
 The workflow is now submitted to the Orquestra Quantum Engine and will be scheduled for execution when compute becomes available.
 
 To see details of the execution of your workflow, run `qe get workflow <workflow-ID>` with your workflow ID from the previous step substituted in.
 
  The output will look like:
+ # TODO: update this output
 ```Bash
 Name:                qcbm-opt-l2btk
 Namespace:           default
@@ -1002,7 +879,7 @@ STEP                                      TEMPLATE                              
 
 This output shows the status of the execution of the steps in your workflow.
 
-**9. Workflow Results**
+**8. Workflow Results**
 
 To get the results of your workflow, run `qe get workflowresult <workflow-ID>` with your workflow ID.
 
@@ -1017,11 +894,13 @@ ___
 **Note:** The above link is only valid temporarily and typically expires after 7 days.
 ___
 
-**10. Downloading the Results**
+**9. Downloading the Results**
 
 When your workflow is completed, the `workflowresult` command will provide you with a http web-link under `Location` in the console output. Click on or copy and paste the link into your browser to download the file
 
 This file will look like the following:
+
+# TODO: Update this JSON
 
 ```JSON
 {
@@ -1119,7 +998,8 @@ This file will look like the following:
 }
 ```
 
-The sections `qcbm-opt-l2btk-2326122556`, `qcbm-opt-l2btk-1634304231`, and `qcbm-opt-l2btk-163168498` (which we don't show for brevity) correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the template that was executed for the given step, any input parameters or input artifacts, and the output artifacts. In `qcbm-opt-l2btk-2326122556`, the artifact `parameters` is the output of the `generate-random-ansatz-params` template, and it stores the randomly generated parameters for the circuit. More information on the contents of this file are found on the [Workflow Results via JSON page](../../data-management/workflow-result/).
+#TODO: Update these steps' IDs
+The sections `qcbm-opt-l2btk-2326122556`, `qcbm-opt-l2btk-1634304231`, and `qcbm-opt-l2btk-163168498` (which we don't show for brevity) correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the step that was executed, any input parameters or input artifacts, and the output artifacts. In `qcbm-opt-l2btk-2326122556`, the artifact `parameters` is the output of the `generate-random-ansatz-params` step, and it stores the randomly generated parameters for the circuit. More information on the contents of this file are found on the [Workflow Results via JSON page](../../data-management/workflow-result/).
 
 ___
 
