@@ -6,7 +6,7 @@ summary: Find the maximum cut whose size is at least the size of any other cut u
 weight: 5
 ---
 
-This tutorial will walk through using Quantum Engine to use Quantum Approximate Optimization Algorithm to solve MaxCut problem and use different optimizers to solve it.
+This tutorial will walk through using the Orquestra Quantum Engine to use Quantum Approximate Optimization Algorithm to solve MaxCut problem and use different optimizers to solve it.
 
 In addition to that we'll cover some advanced workflow features (e.g. recursive tasks) and using Orquestra interfaces.
 
@@ -31,8 +31,10 @@ In this tutorial we will see how to solve this problem using layer-by-layer opti
 
 **1. Building workflow**
 
-Let's start from the ready-to-go workflow. Just copy the workflow below and save it in `qaoa_lbl_example.yaml` file. In the following sectiosn we will explain what the steps in this workflow mean. You can also find this workflow [here](https://github.com/zapatacomputing/z-quantum-qaoa/blob/master/examples/qaoa_lbl_example.yaml).
+# TODO: Update link to v1 workflow
+Let's start from the ready-to-go workflow. Just copy the workflow below and save it in `qaoa_lbl_example.zqwl` file. In the following sectiosn we will explain what the steps in this workflow mean. You can also find this workflow [here](https://github.com/zapatacomputing/z-quantum-qaoa/blob/master/examples/qaoa_lbl_example.zqwl).
 
+# TODO: Update this to v1 standards
 ```yaml
 ZapOSApiVersion: v1alpha1
 kind: Workflow
@@ -235,7 +237,7 @@ spec:
 
 **2. Running workflow**
 
-Submit your `qaoa_lbl_example.yaml` by running `qe submit workflow <path/to/workflow/qaoa_lbl_example.yaml>`**
+Submit your `qaoa_lbl_example.zqwl` by running `qe submit workflow <path/to/workflow/qaoa_lbl_example.zqwl>`
 
 This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
 ```Bash
@@ -250,6 +252,7 @@ The workflow is now submitted to the Orquestra Quantum Engine and will be schedu
 To see details of the execution of your workflow, run `qe get workflow <workflow-ID>` with your workflow ID from the previous step substituted in.
 
  The output will look like:
+ # TODO: Update this to v1 standards
 ```Bash
 STEP                                                PODNAME                        DURATION  MESSAGE
  ● qaoa-example-9pb9p (main)
@@ -291,7 +294,7 @@ All of these are just initial steps we need to define our problem, ansatz, and i
 
 In this workflow we present a specific way to perform optimization – layer by layer optimization using grid search. "Layer by layer" means that we are optimizing only one layer at a time. First we deal with the angles for the first layer, once they're fixed we optimize the angles for the second layer and then the following.
 
-In order to optimize the angles we use method called "grid search" – it is a very simple method, where we prepare a grid of parameters and just check what is the result for every pair of &beta; and &gamma;.
+In order to optimize the angles we use a method called "grid search" – it is a very simple method, where we prepare a grid of parameters and just check what is the result for every pair of &beta; and &gamma;.
 
 All of this happens in the `optimize-lbl` task. Contrary to all the other tasks we used here, this one is defined inside the same file as workflow and consists of the following steps:
 
@@ -329,12 +332,12 @@ To make things simpler to visualize this time we will try to solve the problem f
 
 One of the features that makes Orquestra a really flexible tool are Interfaces. The main idea behind it is to be able to switch between different methods at the level of the workflow, without need to modify any code. You can read about it in more details in the [Interfaces section](../../other-resources/interfaces), here we'll focus on the example of Optimizer Interface.
 
-As you can see in the workflow, `optimize-variational-circuit` task has a field called `optimizer-specs`. It is a dictionary which specifies what type of optimizer do we want to use. It has two required keys:
+As you can see in the workflow, the `optimize-variational-circuit` task has a field called `optimizer-specs`. It is a dictionary which specifies what type of optimizer we want to use. It has two required keys:
 
 - `module_name`: specifies from what python module do we want to import the optimizer
 - `function_name`: specifies which function do we want to use to create it
 
-So in the workflow above you can see that we create our optimizer based on `GridSearchOptimizer` class which is imported from `zquantum.optimizers.grid_search`. For this particular optimizer we also need to provide an input artifact `parameter-grid`.
+So in the workflow above you can see that we create our optimizer based on the `GridSearchOptimizer` class which is imported from `zquantum.optimizers.grid_search`. For this particular optimizer we also need to provide an input artifact `parameter-grid`.
 
 Why is using Optimizer Interface convenient? Because all the classes conforming to this interface have `minimize` function, which takes an array as input and returns `OptimizeResults` object. Therefore by just changing `optimizer-specs` field in your workflow you can try out many different optimizers.
 
@@ -342,8 +345,9 @@ Why is using Optimizer Interface convenient? Because all the classes conforming 
 
 To make things simpler to analyze we will analyze a one-layer case. To do that we will replace `optimize-lbl` task with `optimize-variational-circuit` – the same we used inside `optimize-lbl`.
 
+# TODO: Update this to v1 standards
 To do that you need to:
-1. Copy `qaoa_lbl_example.yaml` file and rename it to `qaoa_multiple_optimizers.yaml`
+1. Copy `qaoa_lbl_example.zqwl` file and rename it to `qaoa_multiple_optimizers.zqwl`
 2. Copy `optimize-variational-circuit` and paste it after `build-uniform-parameter-grid`.
 3. Modify its input artifacts to reflect data dependencies (should be the same paths as inputs of `optimize-lbl`)
 4. Remove `optimize-lbl` task (and its definition)
@@ -353,6 +357,7 @@ To do that you need to:
 
 Here's how it should look like:
 
+# TODO: Update this to v1 standards
 ```yaml
 ZapOSApiVersion: v1alpha1
 kind: Workflow
@@ -497,11 +502,12 @@ In order to compare different optimizers you should do the following steps:
 - optimizer-specs: "{'module_name': 'zquantum.optimizers.cma_es_optimizer', 'function_name': 'CMAESOptimizer', 'options': {'popsize': 5, 'sigma_0': 0.1, 'tolx': 1e-3, 'keep_value_history': True}}"
 ```
 
-You can find a workflow running these optimizers in parallel in [z-quantum-qaoa repository](https://github.com/zapatacomputing/z-quantum-qaoa/blob/master/examples/qaoa_multiple_optimizers.yaml).
+# TODO: Update this link to v1 standards
+You can find a workflow running these optimizers in parallel in [z-quantum-qaoa repository](https://github.com/zapatacomputing/z-quantum-qaoa/blob/master/examples/qaoa_multiple_optimizers.zqwl).
 
 **3. Running the Workflow**
 
-Now run the workflow the same way you did for the layer-by-layer case: `qe submit workflow <path/to/workflow/vqe-workflow.yaml>`.
+Now run the workflow the same way you did for the layer-by-layer case: `qe submit workflow <path/to/workflow/vqe-workflow.zqwl>`.
 
 To monitor the progress run `qe get workflow <workflow-ID>` and once it's ready get the results using `qe get workflowresult <workflow-ID>`.
 
