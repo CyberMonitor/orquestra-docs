@@ -4,16 +4,13 @@ summary: Getting the list of your submitted workflow
 weight: 6
 ---
 
-To get the list of your submitted workflows, please run the following command:
+To get the list of your submitted workflows up to a maximum of 200 entries, please run the following command:
 
-#### Example 1:
-
-Return any workflow list up to a maximum of 200 entries.
 ```Bash
 qe get workflowlist 
 ```
 
-#### Example 2:
+#### Limit the number of results:
 
 Return a maximum of 20 worklfow entries
 
@@ -21,7 +18,7 @@ Return a maximum of 20 worklfow entries
 qe get workflowlist -l 20
 ```
 
-#### Example 3:
+#### Requesting results in JSON:
 
 Return a maximum of 20 worklfow entries in JSON format.  If the output format is not specified the default output is text.
 
@@ -29,7 +26,7 @@ Return a maximum of 20 worklfow entries in JSON format.  If the output format is
 qe get workflowlist -l 20 -o json
 ```
 
-#### Example 4:
+#### Filtering workflows by name:
 
 Return a maximum of 20 worklfow entries, filter on the workflow name with a prefix of `hello`.  The -p or --prefix flag is case insenstive.
 
@@ -37,7 +34,7 @@ Return a maximum of 20 worklfow entries, filter on the workflow name with a pref
 qe get workflowlist -l 20 -p hello
 ```
 
-#### Example 5:
+#### Add a timeout:
 
 Return a maximum of 10 worklfow entries, filter on the workflow name with a prefix of `hello` and within the time duration of 15 minutes. 
 
@@ -54,7 +51,7 @@ The duration can be specified in units:
 
 Mixed duration units are not allowed, for example `12h15m` is invalid, use `735m` equivalent instead.
 
-#### Example 6:
+#### Filter workflows by their status:
 
 Return a maximum of 10 worklfow entries, filter on the workflow name with a prefix of `hello` and a status of `Error`.  The -s or --status flag is case sensitive.
 
@@ -62,7 +59,7 @@ Return a maximum of 10 worklfow entries, filter on the workflow name with a pref
 qe get workflowlist -l 10 -p hello -s Error
 ```
 
-#### Example 7:
+#### Help with workflow list:
 
 Get help for `get workflowlist`
 
