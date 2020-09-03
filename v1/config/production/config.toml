@@ -1,7 +1,0 @@
-BaseURL="https://orquestra.io/docs"
-
-[params]
-  homepage_url="https://orquestra.io/docs"
-
-  [params.homepage_meta_tags]
-    meta_og_url = "http://orquestra.io/docs/"

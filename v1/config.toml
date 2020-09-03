@@ -7,6 +7,7 @@ pygmentsCodefencesGuessSyntax = true
 pygmentsUseClasses = true
 
 #RelativeURLs=true
+BaseURL="https://orquestra.io/docs"
 # Controls how many words are printed in the content summary on the docs homepage.
 # See https://gohugo.io/content-management/summaries/
 summaryLength = 30
@@ -19,11 +20,13 @@ summaryLength = 30
   homepage_button_text2 = 'Learn More'
   homepage_intro = 'Orquestra is a platform for building repeatable workflows, orchestrated by a quantum engine that systematically organizes experiment data and resources.'
   homepage_image = '/images/terminal.gif'
+  homepage_url="https://orquestra.io/docs"
 
   ## You can enable to add anchor links to header elements
   # enable_anchor_link = true
 
   [params.homepage_meta_tags]
+    meta_og_url = "http://orquestra.io/docs/"
     meta_description = "Orquestra is a platform for building repeatable workflows, orchestrated by a quantum engine that systematically organizes experiment data and resources."
     meta_og_title = "Orquestra Docs"
     meta_og_type = "website"

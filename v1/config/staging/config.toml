@@ -1,7 +1,0 @@
-BaseURL="http://localhost:8080/docs"
-
-[params]
-  homepage_url="http://localhost:8080/docs"
-
-  [params.homepage_meta_tags]
-    meta_og_url = "http://localhost:8080/docs/"
