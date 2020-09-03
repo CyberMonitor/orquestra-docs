@@ -20,16 +20,15 @@ summaryLength = 30
   homepage_button_text2 = 'Learn More'
   homepage_intro = 'Orquestra is a platform for building repeatable workflows, orchestrated by a quantum engine that systematically organizes experiment data and resources.'
   homepage_image = '/images/terminal.gif'
-  homepage_url="https://orquestra.io/docs"
 
   ## You can enable to add anchor links to header elements
   # enable_anchor_link = true
 
   [params.homepage_meta_tags]
-    meta_og_url = "http://orquestra.io/docs/"
     meta_description = "Orquestra is a platform for building repeatable workflows, orchestrated by a quantum engine that systematically organizes experiment data and resources."
     meta_og_title = "Orquestra Docs"
     meta_og_type = "website"
+    meta_og_url = "http://orquestra.io/docs/"
     meta_og_image = "https://raw.githubusercontent.com/zapatacomputing/orquestra-docs/master/v1/static/orquestra-logo.svg"
     meta_og_description = "Orquestra is a platform for building repeatable workflows, orchestrated by a quantum engine that systematically organizes experiment data and resources."
     meta_twitter_card = "summary"
