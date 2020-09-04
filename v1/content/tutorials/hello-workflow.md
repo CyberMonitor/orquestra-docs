@@ -17,6 +17,8 @@ There are three steps to building a workflow:
 
 1. Incorporate the resource into a workflow using the `imports` tag
 
+1. Call the code in a step of the workflow
+
 Note: Step 1 is optional if you reuse existing resources.
 
 ## Hello Workflow

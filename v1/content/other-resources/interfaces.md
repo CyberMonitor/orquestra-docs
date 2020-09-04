@@ -28,14 +28,16 @@ In order to integrate code which fits the interfaces, you need to create a class
 You might find very basic examples of such integrations in the [`mock_objects`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/interfaces/mock_objects.py) file in [`z-quantum-core`](https://github.com/zapatacomputing/z-quantum-core). Note that these are created only for testing purposes, but you'll find links to other implementations in appropriate sections.
 
 
-### Using integration
+### Using the Interface
 
 Once you've done your integration, there are two ways you can use it in your template.
 The first one is obvious – you can simply import from the module you've just created, create a python object and voila!
 
+# TODO: Update this to v1 standards
 However, this means that the class that implements the interface will be hardcoded in your template and using another one will require changing the template.
 That's why you can use `create_object` function from `zquantum.core.utils`. It takes a dictionary with specification of the object you'd like to create and creates it inside the template. Take a look at the following example:
 
+# TODO: Update this to v1 standards - do we even need it since it's a template?
 ```yaml
 templates:
 - name: use-any-backend
@@ -73,13 +75,14 @@ For example, for the `MockSimulator` it might look like this:
 
 ### QuantumBackend and QuantumSimulator
 
-`QuantumBackend` and `QuantumSimulator` are interfaces which allow you to integrate different bakcends for running quantum circuits. The main difference between the two of them is that `QuantumSimulator` allows using wavefunction representation of a quantum state.
+`QuantumBackend` and `QuantumSimulator` are interfaces which allow you to integrate different backends for running quantum circuits. The main difference between the two of them is that `QuantumSimulator` allows using a wavefunction representation of a quantum state.
 
 You can find [the interface definition here](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/interfaces/backend.py). Currently available integrations are:
 
 - [qHiPSTER](https://github.com/zapatacomputing/qe-qhipster)
 - [Forest QVM](https://github.com/zapatacomputing/qe-forest)
 - [qulacs](https://github.com/zapatacomputing/qe-qulacs)
+# TODO: maybe add qiskit?
 
 
 ### Optimizer
@@ -96,7 +99,7 @@ All the currently implemented optimizers live in the [z-quantum-optimizers repos
 
 ### Cost functions
 
-In Orquestra we also have interfaces for the cost functions that are being minimized by the optimizers. Cost functions can vary in their complexity – from just calling a simple python function in `BasicCostFunction` to execution and evaluation of quantum circuits on any backend using `AnsatzBasedCostFunction`, but for evaluation they all should need just an array of numerical parameters. This interface can also be used for calculating gradients of given cost function – all cost function support finite differences method by default.
+In Orquestra we also have interfaces for the cost functions that are being minimized by the optimizers. Cost functions can vary in their complexity – from just calling a simple python function in `BasicCostFunction` to execution and evaluation of quantum circuits on any backend using `AnsatzBasedCostFunction`, but for evaluation they all should need just an array of numerical parameters. This interface can also be used for calculating gradients of given cost function – all cost functions support finite differences method by default.
 
 Right now the following cost functions are implemented in Orquestra:
 - **[`BasicCostFunction`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/cost_function.py):** it allows to use an arbitrary python function as cost function we want to minimize.
