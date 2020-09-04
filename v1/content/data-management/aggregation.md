@@ -1,7 +1,7 @@
 ---
 title: Data Aggregation
 summary: Transformation of workflow artifacts for further data analysis
-weight: 1
+weight: 2
 ---
 
 ## Aggregation
@@ -14,7 +14,7 @@ The function of aggregation is to transform all of the [artifacts](../../data-ma
 
 The top level of a workflow result file has [task data objects](../../data-management/workflow-artifacts/). Each task is labeled uniquely by its ID. To retrieve the IDs corresponding to tasks run in a workflow, run
 
-`qe get workflow <workflow ID> -o visual`
+`qe get workflow <workflow ID>`
 
 This will produce an output with task IDs next to the names of tasks:
 ![Task IDs](../../img/taskids.png)
@@ -29,6 +29,8 @@ Each task data object has one or more [artifacts](../../data-management/workflow
 - `id` - unique artifact ID
 - `workflowId` - originating workflow ID
 - `schema` - type of the artifact
+- `taskClass` - name of the step that produced the artifact
+- `taskId` - originating task ID
 
 ![](../../img/workflowresult.png)
 
