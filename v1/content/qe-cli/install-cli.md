@@ -61,3 +61,16 @@ sudo cp ./qe /usr/local/bin/
 
 ### Notes
 If the above scripts do not work, you can download `qe` from [github](https://github.com/zapatacomputing/qe-cli/releases/latest) as a binary. There are individual download links for common platforms.
+ds
+#### ssh-agent and ssh keys
+On some OS platforms, `ssh-agent` changes do not persist across different shell sessions; consequently you may need to add the same key in different shell sessions using `ssh-add -k` all over again.
+
+To remedy this, you may incorporate the following script `ssh-agent-activate.sh` into your shell startup script.
+
+Example for Bash shells:
+
+```Bash
+echo 'source ~/qe/bin/ssh-agent-activate.sh' >> ~/.bashrc
+```
+
+
