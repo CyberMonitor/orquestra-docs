@@ -764,21 +764,21 @@ imports:
   type: git
   parameters:
     repository: "git@github.com:zapatacomputing/z-quantum-core.git"
-    branch: "master"
-- name: qcbm
+    branch: "workflow-v1"
+- name: z-quantum-qcbm
   type: git
   parameters:
-    repository: "git@github.com:<your-github-username>/<your-git-repo-name>.git"
-    branch: "master"
+    repository: "git@github.com:zapatacomputing/z-quantum-qcbm.git"
+    branch: "workflow-v1"
 - name: z-quantum-optimizers
   type: git
   parameters:
     repository: "git@github.com:zapatacomputing/z-quantum-optimizers.git"
     branch: "master"
-- name: qe-forest
+- name: qe-qiskit
   type: git
   parameters:
-    repository: "git@github.com:zapatacomputing/qe-forest.git"
+    repository: "git@github.com:zapatacomputing/qe-qiskit.git"
     branch: "master"
 - name: qe-openfermion
   type: git
@@ -788,46 +788,96 @@ imports:
 
 steps:
 
-# TODO: format these steps correctly for zqwl v1
-- name: main
-steps:
-- - name: get-initial-parameters
-    template: generate-random-ansatz-params
-    arguments:
-        parameters:
-        - ansatz-specs: "{'module_name': 'zquantum.qcbm.ansatz', 'function_name': 'QCBMAnsatz', 'number_of_layers': {{workflow.parameters.n-layers}}, 'number_of_qubits': {{workflow.parameters.n-qubits}}, 'topology': '{{workflow.parameters.topology}}'}"
-        - min-val: "-1.57"
-        - max-val: "1.57"
-        - seed: "{{workflow.parameters.seed}}"
-        - resources: [z-quantum-core, qcbm]
-    - name: get-bars-and-stripes-distribution
-    template: generate-bars-and-stripes-target-distribution
-    arguments:
-        parameters:
-        - nrows: "2"
-        - ncols: "2"
-        - fraction: "1.0"
-        - method: "zigzag"
-        - resources: [z-quantum-core, qcbm]
-- - name: optimize-circuit
-    template: optimize-variational-qcbm-circuit
-    arguments:
-        parameters:
-        - n-qubits: "{{workflow.parameters.n-qubits}}"
-        - n-layers: "{{workflow.parameters.n-layers}}"
-        - topology: "{{workflow.parameters.topology}}"
-        - epsilon: "0.000001"
-        - distance-measure-specs: "{'module_name': 'zquantum.core.bitstring_distribution', 'function_name': 'compute_clipped_negative_log_likelihood'}"
-        - backend-specs: "{'module_name': 'qeforest.simulator', 'function_name': 'ForestSimulator', 'device_name': 'wavefunction-simulator'}"
-        - optimizer-specs: "{'module_name': 'zquantum.optimizers.cma_es_optimizer', 'function_name': 'CMAESOptimizer', 'options': {'popsize': 5, 'sigma_0': 0.1, 'tolx': 1e-6}}"
-        # - optimizer-specs: "{'module_name': 'zquantum.optimizers.scipy_optimizer', 'function_name': 'ScipyOptimizer', 'method': 'L-BFGS-B'}"
-        - resources: [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-forest, qcbm]
-        - memory: 2048Mi
-        artifacts:
-        - initial-parameters:
-            from: "{{steps.get-initial-parameters.outputs.artifacts.params}}"
-        - target-distribution:
-            from: "{{steps.get-bars-and-stripes-distribution.outputs.artifacts.distribution}}"
+- name: get-initial-parameters
+  config:
+    runtime:
+      type: python3
+      imports: [z-quantum-core, z-quantum-qcbm]
+      parameters:
+        file: z-quantum-core/tasks/circuit_tasks.py
+        function: generate_random_ansatz_params
+    resources:
+      cpu: "1000m"
+      memory: "1Gi"
+      disk: "10Gi"
+  inputs:
+    - ansatz_specs: '{"module_name": "zquantum.qcbm.ansatz", "function_name": "QCBMAnsatz", "number_of_layers": 4, "number_of_qubits": 4, "topology": "all"}'
+      type: string
+    - min_value: -1.57
+      type: float
+    - max_value: 1.57
+      type: float
+    - seed: 9
+      type: int
+  outputs:
+    - name: params
+      type: ansatz-params
+- name: get-bars-and-stripes-distribution
+  config:
+    runtime:
+      type: python3
+      imports: [z-quantum-core, z-quantum-qcbm]
+      parameters:
+        file: z-quantum-qcbm/tasks/generate_target_distribution_task.py
+        function: generate_bars_and_stripes_target_distribution
+    resources:
+      cpu: "1000m"
+      memory: "1Gi"
+      disk: "10Gi"
+  inputs:
+    - nrows: 2
+      type: int
+    - ncols: 2
+      type: int
+    - fraction: 0.8
+      type: float
+    - method: 'zigzag'
+      type: string
+  outputs:
+    - name: distribution
+      type: bitstring-distribution
+
+- name: optimize-circuit
+  passed: [get-bars-and-stripes-distribution, get-initial-parameters]
+  config:
+    runtime:
+      type: python3
+      imports:  [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-qiskit, z-quantum-qcbm]
+      parameters:
+        file: z-quantum-qcbm/tasks/optimize_variational_qcbm_circuit.py
+        function: optimize_variational_qcbm_circuit
+    resources:
+      cpu: "1000m"
+      memory: "2Gi"
+  inputs:
+  - n_qubits: 4
+    type: int
+  - n_layers: 4
+    type: int
+  - topology: all
+    type: string
+  - distance_measure_specs: '{"module_name": "zquantum.core.bitstring_distribution", "function_name": "compute_clipped_negative_log_likelihood"}'
+    type: string
+  - distance_measure_parameters: '{"epsilon": 1e-6}'
+    type: string
+  - backend_specs: '{"module_name": "qeqiskit.simulator", "function_name": "QiskitSimulator", "device_name": "statevector_simulator"}'
+    type: string
+  - optimizer_specs: '{"module_name": "zquantum.optimizers.cma_es_optimizer", "function_name": "CMAESOptimizer", "options": {"popsize": 5, "sigma_0": 0.1, "tolx": 1e-2}}'
+    type: string
+  - initial_parameters: ((get-initial-parameters.params))
+    type: ansatz-params
+  - target_distribution: ((get-bars-and-stripes-distribution.distribution))
+    type: bitstring-distribution
+  outputs:
+    - name: qcbm-optimization-results
+      type: optimization-results
+    - name: optimized-parameters
+      type: ansatz-params
+
+types:
+ - ansatz-params
+ - bitstring-distribution
+ - optimization-results
 ```
 
 **6. Running the Workflow**
@@ -853,28 +903,23 @@ The workflow is now submitted to the Orquestra Quantum Engine and will be schedu
 To see details of the execution of your workflow, run `qe get workflow <workflow-ID>` with your workflow ID from the previous step substituted in.
 
  The output will look like:
- # TODO: update this output
 ```Bash
-Name:                qcbm-opt-l2btk
+Name:                qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50
 Namespace:           default
-ServiceAccount:      default
-Status:              Running
-Created:             Tue Jul 21 17:53:06 +0000 (3 minutes ago)
-Started:             Tue Jul 21 17:53:06 +0000 (3 minutes ago)
-Duration:            3 minutes 20 seconds
-Parameters:          
+Status:              Succeeded
+Created:             Wed Sep 09 19:46:38 +0000 (3 minutes ago)
+Started:             Wed Sep 09 19:46:38 +0000 (3 minutes ago)
+Finished:            Wed Sep 09 19:50:01 +0000 (19 seconds ago)
+Duration:            3 minutes 23 seconds
+Parameters:
   s3-bucket:         quantum-engine
-  s3-key:            tutorial-2-qcbm
-  n-qubits:          4
-  n-layers:          4
-  topology:          all
-  seed:              9
+  s3-key:            projects/v1
 
-STEP                                      TEMPLATE                                       STEPNAME                    DURATION  MESSAGE
- ● qcbm-opt-l2btk                         main                                                                                  
- ├-·-✔ get-initial-parameters             generate-random-ansatz-params                  qcbm-opt-l2btk-2326122556  27s         
- | └-✔ get-bars-and-stripes-distribution  generate-bars-and-stripes-target-distribution  qcbm-opt-l2btk-1634304231  24s         
- └---✔ optimize-circuit                   optimize-variational-qcbm-circuit              qcbm-opt-l2btk-163168498   9m 
+STEP                                                          PODNAME                                                   DURATION  MESSAGE
+  qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50 (qeDagWorkflow)
+ ├- get-bars-and-stripes-distribution (get-bars-and-stripes-distribution)  qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292  18s       distribution
+ ├- get-initial-parameters (get-initial-parameters)                        qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077  34s       params
+ └- optimize-circuit (optimize-circuit)                                    qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-741618460   2m        qcbm-optimization-results,optimized-parameters
  ```
 
 This output shows the status of the execution of the steps in your workflow.
@@ -898,14 +943,12 @@ ___
 
 When your workflow is completed, the `workflowresult` command will provide you with a http web-link under `Location` in the console output. Click on or copy and paste the link into your browser to download the file
 
-This file will look like the following:
-
-# TODO: Update this JSON
+This file will look like the following. (Note that we have formatted and truncated the file for readability.)
 
 ```JSON
 {
-    "qcbm-opt-l2btk-1634304231": {
-        "class": "generate-bars-and-stripes-target-distribution",
+    "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292": {
+        "class": "get-bars-and-stripes-distribution",
         "distribution": {
             "bitstring_distribution": {
                 "0000": 0.16666666666666666,
@@ -915,43 +958,26 @@ This file will look like the following:
                 "1100": 0.16666666666666666,
                 "1111": 0.16666666666666666
             },
-            "id": "qcbm-opt-l2btk-1634304231/distribution",
+            "id": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292/distribution",
             "schema": "zapata-v1-bitstring-probability-distribution",
-            "taskClass": "generate-bars-and-stripes-target-distribution",
-            "taskId": "qcbm-opt-l2btk-1634304231",
-            "workflowId": "qcbm-opt-l2btk"
+            "taskClass": "get-bars-and-stripes-distribution",
+            "taskId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292",
+            "workflowId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50"
         },
-        "id": "qcbm-opt-l2btk-1634304231",
-        "inputParam:command": "python3 main_script.py",
-        "inputParam:cpu": "1000m",
-        "inputParam:disk": "10Gi",
+        "id": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292",
         "inputParam:docker-image": "z-quantum-default",
         "inputParam:docker-registry": "zapatacomputing",
         "inputParam:docker-tag": "latest",
-        "inputParam:fraction": "1.0",
-        "inputParam:memory": "1024Mi",
-        "inputParam:method": "zigzag",
-        "inputParam:ncols": "2",
-        "inputParam:nrows": "2",
-        "workflowId": "qcbm-opt-l2btk"
+        "workflowId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50"
     },
-    "qcbm-opt-l2btk-2326122556": {
-        "class": "generate-random-ansatz-params",
-        "id": "qcbm-opt-l2btk-2326122556",
-        "inputParam:ansatz-specs": "{'module_name': 'zquantum.qcbm.ansatz', 'function_name': 'QCBMAnsatz', 'number_of_layers': 4, 'number_of_qubits': 4, 'topology': 'all'}",
-        "inputParam:command": "python3 main_script.py",
-        "inputParam:cpu": "1000m",
-        "inputParam:disk": "10Gi",
+    "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077": {
+        "class": "get-initial-parameters",
+        "id": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077",
         "inputParam:docker-image": "z-quantum-default",
         "inputParam:docker-registry": "zapatacomputing",
         "inputParam:docker-tag": "latest",
-        "inputParam:max-val": "1.57",
-        "inputParam:memory": "1024Mi",
-        "inputParam:min-val": "-1.57",
-        "inputParam:number-of-params": "None",
-        "inputParam:seed": "9",
         "params": {
-            "id": "qcbm-opt-l2btk-2326122556/params",
+            "id": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077/params",
             "parameters": {
                 "real": [
                     -1.5374251567989021,
@@ -989,17 +1015,32 @@ This file will look like the following:
                 ]
             },
             "schema": "zapata-v1-circuit_template_params",
-            "taskClass": "generate-random-ansatz-params",
-            "taskId": "qcbm-opt-l2btk-2326122556",
-            "workflowId": "qcbm-opt-l2btk"
+            "taskClass": "get-initial-parameters",
+            "taskId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077",
+            "workflowId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50"
         },
-        "workflowId": "qcbm-opt-l2btk"
+        "workflowId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50"
     },
-}
+    "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-741618460": {
+        "class": "optimize-circuit",
+        "id": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-741618460",
+        "inputArtifact:initial_parameters": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077/params",
+        "inputArtifact:target_distribution": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292/distribution",
+        "inputParam:docker-image": "z-quantum-default",
+        "inputParam:docker-registry": "zapatacomputing",
+        "inputParam:docker-tag": "latest",
+        "optimized-parameters": {
+            "id": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-741618460/optimized-parameters",
+            "parameters": {
+                "real": [
+                    -2.5036601724777223,
+                    -0.027797857736315386,
+                    0.4326403682034262,
+                    -0.3944843948778366,
+                    ...
 ```
 
-#TODO: Update these steps' IDs
-The sections `qcbm-opt-l2btk-2326122556`, `qcbm-opt-l2btk-1634304231`, and `qcbm-opt-l2btk-163168498` (which we don't show for brevity) correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the step that was executed, any input parameters or input artifacts, and the output artifacts. In `qcbm-opt-l2btk-2326122556`, the artifact `parameters` is the output of the `generate-random-ansatz-params` step, and it stores the randomly generated parameters for the circuit. More information on the contents of this file are found on the [Workflow Results via JSON page](../../data-management/workflow-result/).
+The sections `qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292`, `qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077`, and `qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-741618460` (which we don't show for brevity) correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the step that was executed and its inputs and outputs. For example, the `get-initial-parameters` step (`qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077`) has an output called `params` which contains the randomly generated parameters for the circuit. More information on the contents of this file are found on the [Workflow Results via JSON page](../../data-management/workflow-result/).
 
 ___
 
