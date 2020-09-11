@@ -1,7 +1,7 @@
 ---
 title: Get Workflow List
 summary: Getting the list of your submitted workflow
-weight: 6
+weight: 7
 ---
 
 To get the list of your submitted workflows up to a maximum of 200 entries, please run the following command:

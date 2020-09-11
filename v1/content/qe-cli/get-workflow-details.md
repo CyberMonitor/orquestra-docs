@@ -1,7 +1,7 @@
 ---
 title: Get Workflow Details
 summary: Check in on the status of your workflow in the quantum engine
-weight: 4
+weight: 5
 ---
 
 To get a visual representation of your workflow execution, please run the following command:
