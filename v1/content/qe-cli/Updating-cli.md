@@ -1,7 +1,7 @@
 ---
-title: Updating
+title: Updating the CLI
 summary: Using the QE update command to synchronize the QE Cli
-weight: 8
+weight: 3
 ---
 The `update` command can be used to update the currently installed version of the `QE cli` with the current Orquestra platform server version.
 
@@ -13,6 +13,6 @@ __Example usage:__
 qe update cli [flags]
 ```
 
-flags:      
--h, --help : help for cli</br> 
--y, --yes  : Don't prompt for confirmation before performing the update.
+__flags:__  
+`-h, --help` : help for cli</br> 
+`-y, --yes`  : Don't prompt for confirmation before performing the update.
