@@ -1,7 +1,7 @@
 ---
 title: Get Logs
 summary: Retrieving error logs from your workflow execution
-weight: 6
+weight: 8
 ---
 
 To get logs from your workflow execution, please run the following command:

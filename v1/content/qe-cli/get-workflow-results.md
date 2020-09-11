@@ -1,7 +1,7 @@
 ---
 title: Get Workflow Results
 summary: Getting the results of your completed workflow
-weight: 5
+weight: 6
 ---
 
 To get the results of your workflow execution, please run the following command:
