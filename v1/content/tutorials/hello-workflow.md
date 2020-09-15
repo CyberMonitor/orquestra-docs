@@ -49,8 +49,8 @@ imports:
 - name: welcome-to-orquestra
   type: git
   parameters:
-    repository: "git@github.com:zapatacomputing/tutorial-0-welcome.git"
-    branch: "master"
+    repository: "git@github.com:zapatacomputing/tutorial-0-welcome"
+    branch: "workflow-v1"
 ```
 
 In this section, we specifiy the version, the name of the workflow, and what component we're importing. Next, we'll actually run code from the `welcome-to-orquestra` component in a step in the workflow. Copypaste the following code into your welcome-workflow.zqwl file after the `welcome-to-orquestra` component:
@@ -86,7 +86,7 @@ types:
 That's it! A full workflow completely created! Please refer to the [workflow basics page](../../quantum-engine/workflow-basics/) for a more in-depth explanation of each of the fields in the sample workflow above. Now let's run the workflow!
 
 
-**2. Running the Workflow**
+### Running the Workflow
 
 * Make sure you have installed the [Quantum Engine CLI](../../qe-cli/install-cli/).
 
@@ -100,7 +100,7 @@ Successfully submitted workflow to quantum engine!
 Workflow ID: hello-workflow-36779dcb-d0af-4802-9462-41a41e254fa1
 ```
 
-**3. Worfklow Progress**
+**1. Worfklow Progress**
 
 The workflow is now submitted to the Orquestra Quantum Engine and will be scheduled for execution when compute becomes available.
 
@@ -126,7 +126,7 @@ STEP                                                          PODNAME           
 
 This output shows the status of the execution of the steps in your workflow. As you can see in this example, we just have the one step `greeting` which ran for 9 seconds and has already completed.
 
-**4. Workflow Results**
+**2. Workflow Results**
 
 To get the results of your workflow, run `qe get workflowresult <workflow-ID>` with your workflow ID.
 
@@ -141,7 +141,7 @@ ___
 **Note:** The above link is only valid temporarily and typically expires after 7 days.
 ___
 
-**5. Downloading the Results**
+**3. Downloading the Results**
 
 When your workflow is completed, the `workflowresult` command will provide you with a http web-link under `Location` in the console output. Click on or copy and paste the link into your browser to download the file.
 
