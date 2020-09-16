@@ -1,7 +1,7 @@
 ---
 title: "Probabilistic Modeling with Quantum Circuits"
 summary: Find a quantum distribution which generates the Bars and Stripes dataset with a Quantum Circuit Born Machine.
-weight: 4
+weight: 5
 ---
 This tutorial will walk through an implementation of a quantum circuit Born machine (QCBM) using Orquestra to find a distribution that generates the Bars and Stripes (BAS) dataset that fit in a 2 × 2 pixel image.
 
@@ -238,6 +238,8 @@ steps:
       type: float
     - seed: 9
       type: int
+    - number_of_parameters: "None"
+      type: string
   outputs:
     - name: params
       type: ansatz-params
@@ -258,7 +260,7 @@ steps:
       type: int
     - ncols: 2
       type: int
-    - fraction: 0.8
+    - fraction: 1.0
       type: float
     - method: 'zigzag'
       type: string
@@ -291,7 +293,7 @@ steps:
     type: string
   - backend_specs: '{"module_name": "qeqiskit.simulator", "function_name": "QiskitSimulator", "device_name": "statevector_simulator"}'
     type: string
-  - optimizer_specs: '{"module_name": "zquantum.optimizers.cma_es_optimizer", "function_name": "CMAESOptimizer", "options": {"popsize": 5, "sigma_0": 0.1, "tolx": 1e-2}}'
+  - optimizer_specs: '{"module_name": "zquantum.optimizers.cma_es_optimizer", "function_name": "CMAESOptimizer", "options": {"popsize": 5, "sigma_0": 0.1, "tolx": 1e-5}}'
     type: string
   - initial_parameters: ((get-initial-parameters.params))
     type: ansatz-params
