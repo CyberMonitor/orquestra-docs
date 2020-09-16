@@ -11,10 +11,8 @@ weight: 3
 - `workflowID`: A randomly generated string that is used as an identifier for a specific run of a workflow. Although not guaranteed to be unique, the chance of two repeated workflowIDs is negligible. 
 - `Quantum Engine`: The coordinating service that manages running workflows, gathering and distributing logs, and returning the data produced by your workflows.
 - `Data Correlation Service`: The service in Orquestra responsible for the correlation and aggregation of all the data produced by a workflow.
-- `Resource`: An external and pluggable component that gives your workflow additional functionality. Typically, it contains both source code and templates and exists as a github repository. 
-- `Source code`: Code contained in a resource that is callable by resource templates or source code contained in other resources.
-- `Resource Template`: A template that is contained in a resource and, when called, executes a script that calls source code. 
-- `Workflow Template`: A template that is typically contained inside a workflow that, when called, executes a series of steps.
+- `Component`: An external and pluggable component that gives your workflow additional functionality. Typically, it contains both source code and exists as a github repository. 
+- `Source code`: Code contained in a Component that is callable workflow steps or source code contained in other components.
 - `Artifact`: A data object - that is processed and can be shared between different steps in a workflow - that is serialized and represented in a file that can be written to disk (e.g. JSON). 
 - `Workflow result`: A file produced by the `Data Correlation Service` that contains data representing all steps and data representing each artifact produced by each step in a workflow. It can easily be used to analyze the data produced by your workflow.
 - `Step`: An execution process in a workflow - performed by invoking a template.

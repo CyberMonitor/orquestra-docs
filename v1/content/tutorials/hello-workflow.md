@@ -31,7 +31,7 @@ In our [Hello Component](../hello-component) tutorial you will see how to build 
 
 **1.Building a Workflow**
 
-Orquestra allows you to run others' code with minimal setup by creating a workflow (or using one they provide) that references another's components. More can be found about components on the [Components page](https://www.orquestra.io/docs/qe/workflow/resources/), and the [Hello Component](../hello-component) tutorial shows you how to build your own.
+Orquestra allows you to run others' code with minimal setup by creating a workflow (or using one they provide) that references another's components. More can be found about components on the [Components page](../../quantum-engine/components), and the [Hello Component](../hello-component) tutorial shows you how to build your own.
 
 For this tutorial, Zapata has a pre-existing component [here](https://github.com/zapatacomputing/tutorial-0-welcome) containing code you can run in your workflow. To import it, start by creating a file called `welcome-workflow.zwql` with the following code:
 
