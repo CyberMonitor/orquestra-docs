@@ -25,24 +25,24 @@ These will always be set to `io.orquestra.workflow/1.0.0` for the current versio
 apiVersion: io.orquestra.workflow/1.0.0
 ```
 
-### Resources
+### Components
 
-Resources contain the definitions and implementations of the functions that one can perform from within a workflow. To learn more about what comprises a resource and how to build one yourself, check out out the [resources](../../quantum-engine/resources/) page.
+Components contain the definitions and implementations of the functions that one can perform from within a workflow. To learn more about what comprises a component and how to build one yourself, check out out the [components](../../quantum-engine/components/) page.
 
-To use a resource, there must be a reference to it in the `imports` section of your workflow. References to resources have 3 required fields:
-- `name`: this is the name of your resource and the way you can reference a given resource in your `step` declaration. This does not need to match the name of the repository the resource comes from
-- `type`: currently only `git` resource types are supported
-- `parameters`: this is a list of various parameters specific to the type of resource
+To use a component, there must be a reference to it in the `imports` section of your workflow. References to components have 3 required fields:
+- `name`: this is the name of your component and the way you can reference a given component in your `step` declaration. This does not need to match the name of the repository the component comes from
+- `type`: currently only `git` component types are supported
+- `parameters`: this is a list of various parameters specific to the type of component
 
-For a `git` resource, there are two required fields under `parameters`:
+For a `git` component, there are two required fields under `parameters`:
 -  `url`: the location of the git repository (syntax shown below)
 -  `branch`: the branch of the repository containing the desired version
 
 ```YAML
-# List resources needed by workflow.
+# List components needed by workflow.
 imports:
 
-# A resource named `welcome-to-orquestra` that is a public git repo. All the fields here are required except branch, which defaults to master.
+# A component named `welcome-to-orquestra` that is a public git repo. All the fields here are required except branch, which defaults to master.
 - name: welcome-to-orquestra
   type: git
   parameters:
@@ -77,11 +77,11 @@ steps:
 
 #### Runtime
 
-This is written under the `config` section of the step. The runtime specifies how the Quantum Engine will interpret/compile the source code in your resource. Currently, the only supported runtime type is `python3`.
+This is written under the `config` section of the step. The runtime specifies how the Quantum Engine will interpret/compile the source code in your component. Currently, the only supported runtime type is `python3`.
 
-Under runtime you will also specify what source code you would like to run from what resource. In order to do that, specify the resource(s) that the source code will require and the relative path to the source code in that resource.
+Under runtime you will also specify what source code you would like to run from what component. In order to do that, specify the component(s) that the source code will require and the relative path to the source code in that component.
 
-In this example, we're running the `welcome` function in the `welcome.py` file which requires the welcome-to-orquestra resource. Note that the path to the file starts with the resource it can be found in.
+In this example, we're running the `welcome` function in the `welcome.py` file which requires the `welcome-to-orquestra component`. Note that the path to the file starts with the component it can be found in.
 
 ```YAML
   config:
@@ -144,10 +144,10 @@ apiVersion: io.orquestra.workflow/1.0.0
 # Prefix for workflow ID
 name: hello-workflow
 
-# List resources needed by workflow.
+# List components needed by workflow.
 imports:
 
-# A resource named `welcome-to-orquestra` that is a public git repo. All the fields here are required except branch, which defaults to master.
+# A component named `welcome-to-orquestra` that is a public git repo. All the fields here are required except branch, which defaults to master.
 - name: welcome-to-orquestra
   type: git
   parameters:

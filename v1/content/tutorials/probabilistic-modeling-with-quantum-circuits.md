@@ -2,6 +2,7 @@
 title: "Probabilistic Modeling with Quantum Circuits"
 summary: Find a quantum distribution which generates the Bars and Stripes dataset with a Quantum Circuit Born Machine.
 weight: 5
+publishdate: 2099-01-01
 ---
 This tutorial will walk through an implementation of a quantum circuit Born machine (QCBM) using Orquestra to find a distribution that generates the Bars and Stripes (BAS) dataset that fit in a 2 × 2 pixel image.
 
@@ -75,7 +76,7 @@ In the next steps we will write the code necessary to build the BAS training dat
 
 Go to [GitHub](https://github.com/) and create a public repository called `bars-and-stripes`. If you are unfamiliar with GitHub you can reference their [create a repo guide](https://help.github.com/en/github/getting-started-with-github/create-a-repo) for help
 
-This repository will be where you build your resource. [This GitHub repo](https://github.com/zapatacomputing/tutorial-4-probabilistic-modeling) can be used as a reference for how the `bars-and-stripes` resource should look like throughout the tutorial.
+This repository will be where you build your component. [This GitHub repo](https://github.com/zapatacomputing/tutorial-4-probabilistic-modeling) can be used as a reference for how the `bars-and-stripes` component should look like throughout the tutorial.
 
 **2. Add python code to the repository**
 
@@ -167,7 +168,7 @@ def get_num_bars_and_stripes_patterns(nrows, ncols) -> int:
     return num_patterns
 ```
 
-**4. Commit and push your resource**
+**4. Commit and push your component**
 
 Commit your changes and push them to GitHub.
 (Note that you will not need to do this if you are using the GitHub UI to modify the repository.)

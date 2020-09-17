@@ -4,7 +4,7 @@ summary: List of open-source Quantum Engine Components.
 weight: 4
 ---
 
-The following QE resources are available for workflow authors:
+The following QE components are available for workflow authors:
 
 | Component | Description | Maintainer|
 |-----------|-------------|-----------|

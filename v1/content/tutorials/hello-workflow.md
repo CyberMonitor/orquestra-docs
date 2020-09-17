@@ -4,36 +4,33 @@ summary: Start here to learn how to build workflows with Orquestra.
 weight: 1
 ---
 
-This tutorial will cover the key components in a Quantum Engine workflow and walk you through the process of building your first workflow. Before you do this tutorial, please [install the Quantum Engine CLI](../../qe-cli/install-cli)
+This tutorial will guide you through the process of building a simple Orquestra workflow. By the end of this tutorial you will have written an Orquestra workflow that prints "Welcome to Orquestra!". To do this, you will:
 
-## Concepts
-Every workflow executes a series of `steps`. A `step` is a portion of the workflow that describes the context of the work to be done, e.g. the code to be executed, the inputs, and outputs. The `runtime` tag specifies how a `step` should be executed. Currently the only supported `runtime` is for Python 3. The `imports` tag specifies `components` where the code to be executed in the `steps` is to be found. Currently, the only supported type of `component` is a git repository.
+* Import an Orquestra `component` into a workflow
+* Invoke the `component` from within a `task` in the workflow `steps`
+* Submit the workflow into to the Quantum Engine for processing
+* Retrieve the workflow results
 
-## Building a Workflow
+## Prepare your environment
 
-There are three steps to building a workflow:
+* Install the [Quantum Engine CLI](../../qe-cli/install-cli)
+* Install a text editor ([VSCode](https://code.visualstudio.com/), [Atom](https://atom.io/), etc.) of your choice
 
-1. Make code available as a component (optional)
 
-1. Incorporate the component into a workflow using the `imports` tag
+## Your First Workflow
 
-1. Call the code in a step of the workflow
+An Orquestra workflow consists of 4 fields:
 
-Note: Step 1 is optional if you reuse existing components (as we will do in this tutorial).
+  1. **`apiVersion`**: the workflow API version `io.orquestra.workflow/1.0.0`
+  2. **`name`**: the workflow name. This will be used asa a prefix for your generated workflow ID
+  3. **`imports`**: a list of Orquestra Components to be pulled in for this workflow. Orquestra Components are imported into the workflow so that they can be invoked by `tasks`. This minimizes the amount of code duplication and allows you to incorporate existing code libraries. For the purposes of this tutorial we will be using an Orquestra Component. You can learn how to build a custom Orquestra Component in the [Hello Component Tutorial](../hello-component/)
+  4. **`steps`**: a list of Orquestra `tasks` that will be executed. A `task` can invoke a `component` in the context of a specified `runtime` using a desired set of `resources`. 
 
-## Hello Workflow
+For custom `types` we will always include a `types` field.
 
-Let's put these concepts into practice by building our first workflow. In this tutorial we will be:
-- Building a workflow.
-- Running the workflow.
+## Building the Workflow
 
-In our [Hello Component](../hello-component) tutorial you will see how to build and incorporate your own components into a workflow. In this tutorial, we're going to use a pre-existing component so you don't have to built it yourself.
-
-**1.Building a Workflow**
-
-Orquestra allows you to run others' code with minimal setup by creating a workflow (or using one they provide) that references another's components. More can be found about components on the [Components page](https://www.orquestra.io/docs/qe/workflow/resources/), and the [Hello Component](../hello-component) tutorial shows you how to build your own.
-
-For this tutorial, Zapata has a pre-existing component [here](https://github.com/zapatacomputing/tutorial-0-welcome) containing code you can run in your workflow. To import it, start by creating a file called `welcome-workflow.zwql` with the following code:
+Let's get started by opening up a text editor and creating an empty text file called `welcome-workflow.yaml`. This `yaml` file will contain the workflow definition for our Orquestra workflow. Go ahead and copy and paste the following code into your editor:
 
 ```YAML
 # Workflow API version
@@ -53,7 +50,11 @@ imports:
     branch: "workflow-v1"
 ```
 
-In this section, we specifiy the version, the name of the workflow, and what component we're importing. Next, we'll actually run code from the `welcome-to-orquestra` component in a step in the workflow. Copypaste the following code into your welcome-workflow.zqwl file after the `welcome-to-orquestra` component:
+In this snippet, we specified the `apiVersion`, the `name` of the workflow, and list of components to bring in under `import`.
+
+`import` has a single entry that brings in the `tutorial-0-welcome` component from GitHub. `tutorial-0-welcome` is a simple component that runs a Python script that prints "Welcome to Orquestra!". You can find the source code for this component [here](https://github.com/zapatacomputing/tutorial-0-welcome).
+
+Next, we'll invoke the `welcome-to-orquestra` component in by creating a task entry under the `steps` field. We can do this by inserting the following code snippet below the the `welcome-to-orquestra` component in your `welcome-workflow.yaml`:
 
 ```YAML
 steps:
@@ -63,7 +64,7 @@ steps:
   config:
     runtime:
       type: python3
-      imports: [welcome-to-orquestra]
+      imports: [welcome-to-orquestra] 
       parameters:
         file: welcome-to-orquestra/welcome.py
         function: welcome
@@ -76,35 +77,50 @@ steps:
     type: message
 ```
 
-The final step is just to add a `types` tag to the end of the workflow specifying the types that are outputted by the step(s) of your workflow. In this case, we just need to add the `message` type.
+The final step is just to include a `types` field to the end of the workflow. In the `greeting` task we declared the `output` to be of `type: message`, therefore we'll declare the message type by adding following snippet to the end of this workflow:
 
 ```YAML
 types:
 - message
 ```
 
-That's it! A full workflow completely created! Please refer to the [workflow basics page](../../quantum-engine/workflow-basics/) for a more in-depth explanation of each of the fields in the sample workflow above. Now let's run the workflow!
+You can also refer to the [workflow basics page](../../quantum-engine/workflow-basics/) for a more in-depth explanation of each of the fields in the sample workflow above. 
+
+The workflow is now complete and we are now ready to submit it to the Quantum Engine for execution. 
 
 
 ### Running the Workflow
 
-* Make sure you have installed the [Quantum Engine CLI](../../qe-cli/install-cli/).
+To run the workflow and get our results back we'll need to:
+* Login to the `qe` CLI
+* Submit the workflow to the Quantum Engine
+* Wait for the Quantum Engine to process the workflow and execute the `tasks`
+* Retrieve the results using the `qe CLI
 
-* Log in to Quantum Engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your terminal. Contact support to register your email and/or receive the `quantum-engine-uri`.
+#### Logging in to the QE CLI
 
-* Submit your `welcome-workflow.zqwl` by running `qe submit workflow <path/to/workflow/welcome-workflow.zqwl>`.
+Please make sure you have the Quantum Engine CLI installed and configured for your operating system. You can find the instructions for installing the CLI [here](../../qe-cli/install-cli).
 
-This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
+Open your terminal and login to Quantum Engine using CLI by running the following command `qe login -e <your-email> -s <quantum-engine-uri>`
+
+You may need to contact your Orquestra support representitive for your account details and the  `quantum-engine-uri`.
+
+#### Submit the Workflow
+
+From your terminal, `welcome-workflow.yaml` can be submitted to the Quantum Engine by running `qe submit workflow <path/to/workflow/welcome-workflow.zqwl>`
+
+The qe CLI should respond with the workflow ID that corresponds to that particular execution of your workflow:
+
 ```Bash
 Successfully submitted workflow to quantum engine!
 Workflow ID: hello-workflow-36779dcb-d0af-4802-9462-41a41e254fa1
 ```
 
-**1. Worfklow Progress**
+#### Workflow Progress
 
-The workflow is now submitted to the Orquestra Quantum Engine and will be scheduled for execution when compute becomes available.
+The workflow is now submitted to the Quantum Engine and will be scheduled for execution when compute becomes available.
 
-To see details of the execution of your workflow, run `qe get workflow <workflow-ID>` with your workflow ID from the previous step substituted in.
+You can run `qe get workflow <workflow-ID>` using the workflow ID from the output of the submit step to check in on the progress of the workflow. In our case the workflow-ID was `hello-workflow-36779dcb-d0af-4802-9462-41a41e254fa1`:
 
  The output will look like:
 ```Bash
@@ -126,11 +142,11 @@ STEP                                                          PODNAME           
 
 This output shows the status of the execution of the steps in your workflow. As you can see in this example, we just have the one step `greeting` which ran for 9 seconds and has already completed.
 
-**2. Workflow Results**
+#### Workflow Results
 
-To get the results of your workflow, run `qe get workflowresult <workflow-ID>` with your workflow ID.
+Once a workflow has completed you can retrieve its results by running `qe get workflowresult <workflow-ID>` with your workflow ID.
 
-After a workflow runs, it takes time for the data to be processed. This results file cannot be created until the data is done being processed. You can try running the above command every few minutes until it returns a link to download a file.
+Even after it takes time for the data to be processed. This results file cannot be created until the data is done being processed. You can try running the above command every few minutes until it returns a link to download a file.
 
 Once finished, the output will look like the following:
 ```Bash
@@ -138,12 +154,12 @@ Name:        hello-workflow-36779dcb-d0af-4802-9462-41a41e254fa1
 Location:    http://a49397a7334b711ea99a80ac353ea38d-1340393531.us-east-1.elb.amazonaws.com:9000/workflow-results/hello-workflow-36779dcb-d0af-4802-9462-41a41e254fa1.json?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=zapata%2F20200915%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200915T193213Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3B%20filename%3D%22hello-workflow-36779dcb-d0af-4802-9462-41a41e254fa1.json%22&X-Amz-Signature=3366f8eb8b0701d1bce40c329f6a3a42a1c73f603d93b7ced22b99e181a6a67d
 ```
 ___
-**Note:** The above link is only valid temporarily and typically expires after 7 days.
+**Note:** The above `Location:` link is only valid for a brief period and typically expires after 7 days.
 ___
 
-**3. Downloading the Results**
+#### Downloading the Results
 
-When your workflow is completed, the `workflowresult` command will provide you with a http web-link under `Location` in the console output. Click on or copy and paste the link into your browser to download the file.
+When your workflow is completed, the `workflowresult` command will provide you with a http web-link under the `Location` field in the console output. Click on or copy and paste the link into your browser to download the file.
 
 This file will look like the following (except for the comments, which were added in this tutorial for clarity):
 

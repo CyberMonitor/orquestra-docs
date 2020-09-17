@@ -2,6 +2,7 @@
 title: "Simulate H₂ with VQE"
 summary: Calculate the equilibrium bond length of H₂ with a variational quantum eigensolver.
 weight: 3
+publishdate: 2099-01-01
 ---
 
 This tutorial will walk through using the Orquestra Quantum Engine to implement the Variational Quantum Eigensolver (VQE) to calculate the binding energy curve of a H₂ molecule.
@@ -10,14 +11,14 @@ This tutorial will walk through using the Orquestra Quantum Engine to implement 
 
 To help illustrate the process of composing a workflow, we will start by focusing on just part of the VQE process.
 We will build a two-step workflow that first creates the geometry of a hydrogen molecule and then performs a Hartree-Fock calculation.
-Furthermore, we will build our own Quantum Engine resource for the first step (the creation of the molecular geometry).
-For the second step, we will use an existing Quantum Engine resource, `qe-psi4`, that exposes the functionality of the Psi4 quantum chemistry package.
+Furthermore, we will build our own Quantum Engine component for the first step (the creation of the molecular geometry).
+For the second step, we will use an existing Quantum Engine component, `qe-psi4`, that exposes the functionality of the Psi4 quantum chemistry package.
 
 **1. Create a GitHub repository**
 
 Go to [GitHub](https://github.com/) and create a public repository called `diatomic-molecule`. If you are unfamiliar with GitHub you can reference their [create a repo guide](https://help.github.com/en/github/getting-started-with-github/create-a-repo) for help
 
-This repository will be where you build your resource. [This GitHub repo](https://github.com/zapatacomputing/tutorial-1-diatomic-molecule) can be used as a reference for how the `diatomic-molecule` resource should look like throughout the tutorial.
+This repository will be where you build your component. [This GitHub repo](https://github.com/zapatacomputing/tutorial-1-diatomic-molecule) can be used as a reference for how the `diatomic-molecule` component should look like throughout the tutorial.
 
 **2. Add python code to the repository**
 
@@ -60,7 +61,7 @@ setuptools.setup(
 )
 ```
 
-**4. Commit and push your resource**
+**4. Commit and push your component**
 
 Commit your changes and push them to GitHub.
 (Note that you will not need to do this if you are using the GitHub UI to modify the repository.)

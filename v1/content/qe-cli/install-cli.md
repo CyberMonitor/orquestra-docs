@@ -39,6 +39,9 @@ sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/zapatacomputin
 2. Locate the binary and rename it to `qe.exe`
 3. Move `qe.exe` to the `%SystemRoot%\system32` folder or add `qe.exe` to your PATH 
 
+**Warning** 
+* `qe install` is not yet supported on Windows
+
 ### Windows with WSL
 Installation should be very similar to Linux OS. However, you'll need to ensure that the 64-bit version of the binary is installed
 

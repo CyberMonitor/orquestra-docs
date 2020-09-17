@@ -19,7 +19,7 @@ Workflows are the blueprint for your experiment. They describe which algorithms 
 
 ### Workflows
 
-Your workflow is a description of the different steps required to get the desired experiment's results. The Quantum Engine kicks into gear, spinning up machines, fetching required resources, and executing steps in your workflow until successful completion. Please see the following tutorials that demonstrate how to run quantum experiments on Orquestra: [Bond Length Estimation of H₂](../../tutorials/simulate-h2-with-vqe/)
+Your workflow is a description of the different steps required to get the desired experiment's results. The Quantum Engine kicks into gear, spinning up machines, fetching required components, and executing steps in your workflow until successful completion. Please see the following tutorials that demonstrate how to run quantum experiments on Orquestra: [Bond Length Estimation of H₂](../../tutorials/simulate-h2-with-vqe/)
 
 ### Quantum Engine
 
