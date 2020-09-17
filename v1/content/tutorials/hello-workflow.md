@@ -107,7 +107,7 @@ You may need to contact your Orquestra support representitive for your account d
 
 #### Submit the Workflow
 
-From your terminal, `welcome-workflow.yaml` can be submitted to the Quantum Engine by running `qe submit workflow <path/to/workflow/welcome-workflow.zqwl>`
+From your terminal, `welcome-workflow.yaml` can be submitted to the Quantum Engine by running `qe submit workflow <path/to/workflow/welcome-workflow.yaml>`
 
 The qe CLI should respond with the workflow ID that corresponds to that particular execution of your workflow:
 
@@ -192,6 +192,6 @@ For your convenience, you can find the completed workflow and components used in
 
 [Welcome component](https://github.com/zapatacomputing/tutorial-0-welcome)
 
-[Complete workflow](https://github.com/zapatacomputing/tutorial-0-welcome/blob/workflow-v1/hello-workflow.zqwl)
+[Complete workflow](https://github.com/zapatacomputing/tutorial-0-welcome/blob/workflow-v1/hello-workflow.yaml)
 
 Note that this workflow has another step after the first `greeting` step. That step is added in the next tutorial, [Hello Component](../hello-component)

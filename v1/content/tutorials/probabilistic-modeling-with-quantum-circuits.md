@@ -175,7 +175,7 @@ Commit your changes and push them to GitHub.
 
 **5. Building a Workflow**
 
-Create a file `optimize-qcbm-circuit.zqwl` file with the code below, inserting the URL of your github repository in line 11. This file can go anywhere. A reference workflow can be found in the `examples` directory of the Orquestra [z-quantum-qcbm](https://github.com/zapatacomputing/z-quantum-qcbm) repository.
+Create a file `optimize-qcbm-circuit.yaml` file with the code below, inserting the URL of your github repository in line 11. This file can go anywhere. A reference workflow can be found in the `examples` directory of the Orquestra [z-quantum-qcbm](https://github.com/zapatacomputing/z-quantum-qcbm) repository.
 
 ```YAML
 # Workflow API version
@@ -320,7 +320,7 @@ You are now ready to run the workflow!
 
 * Log in to Quantum Engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your terminal. Contact support to register your email and/or receive the `quantum-engine-uri`.
 
-* Submit your `optimize-qcbm-circuit.zqwl` by running `qe submit workflow <path/to/workflow/optimize-qcbm-circuit.zqwl>`
+* Submit your `optimize-qcbm-circuit.yaml` by running `qe submit workflow <path/to/workflow/optimize-qcbm-circuit.yaml>`
 
 This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
 ```Bash

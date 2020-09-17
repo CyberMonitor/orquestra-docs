@@ -759,11 +759,11 @@ The structure of your repository should look like this:
 
 **5. Building a Workflow**
 
-Create file `lstm-tutorial.zqwl` (with code shown below), insert the URL of your GitHub repository on line 15. This file can go anywhere, and in the repo, you'll find it under `example`.
+Create file `lstm-tutorial.yaml` (with code shown below), insert the URL of your GitHub repository on line 15. This file can go anywhere, and in the repo, you'll find it under `example`.
 
-This zqwl file orchestrates all the different steps corresponding to data generation and preprocessing, and the building up and training of the model, ending up with running the model prediction on the test dataset.
+This yaml file orchestrates all the different steps corresponding to data generation and preprocessing, and the building up and training of the model, ending up with running the model prediction on the test dataset.
 
-- `lstm-tutorial.zqwl`:
+- `lstm-tutorial.yaml`:
 
 # TODO: Update this to v1
 ```YAML
@@ -884,7 +884,7 @@ Now all should be ready to run the workflow.
 
 * Log in to Quantum Engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your terminal. Contact support to register your email and/or receive the `quantum-engine-uri`.
 
-* Submit your `lstm-tutorial.zqwl` by running `qe submit workflow <path/to/workflow/lstm-tutorial.zqwl>`
+* Submit your `lstm-tutorial.yaml` by running `qe submit workflow <path/to/workflow/lstm-tutorial.yaml>`
 
 This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
 ```Bash

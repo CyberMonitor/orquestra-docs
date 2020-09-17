@@ -7,7 +7,7 @@ weight: 4
 To submit a workflow, please run the following command:
 
 ```Bash
-qe submit workflow <path/to/workflow.zqwl>
+qe submit workflow <path/to/workflow.yaml>
 ```
 
 This will cause Quantum Engine to compile and run your workflow.

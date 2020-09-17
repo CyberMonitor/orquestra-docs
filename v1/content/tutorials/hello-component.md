@@ -164,4 +164,4 @@ For your convenience, you can find the completed workflow and components used in
 
 [ZTransform component](https://github.com/zapatacomputing/tutorial-0-ztransform)
 
-[Complete workflow](https://github.com/zapatacomputing/tutorial-0-welcome/blob/master/hello-workflow.zqwl)
+[Complete workflow](https://github.com/zapatacomputing/tutorial-0-welcome/blob/master/hello-workflow.yaml)
