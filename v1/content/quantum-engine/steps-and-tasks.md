@@ -1,5 +1,5 @@
 ---
-title: 'Steps' 
+title: 'Steps & Tasks' 
 summary: The functional units of Orquestra.
 weight: 4
 ---
