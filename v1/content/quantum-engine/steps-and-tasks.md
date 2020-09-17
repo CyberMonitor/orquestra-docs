@@ -1,7 +1,7 @@
 ---
-title: 'Steps' 
+title: 'Steps & Tasks' 
 summary: The functional units of Orquestra.
-weight: 4
+weight: 5
 ---
 
 ## Overview
@@ -29,12 +29,6 @@ The `name` field is typically a human-readable name that can be used to referenc
 
 Step references are important because they allow us to pass artifacts produced by a certain step to the input of another. Since the step name is used to reference a specific step, it must be a unique name. For more information about how to reference the output of a given step, check out the "Referencing Step Outputs" section below.
 
-### Template
-
-The `template` field is the name of the template we want to use for the current step. 
-
-The template used in a step can be either a *workflow template* or a *resource template*. This allows for us to be more expressive and create more complex workflows.
-
 ### Arguments
 
 The `arguments` section is where we declare the values of input parameters and input artifacts for the chosen template. Both fields are optional depending on whether or not the template requires input parameters and/or artifacts. 
@@ -45,9 +39,9 @@ Parameters are typically simple values (e.g. strings, integers, floats, etc) tha
 
 ##### The "resources" parameter
 
-The `resources` parameter is a required value when calling any template that is defined outside of the current workflow file or **resource template** that uses external source code. It is used to both tell our workflow compiler where your template exists, as well as to install the necessary resources that you would like to be accessible in your step at runtime.
+The `resources` parameter is a required value when calling any template that is defined outside of the current workflow file or **resource template** that uses external source code. It is used to both tell our workflow compiler where your template exists, as well as to install the necessary components that you would like to be accessible in your step at runtime.
 
-For example, in the [Simulating H₂ with VQE](../../tutorials/simulate-h2-with-vqe/) tutorial, the `create-molecule` step references both the `diatomic-molecule` resource and the `open-pack-core` resource. The `diatomic-molecule` resource contains the template definition as well as source code, however, it also references source code in `open-pack-core`, so we have to declare it as a resource as well.
+For example, in the [Simulating H₂ with VQE](../../tutorials/simulate-h2-with-vqe/) tutorial, the `create-molecule` step references both the `diatomic-molecule` component and the `open-pack-core` component. The `diatomic-molecule` component contains the template definition as well as source code, however, it also references source code in `open-pack-core`, so we have to declare it as a component as well.
 
 #### Artifacts
 

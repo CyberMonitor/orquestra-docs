@@ -1,9 +1,10 @@
 ---
 title: "Probabilistic Modeling with Quantum Circuits"
 summary: Find a quantum distribution which generates the Bars and Stripes dataset with a Quantum Circuit Born Machine.
-weight: 4
+weight: 5
+publishdate: 2099-01-01
 ---
-This tutorial will walk through an implementation of a quantum circuit Born machine (QCBM) using Quantum Engine to find a distribution that generates the Bars and Stripes (BAS) dataset that fit in a 2 × 2 pixel image.
+This tutorial will walk through an implementation of a quantum circuit Born machine (QCBM) using Orquestra to find a distribution that generates the Bars and Stripes (BAS) dataset that fit in a 2 × 2 pixel image.
 
 ## The quantum circuit Born machine
 A quantum circuit Born machine (QCBM) is an unsupervised generative model which represents the probability distribution of a dataset as a quantum state. [A quantum circuit Born machine (QCBM)](https://www.nature.com/articles/s41534-019-0157-8) model was proposed as an approach to load arbitrary probability distributions in noisy intermediate-scale quantum (NISQ) devices.
@@ -21,7 +22,7 @@ In this tutorial we use a QCBM to find a distribution that generates a particula
 
 ![The Bars and Stripes Dataset](../../img/tutorials/bars-and-stripes.png)*The Bars and Stripes (BAS) dataset inside a 2 × 2 pixel image.*
 
-The way we parametrize the elements of the BAS dataset is with four qubits, one corresponding to each of the pixels in the images (taken from top to bottom, and each row from left to right). More specifically, for the 2 × 2 example above, the BAS patters are represented by the bitstrings 0000, 1100, 0101, 1111, 0011, and 1010. For simplicity, we can choose to map them to their corresponding computational basis states.
+The way we parametrize the elements of the BAS dataset is with four qubits, one corresponding to each of the pixels in the images (taken from top to bottom, and each row from left to right). More specifically, for the 2 × 2 example above, the BAS patterns are represented by the bitstrings 0000, 1100, 0101, 1111, 0011, and 1010. For simplicity, we can choose to map them to their corresponding computational basis states.
 
 ## The cost function: Clipped negative log-likelihood
 To train the model, we need a cost function which tells us if the distribution we are obtaining is similar to the target distribution or not.
@@ -44,7 +45,7 @@ The training process of the QCBM is referred to as the data-driven quantum circu
 3. Compare the distribution obtained to that one of the dataset.
 4. Update the parameters using an optimizer.
 
-Steps 2-4 get repeated until we achieve a small enough error. Notice that Steps 1 and 2 are quantum steps, while 3, and 4 are classical.
+Steps 2-4 get repeated until we achieve a small enough error. Notice that Steps 1 and 2 are quantum steps, while 3 and 4 are classical.
 
 ![](../../img/tutorials/quantum-classical.png)
 *The training process.*
@@ -69,476 +70,19 @@ As we'll be able to see when we run the workflow, the QCBM model is able to accu
 
 ## Composing a workflow to generate a QCBM for BAS patterns
 
-In the next steps we will write the code necessary to build and train this QCBM model in Orquestra. The code consists of three main parts:
-- `ansatz.py` and `ansatz_utils.py` where we define how to construct the circuits
-- `cost_function.py` which defines the cost function we want to minimize.
-- `target.py` which creates a target dataset for our QCBM 
+In the next steps we will write the code necessary to build the BAS training data and then compose a workflow to train a QCBM model in Orquestra.
 
 **1. Create a GitHub repository**
 
-Go to [GitHub](https://github.com/) and create a public repository called `qcbm`. If you are unfamiliar with GitHub you can reference their [create a repo guide](https://help.github.com/en/github/getting-started-with-github/create-a-repo) for help
+Go to [GitHub](https://github.com/) and create a public repository called `bars-and-stripes`. If you are unfamiliar with GitHub you can reference their [create a repo guide](https://help.github.com/en/github/getting-started-with-github/create-a-repo) for help
 
-This repository will be where you build your resource. [This GitHub repo](https://github.com/zapatacomputing/z-quantum-qcbm) can be used as a reference for how the `qcbm` resource should look like throughout the tutorial.
+This repository will be where you build your component. [This GitHub repo](https://github.com/zapatacomputing/tutorial-4-probabilistic-modeling) can be used as a reference for how the `bars-and-stripes` component should look like throughout the tutorial.
 
 **2. Add python code to the repository**
 
-Now we will add the bulk of the workflow, which is the Python code that trains the model. We need two files, one for defining the ansatz and one for defining the cost_function which will be used for training.
+Now we will add a Python file to the repository that contains a function for generating the BAS training data.
 
-Using either the GitHub UI or by cloning your repo and using the command line, create two files `src/python/zquantum/qcbm/ansatz_utils.py` and `src/python/zquantum/qcbm/ansatz.py`. 
-
-In the `ansatz_utils.py` file, we will add some code that will help us construct our ansatz.
-
-```python
-from zquantum.core.circuit import Circuit, Gate, Qubit
-import numpy as np
-
-
-def get_entangling_layer(
-    params: np.ndarray, n_qubits: int, entangling_gate: str, topology: str
-) -> Circuit:
-    """Builds an entangling layer in the circuit.
-
-    Args:
-        params (numpy.array): parameters of the circuit.
-        n_qubits (int): number of qubits in the circuit.
-        entangling_gate (str): gate specification for the entangling layer.
-        topology (str): describes connectivity of the qubits in the desired circuit
-
-    Returns:
-        Circuit: a zquantum.core.circuit.Circuit object
-    """
-    if topology == "all":
-        return get_entangling_layer_all_topology(params, n_qubits, entangling_gate)
-    elif topology == "line":
-        return get_entangling_layer_line_topology(params, n_qubits, entangling_gate)
-    else:
-        raise RuntimeError("Topology: {} is not supported".format(topology))
-
-
-def get_entangling_layer_all_topology(
-    params: np.ndarray, n_qubits: int, entangling_gate: str
-) -> Circuit:
-    """Builds a circuit representing an entangling layer according to the all-to-all topology.
-
-    Args:
-        params (numpy.array): parameters of the circuit.
-        n_qubits (int): number of qubits in the circuit.
-        entangling_gate (str): gate specification for the entangling layer.
-
-    Returns:
-        Circuit: a zquantum.core.circuit.Circuit object
-    """
-
-    assert params.shape[0] == int((n_qubits * (n_qubits - 1)) / 2)
-
-    circuit = Circuit()
-    circuit.qubits = [Qubit(qubit_index) for qubit_index in range(n_qubits)]
-    i = 0
-    for qubit1_index in range(0, n_qubits - 1):
-        for qubit2_index in range(qubit1_index + 1, n_qubits):
-            circuit.gates.append(
-                Gate(
-                    entangling_gate,
-                    [circuit.qubits[qubit1_index], circuit.qubits[qubit2_index]],
-                    [params[i]],
-                )
-            )
-            i += 1
-    return circuit
-
-
-def get_entangling_layer_line_topology(
-    params: np.ndarray, n_qubits: int, entangling_gate: str
-) -> Circuit:
-    """Builds a circuit representing an entangling layer according to the line topology.
-
-    Args:
-        params (numpy.array): parameters of the circuit.
-        n_qubits (int): number of qubits in the circuit.
-        entangling_gate (str): gate specification for the entangling layer.
-
-    Returns:
-        Circuit: a zquantum.core.circuit.Circuit object
-    """
-    assert params.shape[0] == n_qubits - 1
-
-    circuit = Circuit()
-    circuit.qubits = [Qubit(qubit_index) for qubit_index in range(n_qubits)]
-    for qubit1_index in range(0, n_qubits - 1):
-        circuit.gates.append(
-            Gate(
-                entangling_gate,
-                [circuit.qubits[qubit1_index], circuit.qubits[qubit1_index + 1]],
-                [params[qubit1_index]],
-            )
-        )
-    return circuit
-```
-
-Next, in `ansatz.py`, we will define the `QCBMAnsatz` which implements the `Ansatz` interface (see [here](../../other-resources/interfaces.md) for more information about interfaces in Orquestra). 
-
-```python
-import numpy as np
-import sympy
-from zquantum.core.circuit import Circuit, Qubit, Gate, create_layer_of_gates
-from zquantum.core.interfaces.ansatz import Ansatz
-from zquantum.core.interfaces.ansatz_utils import (
-    ansatz_property,
-    invalidates_parametrized_circuit,
-)
-from typing import Optional, List
-from .ansatz_utils import get_entangling_layer
-
-from overrides import overrides
-
-
-class QCBMAnsatz(Ansatz):
-
-    supports_parametrized_circuits = True
-    number_of_qubits = ansatz_property("number_of_qubits")
-    topology = ansatz_property("topology")
-
-    def __init__(
-        self, number_of_layers: int, number_of_qubits: int, topology: str = "all",
-    ):
-        """
-        An ansatz implementation used for running the Quantum Circuit Born Machine.
-
-        Args:
-            number_of_layers (int): number of entangling layers in the circuit.
-            number_of_qubits (int): number of qubits in the circuit.
-            topology (str): the topology representing the connectivity of the qubits.
-
-        Attributes:
-            number_of_qubits (int): See Args
-            number_of_layers (int): See Args
-            topology (str): See Args
-            number_of_params: number of the parameters that need to be set for the ansatz circuit.
-        """
-        super().__init__(number_of_layers)
-        self._number_of_qubits = number_of_qubits
-        self._topology = topology
-
-    @property
-    def number_of_params(self) -> int:
-        """
-        Returns number of parameters in the ansatz.
-        """
-        return np.sum(self.get_number_of_parameters_by_layer())
-
-    @property
-    def n_params_per_ent_layer(self) -> int:
-        if self.topology == "all":
-            return int((self.number_of_qubits * (self.number_of_qubits - 1)) / 2)
-        elif self.topology == "line":
-            return self.number_of_qubits - 1
-        else:
-            raise RuntimeError("Topology {} is not supported".format(self.topology))
-
-    @overrides
-    def _generate_circuit(self, params: Optional[np.ndarray] = None) -> Circuit:
-        """Builds a qcbm ansatz circuit, using the ansatz in https://advances.sciencemag.org/content/5/10/eaaw9918/tab-pdf (Fig.2 - top).
-
-        Args:
-            params (numpy.array): input parameters of the circuit (1d array).
-
-        Returns:
-            Circuit
-        """
-        if params is None:
-            params = self.get_symbols()
-
-        assert len(params) == self.number_of_params
-
-        if self.number_of_layers == 1:
-            # Only one layer, should be a single layer of rotations with Rx
-            return create_layer_of_gates(self.number_of_qubits, "Rx", params)
-
-        circuit = Circuit()
-        parameter_index = 0
-        for layer_index in range(self.number_of_layers):
-            if layer_index == 0:
-                # First layer is always 2 single qubit rotations on Rx Rz
-                circuit += create_layer_of_gates(
-                    self.number_of_qubits,
-                    "Rx",
-                    params[parameter_index : parameter_index + self.number_of_qubits],
-                )
-                circuit += create_layer_of_gates(
-                    self.number_of_qubits,
-                    "Rz",
-                    params[
-                        parameter_index
-                        + self.number_of_qubits : parameter_index
-                        + 2 * self.number_of_qubits
-                    ],
-                )
-                parameter_index += 2 * self.number_of_qubits
-            elif (
-                self.number_of_layers % 2 == 1
-                and layer_index == self.number_of_layers - 1
-            ):
-                # Last layer for odd number of layers is rotations on Rx Rz
-                circuit += create_layer_of_gates(
-                    self.number_of_qubits,
-                    "Rz",
-                    params[parameter_index : parameter_index + self.number_of_qubits],
-                )
-                circuit += create_layer_of_gates(
-                    self.number_of_qubits,
-                    "Rx",
-                    params[
-                        parameter_index
-                        + self.number_of_qubits : parameter_index
-                        + 2 * self.number_of_qubits
-                    ],
-                )
-                parameter_index += 2 * self.number_of_qubits
-            elif (
-                self.number_of_layers % 2 == 0
-                and layer_index == self.number_of_layers - 2
-            ):
-                # Even number of layers, second to last layer is 3 rotation layer with Rx Rz Rx
-                circuit += create_layer_of_gates(
-                    self.number_of_qubits,
-                    "Rx",
-                    params[parameter_index : parameter_index + self.number_of_qubits],
-                )
-                circuit += create_layer_of_gates(
-                    self.number_of_qubits,
-                    "Rz",
-                    params[
-                        parameter_index
-                        + self.number_of_qubits : parameter_index
-                        + 2 * self.number_of_qubits
-                    ],
-                )
-                circuit += create_layer_of_gates(
-                    self.number_of_qubits,
-                    "Rx",
-                    params[
-                        parameter_index
-                        + 2 * self.number_of_qubits : parameter_index
-                        + 3 * self.number_of_qubits
-                    ],
-                )
-                parameter_index += 3 * self.number_of_qubits
-            elif (
-                self.number_of_layers % 2 == 1
-                and layer_index == self.number_of_layers - 3
-            ):
-                # Odd number of layers, third to last layer is 3 rotation layer with Rx Rz Rx
-                circuit += create_layer_of_gates(
-                    self.number_of_qubits,
-                    "Rx",
-                    params[parameter_index : parameter_index + self.number_of_qubits],
-                )
-                circuit += create_layer_of_gates(
-                    self.number_of_qubits,
-                    "Rz",
-                    params[
-                        parameter_index
-                        + self.number_of_qubits : parameter_index
-                        + 2 * self.number_of_qubits
-                    ],
-                )
-                circuit += create_layer_of_gates(
-                    self.number_of_qubits,
-                    "Rx",
-                    params[
-                        parameter_index
-                        + 2 * self.number_of_qubits : parameter_index
-                        + 3 * self.number_of_qubits
-                    ],
-                )
-                parameter_index += 3 * self.number_of_qubits
-            elif layer_index % 2 == 1:
-                # Currently on an entangling layer
-                circuit += get_entangling_layer(
-                    params[
-                        parameter_index : parameter_index + self.n_params_per_ent_layer
-                    ],
-                    self.number_of_qubits,
-                    "XX",
-                    self.topology,
-                )
-                parameter_index += self.n_params_per_ent_layer
-            else:
-                # A normal single qubit rotation layer of Rx Rz
-                circuit += create_layer_of_gates(
-                    self.number_of_qubits,
-                    "Rx",
-                    params[parameter_index : parameter_index + self.number_of_qubits],
-                )
-                circuit += create_layer_of_gates(
-                    self.number_of_qubits,
-                    "Rz",
-                    params[
-                        parameter_index
-                        + self.number_of_qubits : parameter_index
-                        + 2 * self.number_of_qubits
-                    ],
-                )
-                parameter_index += 2 * self.number_of_qubits
-
-        return circuit
-
-    def get_number_of_parameters_by_layer(self) -> np.ndarray:
-        """Determine the number of parameters needed for each layer in the ansatz
-
-        Returns:
-            A 1D array of integers 
-        """
-        if self.number_of_layers == 1:
-            # If only one layer, then only need parameters for a single layer of Rx gates
-            return np.asarray([self.number_of_qubits])
-
-        num_params_by_layer = []
-        for layer_index in range(self.number_of_layers):
-            if layer_index == 0:
-                # First layer is always 2 parameters per qubit for 2 single qubit rotations
-                num_params_by_layer.append(self.number_of_qubits * 2)
-            elif (
-                self.number_of_layers % 2 == 1
-                and layer_index == self.number_of_layers - 1
-            ):
-                # Last layer for odd number of layers is 2 layer rotations
-                num_params_by_layer.append(self.number_of_qubits * 2)
-            elif (
-                self.number_of_layers % 2 == 0
-                and layer_index == self.number_of_layers - 2
-            ):
-                # Even number of layers, second to last layer is 3 rotation layer
-                num_params_by_layer.append(self.number_of_qubits * 3)
-            elif (
-                self.number_of_layers % 2 == 1
-                and layer_index == self.number_of_layers - 3
-            ):
-                # Odd number of layers, third to last layer is 3 rotation layer
-                num_params_by_layer.append(self.number_of_qubits * 3)
-            elif layer_index % 2 == 1:
-                # Currently on an entangling layer
-                num_params_by_layer.append(self.n_params_per_ent_layer)
-            else:
-                # A normal single qubit rotation layer
-                num_params_by_layer.append(self.number_of_qubits * 2)
-
-        return np.asarray(num_params_by_layer)
-
-    @overrides
-    def get_symbols(self) -> List[sympy.Symbol]:
-        """
-        Returns a list of symbolic parameters used for creating the ansatz.
-        The order of the symbols should match the order in which parameters should be passed for creating executable circuit.
-        """
-        return np.asarray(
-            [sympy.Symbol("theta_{}".format(i)) for i in range(self.number_of_params)]
-        )
-```
-
-Now, in the same fashion, create a file `src/python/zquantum/qcbm/cost_function.py`. It contains implemention of a class representing the cost function, which is used by optimizers in Orquestra (you can read more about interfaces in Orquestra [here](../../other-resources/interfaces)).
-
-```python
-from zquantum.core.cost_function import AnsatzBasedCostFunction
-from zquantum.core.interfaces.backend import QuantumBackend
-from zquantum.core.interfaces.ansatz import Ansatz
-from zquantum.core.bitstring_distribution import (
-    BitstringDistribution,
-    evaluate_distribution_distance,
-)
-from zquantum.core.circuit import build_ansatz_circuit
-from zquantum.core.utils import ValueEstimate
-from typing import Union, Callable
-import numpy as np
-
-
-class QCBMCostFunction(AnsatzBasedCostFunction):
-    """ Cost function used for evaluating QCBM.
-
-    Args:
-        ansatz (zquantum.core.interfaces.ansatz.Ansatz): the ansatz used to construct the variational circuits
-        backend (zquantum.core.interfaces.backend.QuantumBackend): backend used for QCBM evaluation
-        distance_measure (callable): function used to calculate the distance measure
-        target_bitstring_distribution (zquantum.core.bitstring_distribution.BitstringDistribution): bistring distribution which QCBM aims to learn
-        epsilon (float): clipping value used for calculating distribution distance
-        save_evaluation_history (bool): flag indicating whether we want to store the history of all the evaluations.
-        gradient_type (str): parameter indicating which type of gradient should be used.
-
-    Params:
-        ansatz zquantum.core.interfaces.ansatz.Ansatz): see Args
-        backend (zquantum.core.interfaces.backend.QuantumBackend): see Args
-        distance_measure (callable): see Args
-        target_bitstring_distribution (zquantum.core.bitstring_distribution.BitstringDistribution): see Args
-        epsilon (float): see Args
-        save_evaluation_history (bool): see Args
-        gradient_type (str): see Args
-        evaluations_history (list): List of the tuples (parameters, value) representing all the evaluation in a chronological order.
-    """
-
-    def __init__(
-        self,
-        ansatz: Ansatz,
-        backend: QuantumBackend,
-        distance_measure: Callable,
-        target_bitstring_distribution: BitstringDistribution,
-        epsilon: float,
-        save_evaluation_history: bool = True,
-        gradient_type: str = "finite_difference",
-    ):
-        self.ansatz = ansatz
-        self.backend = backend
-        self.distance_measure = distance_measure
-        self.target_bitstring_distribution = target_bitstring_distribution
-        self.epsilon = epsilon
-        self.evaluations_history = []
-        self.save_evaluation_history = save_evaluation_history
-        self.gradient_type = gradient_type
-
-    def evaluate(self, parameters: np.ndarray) -> ValueEstimate:
-        """
-        Evaluates the value of the cost function for given parameters and saves the results (if specified).
-
-        Args:
-            parameters: parameters for which the evaluation should occur
-
-        Returns:
-            value: cost function value for given parameters, either int or float.
-        """
-        value, distribution = self._evaluate(parameters)
-        if self.save_evaluation_history:
-            self.evaluations_history.append(
-                {
-                    "value": value,
-                    "params": parameters,
-                    "bitstring_distribution": distribution.distribution_dict,
-                }
-            )
-        return ValueEstimate(value)
-
-    def _evaluate(self, parameters: np.ndarray) -> (float, BitstringDistribution):
-        """
-        Evaluates the value of the cost function for given parameters.
-
-        Args:
-            parameters: parameters for which the evaluation should occur.
-
-        Returns:
-            (float): cost function value for given parameters
-            zquantum.core.bitstring_distribution.BitstringDistribution: distribution obtained
-        """
-        circuit = self.ansatz.get_executable_circuit(parameters)
-        distribution = self.backend.get_bitstring_distribution(circuit)
-        value = evaluate_distribution_distance(
-            self.target_bitstring_distribution,
-            distribution,
-            self.distance_measure,
-            epsilon=self.epsilon,
-        )
-
-        return value, distribution
-```
-
-Now, create a file `src/python/zquantum/qcbm/target.py`. Here we will define some functions to generate our target distributions.
+Using either the GitHub UI or by cloning your repo and using the command line, create a file `target.py`. 
 
 ```python
 import itertools
@@ -622,339 +166,153 @@ def get_num_bars_and_stripes_patterns(nrows, ncols) -> int:
             num_patterns += math.factorial(dimension) // (math.factorial(dimension-num_choices) * math.factorial(num_choices))
 
     return num_patterns
-
-import itertools
-import numpy as np
-import math
-import random
-from typing import List
-
-from zquantum.core.bitstring_distribution import BitstringDistribution
-
-def get_bars_and_stripes_target_distribution(nrows, ncols, fraction=1., method="zigzag"):
-    ''' Generates bars and stripes (BAS) data in zigzag pattern
-    Args: 
-        nrows (int): number of rows in BAS dataset 
-        ncols (int): number of columns in BAS dataset 
-        fraction (float): maximum fraction of patterns to include (at least one pattern will always be included)
-        method (string): the method to use to label the qubits
-    Returns: 
-        Array of list of BAS pattern. 
-    '''
-    if method == "zigzag":
-        data = bars_and_stripes_zigzag(nrows, ncols)
-    else:
-        raise RuntimeError("Method: {} is not supported for generated a target distribution for bars and stripes".format(method))
-
-    # Remove patterns until left with a subset that has cardinality less than or equal to the percentage * total number of patterns
-    num_desired_patterns = int(len(data) * fraction)
-    num_desired_patterns = max(num_desired_patterns, 1)
-    data = random.sample(list(data), num_desired_patterns)
-
-    distribution_dict = {}
-    for pattern in data: 
-        bitstring = ""
-        for qubit in pattern:
-            bitstring += str(qubit)
-
-        distribution_dict[bitstring] = 1.
-
-    return BitstringDistribution(distribution_dict)
-
-
-# Generate BAS with specified rows and columns in zigzag pattern (taken from Vicente's code, would be careful about ownership of code)
-def bars_and_stripes_zigzag(nrows, ncols):
-    ''' Generates bars and stripes data in zigzag pattern
-    Args: 
-        nrows (int): number of rows in BAS dataset 
-        ncols (int): number of columns in BAS dataset
-    Returns: 
-        Array of list of BAS pattern. 
-    '''
-
-    data = [] 
-    
-    for h in itertools.product([0,1], repeat=ncols):
-        pic = np.repeat([h], nrows, 0)
-        data.append(pic.ravel().tolist())
-          
-    for h in itertools.product([0,1], repeat=nrows):
-        pic = np.repeat([h], ncols, 1)
-        data.append(pic.ravel().tolist())
-    
-    data = np.unique(np.asarray(data), axis=0)
-
-    return data
-
-
-def get_num_bars_and_stripes_patterns(nrows, ncols) -> int:
-    ''' Get the number of bars and stripes patters for a 2-dimensional grid.
-    Args:
-        nrows (int): number of rows in BAS dataset 
-        ncols (int): number of columns in BAS dataset 
-    Returns: 
-        (int): number of bars and stripes patterns
-    '''
-    # Always have all blank and all filled
-    num_patterns = 2
-
-    for dimension in [nrows, ncols]: 
-        for num_choices in range(1, dimension):
-            # nCr = n! / (n-r)! * r!
-            num_patterns += math.factorial(dimension) // (math.factorial(dimension-num_choices) * math.factorial(num_choices))
-
-    return num_patterns
 ```
 
-**3. Adding a `setup.py`**
-
-Create a file `src/setup.py` with the following contents:
-
-```python
-import setuptools
-import os
-
-setuptools.setup(
-    name="quantum-qcbm",
-    version="0.1.0",
-    author="Zapata Computing, Inc.",
-    author_email="info@zapatacomputing.com",
-    description="QCBM package for Orquestra.",
-    packages=setuptools.find_namespace_packages(include=['zquantum.*']),
-    package_dir={'' : 'python'},
-    classifiers=(
-        "Programming Language :: Python :: 3",
-        "Operating System :: OS Independent",
-    ),
-    install_requires=[
-        'z-quantum-core',
-    ]
-)
-```
-**4. Adding `templates`**
-
-Create a file `templates/qcbm-optimization.yaml` with the following contents:
-
-```yaml
-spec:
-  templates:
-
-  - name: optimize-variational-qcbm-circuit
-    parent: generic-task
-    inputs:
-      parameters:
-      - name: n-qubits
-      - name: n-layers
-      - name: topology
-        default: "all"
-      - name: epsilon
-      - name: distance-measure-specs
-      - name: backend-specs
-      - name: optimizer-specs
-      - name: command
-        value: bash main_script.sh
-      artifacts:
-      - name: initial-parameters
-        path: /app/initial-parameters.json
-      - name: target-distribution
-        path: /app/target-distribution.json
-      - name: main-script
-        path: /app/main_script.sh
-        raw:
-          data: |
-            qvm -S &
-            quilc -S &
-            source /app/usr/local/bin/compilers_and_libraries.sh
-            python3 python_script.py
-      - name: python-script
-        path: /app/python_script.py
-        raw:
-          data: |
-            from zquantum.qcbm.cost_function import QCBMCostFunction
-            from zquantum.qcbm.ansatz import QCBMAnsatz
-            from zquantum.core.circuit import load_circuit_template_params, save_circuit_template_params
-            from zquantum.core.utils import create_object, get_func_from_specs
-            from zquantum.optimizers.utils import save_optimization_results
-            from zquantum.core.bitstring_distribution import load_bitstring_distribution
-
-            distance_measure = get_func_from_specs({{inputs.parameters.distance-measure-specs}})
-            ansatz = QCBMAnsatz({{inputs.parameters.n-layers}}, {{inputs.parameters.n-qubits}}, "{{inputs.parameters.topology}}")
-
-            backend_specs = {{inputs.parameters.backend-specs}}
-            backend = create_object(backend_specs)
-
-            optimizer_specs = {{inputs.parameters.optimizer-specs}}
-            optimizer = create_object(optimizer_specs)
-
-            initial_params = load_circuit_template_params("initial-parameters.json")
-            target_distribution = load_bitstring_distribution("target-distribution.json")
-
-            cost_function = QCBMCostFunction(ansatz, backend, distance_measure, target_distribution, {{inputs.parameters.epsilon}})
-            opt_results = optimizer.minimize(cost_function, initial_params)
-
-            save_optimization_results(opt_results, "optimization-results.json")
-            save_circuit_template_params(opt_results.opt_params, "optimized-parameters.json")
-    outputs:
-      artifacts:
-      - name: optimization-results
-        path: /app/optimization-results.json
-      - name: optimized-parameters
-        path: /app/optimized-parameters.json
-```
-
-In a separate file, `templates/target.yaml`, place the following snippet:
-
-```yaml
-spec:
-  templates:
-
-  - name: generate-bars-and-stripes-target-distribution
-    parent: generic-task
-    inputs:
-      parameters:
-      - name: nrows
-      - name: ncols
-      - name: fraction
-        default: "1.0"
-      - name: method
-        default: "zigzag"
-      - name: command
-        value: python3 main_script.py
-      artifacts:
-      - name: main-script
-        path: /app/main_script.py
-        raw:
-          data: |
-            from zquantum.qcbm.target import get_bars_and_stripes_target_distribution
-            from zquantum.core.bitstring_distribution import save_bitstring_distribution
-            
-            distribution = get_bars_and_stripes_target_distribution( {{inputs.parameters.nrows}},
-              {{inputs.parameters.ncols}}, fraction={{inputs.parameters.fraction}}, 
-              method="{{inputs.parameters.method}}")
-
-            save_bitstring_distribution(distribution, "distribution.json")
-    outputs:
-      artifacts:
-      - name: distribution
-        path: /app/distribution.json
-```
-
-**5. Commit and push your resource**
+**4. Commit and push your component**
 
 Commit your changes and push them to GitHub.
 (Note that you will not need to do this if you are using the GitHub UI to modify the repository.)
-The structure of your repository should look like this:
-```
-.
-├── src
-│   ├── python/zquantum/qcbm
-│   │   ├── ansatz.py
-│   │   └── ansatz_utils.py
-│   │   └── cost_function.py
-│   │   └── target.py
-│   └── setup.py
-└── templates
-    └── qcbm-optimization.yaml
-    └── target.yaml
-```
 
-**6. Building a Workflow**
+**5. Building a Workflow**
 
-Create a file `optimize-qcbm-circuit.yaml` file with the code below, inserting the URL of your github repository in line 13. This file can go anywhere (except the `templates` folder) and is located under `examples` in the orquestra z-quantum-qcbm resource.
+Create a file `optimize-qcbm-circuit.zqwl` file with the code below, inserting the URL of your github repository in line 11. This file can go anywhere. A reference workflow can be found in the `examples` directory of the Orquestra [z-quantum-qcbm](https://github.com/zapatacomputing/z-quantum-qcbm) repository.
 
 ```YAML
-ZapOSApiVersion: v1alpha1
-kind: Workflow
+# Workflow API version
+apiVersion: io.orquestra.workflow/1.0.0
 
-resources:
+# Prefix for workflow ID
+name: qcbm-opt
+
+imports:
+- name: bars-and-stripes
+  type: git
+  parameters:
+    repository: git@github.com:<your github username>/<your github repository name>
+    branch: master
 - name: z-quantum-core
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/z-quantum-core.git"
-    branch: "master"
-- name: qcbm
+    repository: "git@github.com:zapatacomputing/z-quantum-core.git"
+    branch: "workflow-v1"
+- name: z-quantum-qcbm
   type: git
   parameters:
-    url: "git@github.com:<your-github-username>/<your-git-repo-name>.git"
-    branch: "master"
+    repository: "git@github.com:zapatacomputing/z-quantum-qcbm.git"
+    branch: "workflow-v1"
 - name: z-quantum-optimizers
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/z-quantum-optimizers.git"
+    repository: "git@github.com:zapatacomputing/z-quantum-optimizers.git"
     branch: "master"
-- name: qe-forest
+- name: qe-qiskit
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/qe-forest.git"
+    repository: "git@github.com:zapatacomputing/qe-qiskit.git"
     branch: "master"
 - name: qe-openfermion
   type: git
   parameters:
-    url: "git@github.com:zapatacomputing/qe-openfermion.git"
+    repository: "git@github.com:zapatacomputing/qe-openfermion.git"
     branch: "master"
 
-# Specify the prefix to use when generating names of workflow executions.
-metadata:
-  generateName: qcbm-opt-
+steps:
 
-# The actual workflow specification
-spec:
+- name: get-initial-parameters
+  config:
+    runtime:
+      type: python3
+      imports: [z-quantum-core, z-quantum-qcbm]
+      parameters:
+        file: z-quantum-core/tasks/circuit_tasks.py
+        function: generate_random_ansatz_params
+    resources:
+      cpu: "1000m"
+      memory: "1Gi"
+      disk: "10Gi"
+  inputs:
+    - ansatz_specs: '{"module_name": "zquantum.qcbm.ansatz", "function_name": "QCBMAnsatz", "number_of_layers": 4, "number_of_qubits": 4, "topology": "all"}'
+      type: string
+    - min_value: -1.57
+      type: float
+    - max_value: 1.57
+      type: float
+    - seed: 9
+      type: int
+    - number_of_parameters: "None"
+      type: string
+  outputs:
+    - name: params
+      type: ansatz-params
+- name: get-bars-and-stripes-distribution
+  config:
+    runtime:
+      type: python3
+      imports: [z-quantum-core, bars-and-stripes]
+      parameters:
+        file: bars-and-stripes/target.py
+        function: generate_bars_and_stripes_target_distribution
+    resources:
+      cpu: "1000m"
+      memory: "1Gi"
+      disk: "10Gi"
+  inputs:
+    - nrows: 2
+      type: int
+    - ncols: 2
+      type: int
+    - fraction: 1.0
+      type: float
+    - method: 'zigzag'
+      type: string
+  outputs:
+    - name: distribution
+      type: bitstring-distribution
 
-  entrypoint: main
-  arguments:
-    parameters:
-    - s3-bucket: quantum-engine
-    - s3-key: tutorial-2-qcbm
+- name: optimize-circuit
+  passed: [get-bars-and-stripes-distribution, get-initial-parameters]
+  config:
+    runtime:
+      type: python3
+      imports:  [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-qiskit, z-quantum-qcbm]
+      parameters:
+        file: z-quantum-qcbm/tasks/optimize_variational_qcbm_circuit.py
+        function: optimize_variational_qcbm_circuit
+    resources:
+      cpu: "1000m"
+      memory: "2Gi"
+  inputs:
+  - n_qubits: 4
+    type: int
+  - n_layers: 4
+    type: int
+  - topology: all
+    type: string
+  - distance_measure_specs: '{"module_name": "zquantum.core.bitstring_distribution", "function_name": "compute_clipped_negative_log_likelihood"}'
+    type: string
+  - distance_measure_parameters: '{"epsilon": 1e-6}'
+    type: string
+  - backend_specs: '{"module_name": "qeqiskit.simulator", "function_name": "QiskitSimulator", "device_name": "statevector_simulator"}'
+    type: string
+  - optimizer_specs: '{"module_name": "zquantum.optimizers.cma_es_optimizer", "function_name": "CMAESOptimizer", "options": {"popsize": 5, "sigma_0": 0.1, "tolx": 1e-5}}'
+    type: string
+  - initial_parameters: ((get-initial-parameters.params))
+    type: ansatz-params
+  - target_distribution: ((get-bars-and-stripes-distribution.distribution))
+    type: bitstring-distribution
+  outputs:
+    - name: qcbm-optimization-results
+      type: optimization-results
+    - name: optimized-parameters
+      type: ansatz-params
 
-    - n-qubits: "4"
-    - n-layers: "4"
-    - topology: "all"
-    - seed: "9"
-
-  templates:
-
-  - name: main
-    steps:
-    - - name: get-initial-parameters
-        template: generate-random-ansatz-params
-        arguments:
-          parameters:
-          - ansatz-specs: "{'module_name': 'zquantum.qcbm.ansatz', 'function_name': 'QCBMAnsatz', 'number_of_layers': {{workflow.parameters.n-layers}}, 'number_of_qubits': {{workflow.parameters.n-qubits}}, 'topology': '{{workflow.parameters.topology}}'}"
-          - min-val: "-1.57"
-          - max-val: "1.57"
-          - seed: "{{workflow.parameters.seed}}"
-          - resources: [z-quantum-core, qcbm]
-      - name: get-bars-and-stripes-distribution
-        template: generate-bars-and-stripes-target-distribution
-        arguments:
-          parameters:
-          - nrows: "2"
-          - ncols: "2"
-          - fraction: "1.0"
-          - method: "zigzag"
-          - resources: [z-quantum-core, qcbm]
-    - - name: optimize-circuit
-        template: optimize-variational-qcbm-circuit
-        arguments:
-          parameters:
-          - n-qubits: "{{workflow.parameters.n-qubits}}"
-          - n-layers: "{{workflow.parameters.n-layers}}"
-          - topology: "{{workflow.parameters.topology}}"
-          - epsilon: "0.000001"
-          - distance-measure-specs: "{'module_name': 'zquantum.core.bitstring_distribution', 'function_name': 'compute_clipped_negative_log_likelihood'}"
-          - backend-specs: "{'module_name': 'qeforest.simulator', 'function_name': 'ForestSimulator', 'device_name': 'wavefunction-simulator'}"
-          - optimizer-specs: "{'module_name': 'zquantum.optimizers.cma_es_optimizer', 'function_name': 'CMAESOptimizer', 'options': {'popsize': 5, 'sigma_0': 0.1, 'tolx': 1e-6}}"
-          # - optimizer-specs: "{'module_name': 'zquantum.optimizers.scipy_optimizer', 'function_name': 'ScipyOptimizer', 'method': 'L-BFGS-B'}"
-          - resources: [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-forest, qcbm]
-          - memory: 2048Mi
-          artifacts:
-          - initial-parameters:
-              from: "{{steps.get-initial-parameters.outputs.artifacts.params}}"
-          - target-distribution:
-              from: "{{steps.get-bars-and-stripes-distribution.outputs.artifacts.distribution}}"
+types:
+ - ansatz-params
+ - bitstring-distribution
+ - optimization-results
 ```
 
-**7. Running the Workflow**
+**6. Running the Workflow**
 
 You are now ready to run the workflow!
 
@@ -962,7 +320,7 @@ You are now ready to run the workflow!
 
 * Log in to Quantum Engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your terminal. Contact support to register your email and/or receive the `quantum-engine-uri`.
 
-* Submit your `optimize-qcbm-circuit.yaml` by running `qe submit workflow <path/to/workflow/optimize-qcbm-circuit.yaml>`
+* Submit your `optimize-qcbm-circuit.zqwl` by running `qe submit workflow <path/to/workflow/optimize-qcbm-circuit.zqwl>`
 
 This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
 ```Bash
@@ -970,7 +328,7 @@ Successfully submitted workflow to quantum engine!
 Workflow ID: qcbm-opt-l2btk
 ```
 
-**8. Worfklow Progress**
+**7. Worfklow Progress**
 
 The workflow is now submitted to the Orquestra Quantum Engine and will be scheduled for execution when compute becomes available.
 
@@ -978,31 +336,27 @@ To see details of the execution of your workflow, run `qe get workflow <workflow
 
  The output will look like:
 ```Bash
-Name:                qcbm-opt-l2btk
+Name:                qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50
 Namespace:           default
-ServiceAccount:      default
-Status:              Running
-Created:             Tue Jul 21 17:53:06 +0000 (3 minutes ago)
-Started:             Tue Jul 21 17:53:06 +0000 (3 minutes ago)
-Duration:            3 minutes 20 seconds
-Parameters:          
+Status:              Succeeded
+Created:             Wed Sep 09 19:46:38 +0000 (3 minutes ago)
+Started:             Wed Sep 09 19:46:38 +0000 (3 minutes ago)
+Finished:            Wed Sep 09 19:50:01 +0000 (19 seconds ago)
+Duration:            3 minutes 23 seconds
+Parameters:
   s3-bucket:         quantum-engine
-  s3-key:            tutorial-2-qcbm
-  n-qubits:          4
-  n-layers:          4
-  topology:          all
-  seed:              9
+  s3-key:            projects/v1
 
-STEP                                      TEMPLATE                                       STEPNAME                    DURATION  MESSAGE
- ● qcbm-opt-l2btk                         main                                                                                  
- ├-·-✔ get-initial-parameters             generate-random-ansatz-params                  qcbm-opt-l2btk-2326122556  27s         
- | └-✔ get-bars-and-stripes-distribution  generate-bars-and-stripes-target-distribution  qcbm-opt-l2btk-1634304231  24s         
- └---✔ optimize-circuit                   optimize-variational-qcbm-circuit              qcbm-opt-l2btk-163168498   9m 
+STEP                                                          PODNAME                                                   DURATION  MESSAGE
+  qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50 (qeDagWorkflow)
+ ├- get-bars-and-stripes-distribution (get-bars-and-stripes-distribution)  qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292  18s       distribution
+ ├- get-initial-parameters (get-initial-parameters)                        qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077  34s       params
+ └- optimize-circuit (optimize-circuit)                                    qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-741618460   2m        qcbm-optimization-results,optimized-parameters
  ```
 
 This output shows the status of the execution of the steps in your workflow.
 
-**9. Workflow Results**
+**8. Workflow Results**
 
 To get the results of your workflow, run `qe get workflowresult <workflow-ID>` with your workflow ID.
 
@@ -1017,16 +371,16 @@ ___
 **Note:** The above link is only valid temporarily and typically expires after 7 days.
 ___
 
-**10. Downloading the Results**
+**9. Downloading the Results**
 
 When your workflow is completed, the `workflowresult` command will provide you with a http web-link under `Location` in the console output. Click on or copy and paste the link into your browser to download the file
 
-This file will look like the following:
+This file will look like the following. (Note that we have formatted and truncated the file for readability.)
 
 ```JSON
 {
-    "qcbm-opt-l2btk-1634304231": {
-        "class": "generate-bars-and-stripes-target-distribution",
+    "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292": {
+        "class": "get-bars-and-stripes-distribution",
         "distribution": {
             "bitstring_distribution": {
                 "0000": 0.16666666666666666,
@@ -1036,43 +390,26 @@ This file will look like the following:
                 "1100": 0.16666666666666666,
                 "1111": 0.16666666666666666
             },
-            "id": "qcbm-opt-l2btk-1634304231/distribution",
+            "id": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292/distribution",
             "schema": "zapata-v1-bitstring-probability-distribution",
-            "taskClass": "generate-bars-and-stripes-target-distribution",
-            "taskId": "qcbm-opt-l2btk-1634304231",
-            "workflowId": "qcbm-opt-l2btk"
+            "taskClass": "get-bars-and-stripes-distribution",
+            "taskId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292",
+            "workflowId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50"
         },
-        "id": "qcbm-opt-l2btk-1634304231",
-        "inputParam:command": "python3 main_script.py",
-        "inputParam:cpu": "1000m",
-        "inputParam:disk": "10Gi",
+        "id": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292",
         "inputParam:docker-image": "z-quantum-default",
         "inputParam:docker-registry": "zapatacomputing",
         "inputParam:docker-tag": "latest",
-        "inputParam:fraction": "1.0",
-        "inputParam:memory": "1024Mi",
-        "inputParam:method": "zigzag",
-        "inputParam:ncols": "2",
-        "inputParam:nrows": "2",
-        "workflowId": "qcbm-opt-l2btk"
+        "workflowId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50"
     },
-    "qcbm-opt-l2btk-2326122556": {
-        "class": "generate-random-ansatz-params",
-        "id": "qcbm-opt-l2btk-2326122556",
-        "inputParam:ansatz-specs": "{'module_name': 'zquantum.qcbm.ansatz', 'function_name': 'QCBMAnsatz', 'number_of_layers': 4, 'number_of_qubits': 4, 'topology': 'all'}",
-        "inputParam:command": "python3 main_script.py",
-        "inputParam:cpu": "1000m",
-        "inputParam:disk": "10Gi",
+    "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077": {
+        "class": "get-initial-parameters",
+        "id": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077",
         "inputParam:docker-image": "z-quantum-default",
         "inputParam:docker-registry": "zapatacomputing",
         "inputParam:docker-tag": "latest",
-        "inputParam:max-val": "1.57",
-        "inputParam:memory": "1024Mi",
-        "inputParam:min-val": "-1.57",
-        "inputParam:number-of-params": "None",
-        "inputParam:seed": "9",
         "params": {
-            "id": "qcbm-opt-l2btk-2326122556/params",
+            "id": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077/params",
             "parameters": {
                 "real": [
                     -1.5374251567989021,
@@ -1110,23 +447,39 @@ This file will look like the following:
                 ]
             },
             "schema": "zapata-v1-circuit_template_params",
-            "taskClass": "generate-random-ansatz-params",
-            "taskId": "qcbm-opt-l2btk-2326122556",
-            "workflowId": "qcbm-opt-l2btk"
+            "taskClass": "get-initial-parameters",
+            "taskId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077",
+            "workflowId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50"
         },
-        "workflowId": "qcbm-opt-l2btk"
+        "workflowId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50"
     },
-}
+    "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-741618460": {
+        "class": "optimize-circuit",
+        "id": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-741618460",
+        "inputArtifact:initial_parameters": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077/params",
+        "inputArtifact:target_distribution": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292/distribution",
+        "inputParam:docker-image": "z-quantum-default",
+        "inputParam:docker-registry": "zapatacomputing",
+        "inputParam:docker-tag": "latest",
+        "optimized-parameters": {
+            "id": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-741618460/optimized-parameters",
+            "parameters": {
+                "real": [
+                    -2.5036601724777223,
+                    -0.027797857736315386,
+                    0.4326403682034262,
+                    -0.3944843948778366,
+                    ...
 ```
 
-The sections `qcbm-opt-l2btk-2326122556`, `qcbm-opt-l2btk-1634304231`, and `qcbm-opt-l2btk-163168498` (which we don't show for brevity) correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the template that was executed for the given step, any input parameters or input artifacts, and the output artifacts. In `qcbm-opt-l2btk-2326122556`, the artifact `parameters` is the output of the `generate-random-ansatz-params` template, and it stores the randomly generated parameters for the circuit. More information on the contents of this file are found on the [Workflow Results via JSON page](../../data-management/workflow-result/).
+The sections `qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292`, `qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077`, and `qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-741618460` (which we don't show for brevity) correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the step that was executed and its inputs and outputs. For example, the `get-initial-parameters` step (`qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077`) has an output called `params` which contains the randomly generated parameters for the circuit. More information on the contents of this file are found on the [Workflow Results via JSON page](../../data-management/workflow-result/).
 
 ___
 
 
 ## Plotting the results
 
-In order to plot the training process, we use the file `plot_qcbm_opt_history.py`. In the repo, you can find it in the folder named `examples`. This plots the results from the existing `qcbm_example.json` file, but if you'd like to plot the results of your own training, please change the name to your json file in line 22.
+In order to plot the training process, we use the file `plot_qcbm_opt_history.py`. In the `z-quantum-qcbm` repository, you can find it in the folder named `examples`. This plots the results from the existing `qcbm_example.json` file, but if you'd like to plot the results of your own training, please change the name to your json file in line 22.
 
 ```python
 import json
@@ -1151,7 +504,7 @@ def get_ordered_list_of_bitstrings(num_qubits):
     return bitstrings
 
 # Insert the path to your JSON file here
-with open('./examples/qcbm-example.json') as f:
+with open('qcbm_example.json') as f:
     data = json.load(f)
 
 # Extract lists of energies, bond lengths, and basis sets.
@@ -1162,10 +515,10 @@ bistring_distributions = []
 current_minimum = 100000
 for step_id in data:
     step = data[step_id]
-    if step["class"] == "optimize-variational-qcbm-circuit":
-        ordered_bitstrings = get_ordered_list_of_bitstrings(int(step["inputParam:n-qubits"]))
+    if step["class"] == "optimize-circuit":
+        ordered_bitstrings = get_ordered_list_of_bitstrings(4)
 
-        for evaluation in step["optimization-results"]["history"]:
+        for evaluation in step["qcbm-optimization-results"]["history"]:
             distances.append(evaluation["value"])
             current_minimum = min(current_minimum, evaluation["value"])
             minimum_distances.append(current_minimum)

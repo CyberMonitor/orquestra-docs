@@ -1,23 +1,24 @@
 ---
 title: "Simulate H₂ with VQE"
 summary: Calculate the equilibrium bond length of H₂ with a variational quantum eigensolver.
-weight: 2
+weight: 3
+publishdate: 2099-01-01
 ---
 
-This tutorial will walk through using Quantum Engine to use the Variational Quantum Eigensolver (VQE) to calculate the binding energy curve of a H₂ molecule.
+This tutorial will walk through using the Orquestra Quantum Engine to implement the Variational Quantum Eigensolver (VQE) to calculate the binding energy curve of a H₂ molecule.
 
 ## Composing a workflow to calculate the Hartree-Fock energy
 
 To help illustrate the process of composing a workflow, we will start by focusing on just part of the VQE process.
 We will build a two-step workflow that first creates the geometry of a hydrogen molecule and then performs a Hartree-Fock calculation.
-Furthermore, we will build our own Quantum Engine resource for the first step (the creation of the molecular geometry).
-For the second step, we will use an existing Quantum Engine resource, `qe-psi4`, that exposes the functionality of the Psi4 quantum chemistry package.
+Furthermore, we will build our own Quantum Engine component for the first step (the creation of the molecular geometry).
+For the second step, we will use an existing Quantum Engine component, `qe-psi4`, that exposes the functionality of the Psi4 quantum chemistry package.
 
 **1. Create a GitHub repository**
 
 Go to [GitHub](https://github.com/) and create a public repository called `diatomic-molecule`. If you are unfamiliar with GitHub you can reference their [create a repo guide](https://help.github.com/en/github/getting-started-with-github/create-a-repo) for help
 
-This repository will be where you build your resource. [This GitHub repo](https://github.com/zapatacomputing/tutorial-1-diatomic-molecule) can be used as a reference for how the `diatomic-molecule` resource should look like throughout the tutorial.
+This repository will be where you build your component. [This GitHub repo](https://github.com/zapatacomputing/tutorial-1-diatomic-molecule) can be used as a reference for how the `diatomic-molecule` component should look like throughout the tutorial.
 
 **2. Add python code to the repository**
 
@@ -60,62 +61,23 @@ setuptools.setup(
 )
 ```
 
-**4. Adding `templates`**
-
-Create a file `templates/diatomic-molecule.yaml` with the following contents:
-
-```yaml
-spec:
-  templates:
-
-  # Create a diatomic moleucle
-  - name: create-diatomic-molecule
-    parent: generic-task
-    inputs:
-      parameters:
-      - name: species1
-      - name: species2
-      - name: bond-length
-      - name: command
-        value: python3 main_script.py
-      artifacts:
-      - name: main-script
-        path: /app/main_script.py
-        raw:
-          data: |
-            import json
-            from diatomicmolecule import create_diatomic_molecule_geometry
-            geometry = create_diatomic_molecule_geometry('{{inputs.parameters.species1}}',
-                                                         '{{inputs.parameters.species2}}',
-                                                         {{inputs.parameters.bond-length}})
-
-            geometry['schema'] = "molecular_geometry"
-            with open('molecule.json', 'w') as f:
-              f.write(json.dumps(geometry))
-    outputs:
-      artifacts:
-      - name: geometry
-        path: /app/molecule.json
-```
-
-**5. Commit and push your resource**
+**4. Commit and push your component**
 
 Commit your changes and push them to GitHub.
 (Note that you will not need to do this if you are using the GitHub UI to modify the repository.)
 The structure of your repository should look like this:
 ```
 .
-├── src
-│   ├── diatomicmolecule.py
-│   └── setup.py
-└── templates
-    └── diatomic-molecule.yaml
+└─ src
+   ├── diatomicmolecule.py
+   └── setup.py
 ```
 
-**6. Building a Workflow**
+**5. Building a Workflow**
 
-Create a file `hartree-fock-workflow.yaml` file with the code below, inserting the URL of your github repository in line 13.
+Create a file `hartree-fock-workflow.zqwl` file with the code below, inserting the URL of your github repository in line 13.
 
+# TODO: Update this to v1 standards
 ```YAML
 # Workflow API version
 ZapOSApiVersion: v1alpha1
@@ -203,7 +165,7 @@ spec:
           - docker-tag: latest
 ```
 
-**7. Running the Workflow**
+**6. Running the Workflow**
 
 You are now ready to run the workflow!
 
@@ -211,7 +173,7 @@ You are now ready to run the workflow!
 
 * Log in to Quantum Engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your terminal. Contact support to register your email and/or receive the `quantum-engine-uri`.
 
-* Submit your `hartree-fock-workflow.yaml` by running `qe submit workflow <path/to/workflow/hartree-fock-workflow.yaml>`
+* Submit your `hartree-fock-workflow.zqwl` by running `qe submit workflow <path/to/workflow/hartree-fock-workflow.zqwl>`
 
 This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
 ```Bash
@@ -219,13 +181,14 @@ Successfully submitted workflow to quantum engine!
 Workflow ID: welcome-to-orquestra-d9djf
 ```
 
-**8. Worfklow Progress**
+**7. Worfklow Progress**
 
 The workflow is now submitted to the Orquestra Quantum Engine and will be scheduled for execution when compute becomes available.
 
 To see details of the execution of your workflow, run `qe get workflow <workflow-ID>` with your workflow ID from the previous step substituted in.
 
  The output will look like:
+ # TODO: Update this to v1 standards
 ```Bash
 Name:                hartree-fock-4772f
 Namespace:           default
@@ -247,7 +210,7 @@ STEP                                               STEPNAME                     
 
 This output shows the status of the execution of the steps in your workflow.
 
-**9. Workflow Results**
+**8. Workflow Results**
 
 To get the results of your workflow, run `qe get workflowresult <workflow-ID>` with your workflow ID.
 
@@ -262,12 +225,13 @@ ___
 **Note:** The above link is only valid temporarily and typically expires after 7 days.
 ___
 
-**10. Downloading the Results**
+**9. Downloading the Results**
 
 When your workflow is completed, the `workflowresult` command will provide you with a http web-link under `Location` in the console output. Click on or copy and paste the link into your browser to download the file
 
 This file will look like the following:
 
+# TODO: Update this to v1 standards
 ```JSON
 {
     "hartree-fock-z78cn-734196932": {
@@ -357,7 +321,8 @@ This file will look like the following:
 }
 ```
 
-The sections `welcome-to-orquestra-d9djf-1289017430` and `welcome-to-orquestra-d9djf-2235995037` correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the template that was executed for the given step, any input parameters or input artifacts, and the output artifacts. The artifact `welcome` is the output of the `greeting` template, and the artifact `zessage` is the output of the `transform-welcome` template. More information on the contents of this file are found on the [Workflow Results via JSON page](../../data-management/workflow-result/).
+# TODO: Update with correct IDs
+The sections `welcome-to-orquestra-d9djf-1289017430` and `welcome-to-orquestra-d9djf-2235995037` correspond to the steps that were run by your workflow. Note that these IDs match those in the output of `qe get workflow`. Each of these sections contains information about the step that was executed, any input parameters or input artifacts, and the output artifacts. The artifact `geometry` is the output of the `create-diatomic-molecule` step, and the artifact `energycalc-results` is the output of the `run-psi4` step. More information on the contents of this file are found on the [Workflow Results via JSON page](../../data-management/workflow-result/).
 
 ___
 **Note:** The sections in this results file will not necessarily be in the order that they were executed.
@@ -369,8 +334,9 @@ Here we walk through running a workflow that performs a VQE calculation for diff
 
 **1. Building the Workflow**
 
-Create a file `vqe-workflow.yaml` file with the code below, inserting the URL of your github repository in line 8.
+Create a file `vqe-workflow.zqwl` file with the code below, inserting the URL of your github repository in line 8.
 
+# TODO: Update this to v1 standards
 ```yaml
 ZapOSApiVersion: v1alpha1
 kind: Workflow
@@ -531,7 +497,7 @@ spec:
 
 **2. Running the Workflow**
 
-Submit your `vqe-workflow.yaml` by running `qe submit workflow <path/to/workflow/vqe-workflow.yaml>`**
+Submit your `vqe-workflow.zqwl` by running `qe submit workflow <path/to/workflow/vqe-workflow.zqwl>`
 
 This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
 ```Bash
@@ -546,6 +512,7 @@ The workflow is now submitted to the Orquestra Quantum Engine and will be schedu
 To see details of the execution of your workflow, run `qe get workflow <workflow-ID>` with your workflow ID from the previous step substituted in.
 
  The output will look like:
+ # TODO: Update this to v1 standards
 ```Bash
 Name:                h2-example-p8l8z
 Namespace:           default

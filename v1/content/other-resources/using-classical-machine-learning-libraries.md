@@ -24,6 +24,7 @@ The following libraries are included in Zapata's Machine Learning Image:
 
 ## Using the image
 
+# TODO: Update this to v1 standards
 To use this image, follow the instructions on the [Docker Images page](../../quantum-engine/docker-images/), and use the values:
 ```YAML
 - name: docker-image
