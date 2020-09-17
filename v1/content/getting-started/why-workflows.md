@@ -32,13 +32,18 @@ With a workflow, there's no need to configure an environment for each step withi
 With a traditional environment, you would have to piece together each step into a bespoke script, which, when called, runs your experiment. Not only is this approach time-consuming, it's also prone to error and difficult to reuse logic. Compare this with a workflow's declarative way of expressing an experiment:
 
 ```yaml
-  - name: world-peace
-    container:
-      image: orquestra/python3:latest
-      command: [sh, -c]
-      args: ["python3 main.py"]
+- name: star-wars-characters
+  config:
+    runtime:
+      type: python3
+      imports: [star-wars]
+      parameters:
+        file: star-wars/src/python/orquestra/welcome.py
+        function: test_artifact
+  outputs:
+  - name: test_artifact
+    type: test
 ```
-
 #### Ready for production
 
 While there is not a standardized workflow specification, workflows have been in use with Argo since 2017, Apache Airflow since 2014, and a key component of many organizations that use these platforms.

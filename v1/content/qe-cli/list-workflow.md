@@ -1,6 +1,6 @@
 ---
 title: List Workflows
-summary: Getting the list of your submitted workflow
+summary: Getting the list of your submitted workflows
 weight: 7
 ---
 

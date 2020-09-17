@@ -1,7 +1,7 @@
 ---
 title: 'FAQ'
 summary: Frequently Asked Questions about Worklow/
-weight: 6
+weight: 7
 ---
 
 1. **What are the restrictions for naming in the workflow YAML?**

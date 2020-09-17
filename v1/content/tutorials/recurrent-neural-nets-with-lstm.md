@@ -2,6 +2,7 @@
 title: "Recurrent Neural Networks with LSTM"
 summary: Predict a noisy sine function by means of Recurrent Neural Networks.
 weight: 4
+publishdate: 2099-01-01
 ---
 
 This tutorial will walk through the implementation of a neural network model that can learn how to reconstruct the shape of a noisy sine function using *Recurrent Neural Networks (RNNs)*.
