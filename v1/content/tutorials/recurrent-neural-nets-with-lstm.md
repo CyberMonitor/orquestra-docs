@@ -148,7 +148,7 @@ In the next steps, it will be stated the code necessary to build and train this 
 
 Go to [GitHub](https://github.com/) and create a public repository called `lstm`. If you are unfamiliar with GitHub, you can reference the [create a repo guide](https://help.github.com/en/github/getting-started-with-github/create-a-repo) for help.
 
-This repository will be where you build your resource. [This GitHub repo](https://github.com/zapatacomputing/z-lstm) can be used as a reference for how the `lstm` resource should look like throughout the tutorial.
+This repository will be where you build your component. [This GitHub repo](https://github.com/zapatacomputing/z-lstm) can be used as a reference for how the `lstm` component should look like throughout the tutorial.
 
 **2. Add python code to the repository**
 
@@ -743,7 +743,7 @@ setuptools.setup(
 )
 ```
 
-**4. Commit and push your resource**
+**4. Commit and push your component**
 
 Commit your changes and push them to GitHub (please note that you will not need to do this if you are using the GitHub UI to modify the repository).
 The structure of your repository should look like this:

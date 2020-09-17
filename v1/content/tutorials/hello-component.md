@@ -47,7 +47,7 @@ In order to be recognized as a python package by Orquestra, a component should c
 Using either the GitHub UI or by cloning your repo and using the command line create the folder `src/` at the root of your repository.
 
 ___
-The structure we want to have is shown in more detail on the [Components page](https://www.orquestra.io/docs/qe/workflow/resources/).
+The structure we want to have is shown in more detail on the [Components page](../../quantum-engine/components).
 
 ___
 
