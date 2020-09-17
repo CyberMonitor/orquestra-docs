@@ -58,7 +58,7 @@
    <g style="isolation:isolate">
       <text transform="translate(132.9 238.38)" style="isolation:isolate;font-size:11px;fill:#b9baba;font-family:Meslo LG M DZ for Powerline">$</text>
       <text transform="translate(139.52 238.38)" style="isolation:isolate;font-size:5px;fill:#b9baba;font-family:Meslo LG M DZ for Powerline" />
-      <text transform="translate(142.53 238.38)" style="isolation:isolate;font-size:11px;fill:#fff;font-family:Meslo LG M DZ for Powerline">qe get worfklowResult</text>
+      <text transform="translate(142.53 238.38)" style="isolation:isolate;font-size:11px;fill:#fff;font-family:Meslo LG M DZ for Powerline">qe get worflowResult</text>
    </g>
    <rect x="1" y="210.98" width="107.09" height="42.54" rx="4" ry="4" style="fill:none;stroke:#4d4d4d;stroke-miterlimit:10;stroke-width:2px" />
    <text transform="translate(9.65 244.53)" style="isolation:isolate;font-size:10px;fill:#333;font-family:Helvetica Neue">workflowResult.json</text>
