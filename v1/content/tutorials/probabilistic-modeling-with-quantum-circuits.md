@@ -2,7 +2,6 @@
 title: "Probabilistic Modeling with Quantum Circuits"
 summary: Find a quantum distribution which generates the Bars and Stripes dataset with a Quantum Circuit Born Machine.
 weight: 5
-publishdate: 2099-01-01
 ---
 This tutorial will walk through an implementation of a quantum circuit Born machine (QCBM) using Orquestra to find a distribution that generates the Bars and Stripes (BAS) dataset that fit in a 2 × 2 pixel image.
 
