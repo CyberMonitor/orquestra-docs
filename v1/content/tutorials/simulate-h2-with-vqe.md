@@ -2,6 +2,7 @@
 title: "Simulate H₂ with VQE"
 summary: Calculate the equilibrium bond length of H₂ with a variational quantum eigensolver.
 weight: 3
+publishdate: 2099-01-01
 ---
 
 This tutorial will walk through using the Orquestra Quantum Engine to implement the Variational Quantum Eigensolver (VQE) to calculate the binding energy curve of a H₂ molecule.
