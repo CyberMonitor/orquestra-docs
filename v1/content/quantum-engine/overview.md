@@ -1,7 +1,7 @@
 ---
 title: Overview
-summary: This document is an overview of the various components required to have a complete and running Quantum Engine.
-weight: 6
+summary: An verview of the various components required to have a complete and running Quantum Engine
+weight: 1
 ---
 
 ![Quantum Engine](../../img/quantum-engine-components.jpg)

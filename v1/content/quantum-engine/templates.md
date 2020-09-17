@@ -1,7 +1,7 @@
 ---
 title: 'Templates'
 summary: Templates are responsible for wrapping your source code into callable objects that can be referenced from within your workflow.
-weight: 3
+weight: 4
 ---
 
 There are two types of templates: **resource templates** and **workflow templates**.
