@@ -74,7 +74,7 @@ The structure of your repository should look like this:
 
 **5. Building a Workflow**
 
-Create a file `hartree-fock-workflow.zqwl` file with the code below, inserting the URL of your github repository in line 13.
+Create a file `hartree-fock-workflow.yaml` file with the code below, inserting the URL of your github repository in line 13.
 
 # TODO: Update this to v1 standards
 ```YAML
@@ -172,7 +172,7 @@ You are now ready to run the workflow!
 
 * Log in to Quantum Engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your terminal. Contact support to register your email and/or receive the `quantum-engine-uri`.
 
-* Submit your `hartree-fock-workflow.zqwl` by running `qe submit workflow <path/to/workflow/hartree-fock-workflow.zqwl>`
+* Submit your `hartree-fock-workflow.yaml` by running `qe submit workflow <path/to/workflow/hartree-fock-workflow.yaml>`
 
 This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
 ```Bash
@@ -333,7 +333,7 @@ Here we walk through running a workflow that performs a VQE calculation for diff
 
 **1. Building the Workflow**
 
-Create a file `vqe-workflow.zqwl` file with the code below, inserting the URL of your github repository in line 8.
+Create a file `vqe-workflow.yaml` file with the code below, inserting the URL of your github repository in line 8.
 
 # TODO: Update this to v1 standards
 ```yaml
@@ -496,7 +496,7 @@ spec:
 
 **2. Running the Workflow**
 
-Submit your `vqe-workflow.zqwl` by running `qe submit workflow <path/to/workflow/vqe-workflow.zqwl>`
+Submit your `vqe-workflow.yaml` by running `qe submit workflow <path/to/workflow/vqe-workflow.yaml>`
 
 This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
 ```Bash

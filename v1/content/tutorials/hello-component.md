@@ -147,7 +147,7 @@ Once you are satisified with your work, commit your changes and push them to Git
 
 **7. Building a Workflow**
 
-We can now build a simple workflow that uses the `welcome` git component to generate the welcome message artifact. Let's start by creating a `welcome-workflow.zqwl` file with the following code:
+We can now build a simple workflow that uses the `welcome` git component to generate the welcome message artifact. Let's start by creating a `welcome-workflow.yaml` file with the following code:
 
 ```YAML
 # Workflow API version
@@ -344,4 +344,4 @@ For your convenience, here are the completed components and workflow:
 
 [ZTransform component](https://github.com/zapatacomputing/tutorial-0-ztransform)
 
-[Complete workflow](https://github.com/zapatacomputing/tutorial-0-welcome/blob/master/hello-workflow.zqwl)
+[Complete workflow](https://github.com/zapatacomputing/tutorial-0-welcome/blob/master/hello-workflow.yaml)
