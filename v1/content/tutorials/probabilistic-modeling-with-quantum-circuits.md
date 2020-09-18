@@ -391,8 +391,8 @@ This file will look like the following. (Note that we have formatted and truncat
             },
             "id": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292/distribution",
             "schema": "zapata-v1-bitstring-probability-distribution",
-            "taskClass": "get-bars-and-stripes-distribution",
-            "taskId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292",
+            "stepName": "get-bars-and-stripes-distribution",
+            "stepId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292",
             "workflowId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50"
         },
         "id": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292",
@@ -446,8 +446,8 @@ This file will look like the following. (Note that we have formatted and truncat
                 ]
             },
             "schema": "zapata-v1-circuit_template_params",
-            "taskClass": "get-initial-parameters",
-            "taskId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077",
+            "stepName": "get-initial-parameters",
+            "stepId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077",
             "workflowId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50"
         },
         "workflowId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50"

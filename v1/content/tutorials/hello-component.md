@@ -41,7 +41,7 @@ While there are no restrictions on how to organize an Orquestra Component, we re
 
 * The `src/` will contain:
   * A `setup.py` file that is responsible for installing your code in the machine where your workflow is executed. This installation is done automatically for you conforming to [Python3 setuptools standard](https://docs.python.org/3/distutils/setupscript.html) for Setup Scripts.
-  * A folder name `python/` containing the source code to be invoked by a `task` in a workflow
+  * A folder name `python/` containing the source code to be invoked by a `step` in a workflow
 
 Using your terminal or the text editor of your choice, recreate this folder structure in the `welcome-component` repository.
 
@@ -154,7 +154,7 @@ Once you are satisified with your work, commit your changes and push them to Git
 
 ### Building a Workflow
 
-The component is now ready to be used in an Orquestra workflow. Please refer to the [Hello Worfklow](../hello-workflow) tutorial for an example of invoking a component from within a task.
+The component is now ready to be used in an Orquestra workflow. Please refer to the [Hello Worfklow](../hello-workflow) tutorial for an example of invoking a component from within a step.
 
 ## Completed Tutorial Materials
 

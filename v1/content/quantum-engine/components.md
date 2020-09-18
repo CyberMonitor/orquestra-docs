@@ -6,7 +6,7 @@ weight: 3
 
 ## Overview
 
-Components are the building blocks for your workflows. They define what tasks you are able to perform and what data you will produce.
+Components are the building blocks for your workflows. They define what steps you are able to perform and what data you will produce.
 
 By incorporating source code into a _component_, it becomes easily usable and shareable within Orquestra. Through the use of _components_, we hope to make it as easy as possible to navigate the minefield of bringing your own source code into harmony with others'.
 

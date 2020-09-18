@@ -245,8 +245,8 @@ This file will look like the following:
             "n_frozen_valence": 0,
             "n_mo": 2,
             "schema": "io-zapOS-v1alpha1-energy_calc",
-            "taskClass": "run-psi4",
-            "taskId": "hartree-fock-z78cn-734196932",
+            "stepName": "run-psi4",
+            "stepId": "hartree-fock-z78cn-734196932",
             "workflowId": "hartree-fock-z78cn"
         },
         "id": "hartree-fock-z78cn-734196932",
@@ -301,8 +301,8 @@ This file will look like the following:
                     "zapata-v1-molecular_geometry_sites_index": 1
                 }
             ],
-            "taskClass": "create-diatomic-molecule",
-            "taskId": "hartree-fock-z78cn-1709410626",
+            "stepName": "create-diatomic-molecule",
+            "stepId": "hartree-fock-z78cn-1709410626",
             "workflowId": "hartree-fock-z78cn"
         },
         "id": "hartree-fock-z78cn-1709410626",
