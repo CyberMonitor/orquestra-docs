@@ -25,10 +25,10 @@ ___
 
 
 ## qe get imports
-Downloads all of the imports present in the stipulated workflow locally
+Downloads all of the imports present in the provided Orquestra `workflow.yaml` locally
 
 ```Bash
-qe get imports -f <path to imports>
+qe get imports -f <path to workflow.yaml>
 ```
 
 ## qe get workflow

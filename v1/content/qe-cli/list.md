@@ -20,7 +20,7 @@ weight: 5
 | `-d` duration | datetime | Filter by workflows since `-d` time ago.<br/>  `qe list workflow -d 15m`.<br/><br/>Duration can be spcified by<br/> `m` for minutes<br/>`h` for hours<br/>`d` for days<br/>`w` for weeks<br/><br/>Mixed duration units are not allowed, for example `12h15m` is invalid, use `735m` equivalent instead.
  |
 | `-s`| string | Filter by the workflow status.<br/>  `qe list workflow -s Error`|
-| `-h`, `--help` | | ghelp for using list |
+| `-h`, `--help` | | help for using list |
 
 
 
