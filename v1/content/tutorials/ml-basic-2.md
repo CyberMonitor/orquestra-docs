@@ -147,7 +147,7 @@ More specifically, here is the folder structure of our existing workflow. The wo
 ```
 
 ### 3. Turning the code into a step
-Turning the code into a step is very simple. The code almost stays the same, except for the output, which we need to tweak a little bit. The `functions.py` file needs no modifications at all. The `main.py` file does. Recall that our original `generate_train` function outputs two things: predictions and accuracy. We modify this to output one thing: a dictionary called `result` that stores the predictions and accuracy under keys called `predictions` and `accuracy`. We also need to pass this result as a json file, for which we'll use another helper function called `save_json`.
+Turning the code into a step is very simple. The code almost stays the same, except for the output, which we need to tweak a little bit. The `functions.py` file needs no modifications at all, and you can find it [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/src/python/tutorial/functions.py). The `main.py` file does. Recall that our original `generate_train` function outputs two things: predictions and accuracy. We modify this to output one thing: a dictionary called `result` that stores the predictions and accuracy under keys called `predictions` and `accuracy`. We also need to pass this result as a json file, for which we'll use another helper function called `save_json`.
 
 Here is the modified [step](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/steps/tutorial_2_step.py) that we'll run in Orquestra. Note that the difference from the original `generate-train` function at the beginning of the tutorial only lies in the last 4 lines of code.
 
@@ -181,10 +181,12 @@ def generate_train_step(dataset_name, model_name):
 
 We use the `save_json` function, which is a standard json encoder and lives in [utils.py](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/src/python/tutorial/utils.py).
 
+Note that by convention, the functions that are relevant to our training are in `functions.py`, while those that help us with serializing input/output and similar tasks are in `utils.py`.
+
 ### 4. Installations, etc.
 The last thing we need to do is tell Orquestra what packages we need to run our code. We do this in the file `setup.py`. For this workflow, we use `sklearn`, `numpy`, and `pandas`.
 
-In the code below, change the url to your own GitHub repo. The file looks like [this](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/src/setup.py).
+In the code below, change the url to your own GitHub repo. The file looks like [this](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/src/setup.py), where the packages that we need to import are under `install_requires`.
 
 ### 5. Write workflow template and submit!
 Now that we've built our Orquestra workflow, all that's needed is to write the workflow template and submit! This has all been done in Tutorial 1, so please head there for the instructions. The workflow template is [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/tutorial2/workflow.yaml) for reference.
