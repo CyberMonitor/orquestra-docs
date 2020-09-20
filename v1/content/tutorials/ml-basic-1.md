@@ -13,7 +13,7 @@ Orquestra is a platform for building repeatable workflows, orchestrated by a qua
 ![](img/orquestra.png)
 
 - **A workflow template:** This is the Orquestra director which dictates what happens in the workflow.
-- **Steps:** These are the musicians which play parts of the melody. They correspond to functions that do a particular task.
+- **Steps:** These are the musicians which play parts of the melody. They correspond to functions that do a particular step.
 - **Artifacts:** These can be parameters or data that are passed from the workflow template to the steps, or between steps.
 
 The output of the workflow is also an artifact that gets passed to us when the workflow ends.
@@ -49,10 +49,10 @@ The three choices for the model are `perceptron`, `decision_tree`, and `svm` (fo
 
 Notice, that most models manage to classify the points of the dataset properly, except for one of them. The perceptron model didn't classify the square dataset well, since perceptron models draw a linear boundary, and there is no line that is able to separate the two classes in the square dataset.
 
-A simple example of the `generate_train_predict` function is the following:
+A simple example of the `generate_train` function is the following:
 
 ```python
->>> generate_train_predict('simple_dataset', 'perceptron')
+>>> generate_train('simple_dataset', 'perceptron')
 [0.0, 1.0, 1.0, 0.0], 1.0
 ```
 indicating that the predictions on the four points are 1, 1, 0, 0, and the accuracy is 1.0, since the model predicted the four of them correctly.
@@ -76,11 +76,11 @@ Now let's study them in detail.
  name: tutorial-1-workflow
  ```
 
- ##### 4.2 Components (Resources)
+ ##### 4.2 Components
  The code that we'll be running is contained in a GitHub repo, and here is where we specify it (and it's branch). We'll give this one the name `sklearn-component`, so that when we need to call it later in the template, we'll use this name. We'll call this a _component_, and a workflow is allowed to have more than one component if you are planning to run code from different GitHub repositories.
 ```yaml
 imports:
-- name: sklearn-resource
+- name: sklearn-component
   type: git
   parameters:
     repository: "git@github.com:zapatacomputing/z-scikit-learn.git"
@@ -99,9 +99,9 @@ name: perceptron-training
 ```
 
 ###### 4.3.2 Configuration
-This is where we give Orquestra the specifications for the model to run. In this workflow we need to specify two things: Runtime and resources.
+This is where we give Orquestra the specifications for the model to run.
 
-In `runtime`, we'll tell Orquestra exactly where the code that we're running lives. Therefore, we refer the GitHub repo we've specified in the imports called `sklearn-resource`. Inside this resource, we want to run a function called `generate_train_predict`, which lives in the file `tutorial_1_step.py` on the path specified below. For this tutorial we'll consider this function a black box, but in the next tutorial you'll get to write it.
+In `runtime`, we'll tell Orquestra exactly where the code that we're running lives. Therefore, we refer the GitHub repo we've specified in the imports called `sklearn-component`. Inside this component, we want to run a function called `generate_train_step`, which lives in the file `tutorial_1_step.py` on the path specified below. For this tutorial we'll consider this function a black box, but in the next tutorial you'll get to write it.
 
 ```yaml
   config:
@@ -109,9 +109,13 @@ In `runtime`, we'll tell Orquestra exactly where the code that we're running liv
       type: python3
       imports: [sklearn-component]
       parameters:
-        file: sklearn-resource/tasks/tutorial_1_step.py
+        file: sklearn-component/steps/tutorial_1_step.py
         function: generate_train_step
 ```
+In this section, if needed, we can also specify the computing resources we need for our workflow, such as CPU, memory, etc. This is a small workflow so we'll use Orquestra's defaults, which are the following:
+- cpu: "1000m"
+- memory: "1Gi"
+- disk: "1OGi"
 
 ###### 4.3.3 Inputs
 In here we specify the inputs to our function. Recall that the function takes two strings, the name of the dataset and the name of the model. We specify it as follows:
@@ -124,7 +128,7 @@ In here we specify the inputs to our function. Recall that the function takes tw
 ```
 
 ###### 4.3.4 Outputs
-And finally, we specify the outputs, together with its type. For convenience (we'll see this later), the easiest thing is to output a dictionary called `result` containing the output. The task we are running returns this dictionary with keys `predictions` and `accuracy`, where the values are the two desired outputs.
+And finally, we specify the outputs, together with its type. For convenience (we'll see this later), the easiest thing is to output a dictionary called `result` containing the output. The step we are running returns this dictionary with keys `predictions` and `accuracy`, where the values are the two desired outputs.
 
 We also need to specify the type of the returned output. In the .yaml file, new custom types can be defined. By default, string, int, float, or bool, are recognized. To keep things simple, we added a custom type called `output_type` in the main part of the .yaml file.
 ```yaml
