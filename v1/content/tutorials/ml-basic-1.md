@@ -3,7 +3,11 @@ title: "Running a simple machine learning workflow"
 summary: Write a workflow template to run a simple machine learning model.
 weight: 6
 ---
-# What is Orquestra?
+# Tutorial 1: Running an Orquestra workflow
+
+The following three tutorials will take you through the basics of writing and running an Orquestra workflow.
+
+### 1. What is Orquestra?
 Orquestra is a platform for building repeatable workflows, orchestrated by a quantum engine that systematically organizes experiment data and resources. An orquestra workflow works in a similar way as an actual orchestra. In an orchestra we have the orquestra director presiding over a set of musicians, producing a melody. The orquestra director tells the musicians when to start and end, and she can also pass information to the musicians. In Orquestra, these are the corresponding components:
 
 ![](img/orquestra.png)
@@ -16,7 +20,7 @@ The output of the workflow is also an artifact that gets passed to us when the w
 
 Throughout the following three tutorials, we'll teach you the basics of how to build an Orquestra workflow.
 
-# Tutorial 1: Running an Orquestra workflow
+### 2. In this tutorial
 
 This tutorial will walk you through running a basic Orquestra workflow. The workflow runs  existing code that trains some machine learning models. More specifically, in this tutorial we'll write a workflow template that runs a single step. This step trains a simple machine learning model.
 
@@ -24,7 +28,7 @@ This tutorial will walk you through running a basic Orquestra workflow. The work
 
 The code for this tutorial lives in this [repo](https://github.com/zapatacomputing/tutorial-orquestra-sklearn), and we encourage you to clone it and look at it as you go through the steps below.
 
-### 1. The code
+### 3. The code
 The code we'll run is a simple step (function) called `generate_train`, which trains a machine learning model on a dataset in the following way:
 - Takes two inputs:
   - `dataset_name` (string): the name of the dataset, from two choices.
@@ -55,7 +59,7 @@ indicating that the predictions on the four points are 1, 1, 0, 0, and the accur
 
 ![](img/function.png)
 
-### 2. The workflow template
+### 4. The workflow template
 
 All we need to do to run this function is the following yaml template [workflow.yaml](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/tutorial1/workflow.yaml).
 
@@ -66,13 +70,13 @@ The main parts of this workflow are the following:
 
 Now let's study them in detail.
 
-##### 2.1 Name of the workflow
+##### 4.1 Name of the workflow
  The first thing to specify is the name of the workflow. this is how we'll be able to fetch the status updates and the output from Orquestra later. The name for our workflow is `tutorial-1-workflow`, and it is specified with this line of code:
  ```yaml
  name: tutorial-1-workflow
  ```
 
- ##### 2.2 Components (Resources)
+ ##### 4.2 Components (Resources)
  The code that we'll be running is contained in a GitHub repo, and here is where we specify it (and it's branch). We'll give this one the name `sklearn-component`, so that when we need to call it later in the template, we'll use this name. We'll call this a _component_, and a workflow is allowed to have more than one component if you are planning to run code from different GitHub repositories.
 ```yaml
 imports:
@@ -83,18 +87,18 @@ imports:
     branch: "master"
 ```
 
-##### 2.3 Steps
+##### 4.3 Steps
 Here we specify the steps we'll be running in our workflow. Each step is one function. By default, steps run synchronously, but we can specify dependencies, in other words, we can tell Orquestra if a particular step can't start until another one finishes. In this tutorial, we only have one step, but later in this tutorial we'll be running a workflow with several steps.
 
 Inside each step, we need to specify several things:
 
-###### 2.3.1 Name of the step
+###### 4.3.1 Name of the step
 Each step needs to have a different name, and we may refer to them in the workflow when it comes to dependencies or outputs, etc. This particular step is called `perceptron-training`, and the name is specified with the following line of code.
 ```yaml
 name: perceptron-training
 ```
 
-###### 2.3.2 Configuration
+###### 4.3.2 Configuration
 This is where we give Orquestra the specifications for the model to run. In this workflow we need to specify two things: Runtime and resources.
 
 In `runtime`, we'll tell Orquestra exactly where the code that we're running lives. Therefore, we refer the GitHub repo we've specified in the imports called `sklearn-resource`. Inside this resource, we want to run a function called `generate_train_predict`, which lives in the file `tutorial_1_step.py` on the path specified below. For this tutorial we'll consider this function a black box, but in the next tutorial you'll get to write it.
@@ -109,7 +113,7 @@ In `runtime`, we'll tell Orquestra exactly where the code that we're running liv
         function: generate_train_step
 ```
 
-###### 2.3.3 Inputs
+###### 4.3.3 Inputs
 In here we specify the inputs to our function. Recall that the function takes two strings, the name of the dataset and the name of the model. We specify it as follows:
 ```yaml
   inputs:
@@ -119,7 +123,7 @@ In here we specify the inputs to our function. Recall that the function takes tw
       type: string
 ```
 
-###### 2.3.4 Outputs
+###### 4.3.4 Outputs
 And finally, we specify the outputs, together with its type. For convenience (we'll see this later), the easiest thing is to output a dictionary called `result` containing the output. The task we are running returns this dictionary with keys `predictions` and `accuracy`, where the values are the two desired outputs.
 
 We also need to specify the type of the returned output. In the .yaml file, new custom types can be defined. By default, string, int, float, or bool, are recognized. To keep things simple, we added a custom type called `output_type` in the main part of the .yaml file.
@@ -129,7 +133,7 @@ We also need to specify the type of the returned output. In the .yaml file, new 
     type: output_type
 ```
 
-##### 2.4 Types
+##### 4.4 Types
 In this section we declare all the types that we've used above for our artifacts. Since the one we used for our output was `output_type`, we declare it here.
 ```yaml
 types:
@@ -138,10 +142,10 @@ types:
 
 And that's it, our first workflow! Now time to run it in Orquestra.
 
-### 3. Running the workflow in Orquestra
+### 5. Running the workflow in Orquestra
 Now that we've written the workflow template, it's time to run it! First, we need some preliminary steps.
 
-##### 3.1 Running the workflow
+##### 5.1 Running the workflow
 - Install the [Quantum Engine CLI](https://orquestra.io/docs/qe-cli/install-cli/) (you only need to do this the first time).
 - Log into quantum engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your terminal. Contact support to register your email and/or receive the `quantum-engine-uri`.
 - Submit your workflow by running `qe submit workflow <path/to/workflow/tutorial-1-workflow.yaml>`
@@ -153,7 +157,7 @@ Workflow ID: tutorial-1-workflow-6f8d2ae0-a709-4123-ad89-7a46b7a05dcb
 ```
 This workflow ID is what you can use to fetch the status and results of the workflow. The id is composed by the name of the workflow (specified in 2.1) and a unique string generated by Orquestra.
 
-##### 3.2 Workflow progress
+##### 5.2 Workflow progress
 The workflow is now submitted to the Orquestra Quantum Engine and will be scheduled for execution when compute becomes available.
 
 To see details of the execution of your workflow, run `qe get workflow <workflow-ID>` with your workflow ID from the prevous step substituted in.
@@ -168,7 +172,7 @@ STEP                                                               STEP ID      
 
  In here, the workflow will show every step, with a corresponding unique ID for the step, the time it took to run (the above one took 11 seconds), and information about the output. This workflow only has one step called `perceptron-training`. Notice that at the very right, the output appears as `result`.
 
-##### 3.3 Workflow results
+##### 5.3 Workflow results
 To get the results of your workflow, run `qe get workflowresult <workflow-ID>` with your workflow ID.
 
 ```Bash
@@ -185,14 +189,14 @@ Location:    http://a49397a7334b711ea99a80ac353ea38d-1340393531.us-east-1.elb.am
 ```
 **Note** The above link is only valid temporarily and typically expires after 7 days.
 
-##### 3.4 Downloading the results
+##### 5.4 Downloading the results
 When your workflow is completed, the `workflowresult` command will provide you with a http web-link under `Location` in the console output. Click on or copy and paste the link into your browser to download the file.
 
 The file can be seen [here](https://github.com/zapatacomputing/z-scikit-learn/blob/workflow-v1/examples/outputs/tutorial1/tutorial-1-output.json)
 
 Note that inside this file, there is a `result` key, and the value is a dictionary. In this dictionary we can see `predictions` and `accuracy`. There is a lot more information there, but under these we can see that the predictions are `0, 1, 1, 0` and the accuracy is `1`, as desired.
 
-##### 3.5 Displaying the results
+##### 5.5 Displaying the results
 
 A simple python script like [this one](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/outputs/display_output.py) will help us display the results.
 
@@ -208,10 +212,12 @@ Accuracy
 1
 ```
 
-### 4. Exercise: Changing the parameters
+### 6. Exercises
+
+##### Exercise 1: Changing the parameters
 Run a similar workflow but change the parameters so that instead of training a perceptron model on the simple dataset, it runs a support vector machine (svm) on the square dataset.
 
-##### 4.1 Solution
+##### Solution
 All we have to do here is change the parameter section in the input:
 
 ```yaml
@@ -225,17 +231,17 @@ All we have to do here is change the parameter section in the input:
 The full solution is [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/tutorial1/exercise-1.yaml).
 
 
-### 5. Exercise: Running a workflow with several steps in parallel
+##### Exercise 2: Running a workflow with several steps in parallel
 Write a workflow that runs both of the previous jobs in parallel, namely:
 - A perceptron model on the simple dataset, and
 - a SVM in the square dataset.
 Hint: You only need to add them as two steps in the same workflow.
 
-##### 5.1 Solution
+##### Solution
 
 For this, we simply add an extra step to our workflow. We now have two steps which we can call `perceptron-simple` and `svm-square`.
 
 The solution is [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/tutorial1/exercise-2.yaml).
 
-### 6. Conclusion
+### 8. Conclusion
 Congratulations! You've ran your first Orquestra workflow to train a machine learning model. In the next tutorial we'll open the hood and write the step that you ran in this workflow.
