@@ -32,7 +32,7 @@ In this tutorial we will see how to solve this problem using layer-by-layer opti
 **1. Building workflow**
 
 # TODO: Update link to v1 workflow
-Let's start from the ready-to-go workflow. Just copy the workflow below and save it in `qaoa_lbl_example.zqwl` file. In the following sectiosn we will explain what the steps in this workflow mean. You can also find this workflow [here](https://github.com/zapatacomputing/z-quantum-qaoa/blob/master/examples/qaoa_lbl_example.zqwl).
+Let's start from the ready-to-go workflow. Just copy the workflow below and save it in `qaoa_lbl_example.yaml` file. In the following sectiosn we will explain what the steps in this workflow mean. You can also find this workflow [here](https://github.com/zapatacomputing/z-quantum-qaoa/blob/master/examples/qaoa_lbl_example.yaml).
 
 # TODO: Update this to v1 standards
 ```yaml
@@ -237,7 +237,7 @@ spec:
 
 **2. Running workflow**
 
-Submit your `qaoa_lbl_example.zqwl` by running `qe submit workflow <path/to/workflow/qaoa_lbl_example.zqwl>`
+Submit your `qaoa_lbl_example.yaml` by running `qe submit workflow <path/to/workflow/qaoa_lbl_example.yaml>`
 
 This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
 ```Bash
@@ -347,7 +347,7 @@ To make things simpler to analyze we will analyze a one-layer case. To do that w
 
 # TODO: Update this to v1 standards
 To do that you need to:
-1. Copy `qaoa_lbl_example.zqwl` file and rename it to `qaoa_multiple_optimizers.zqwl`
+1. Copy `qaoa_lbl_example.yaml` file and rename it to `qaoa_multiple_optimizers.yaml`
 2. Copy `optimize-variational-circuit` and paste it after `build-uniform-parameter-grid`.
 3. Modify its input artifacts to reflect data dependencies (should be the same paths as inputs of `optimize-lbl`)
 4. Remove `optimize-lbl` task (and its definition)
@@ -503,11 +503,11 @@ In order to compare different optimizers you should do the following steps:
 ```
 
 # TODO: Update this link to v1 standards
-You can find a workflow running these optimizers in parallel in [z-quantum-qaoa repository](https://github.com/zapatacomputing/z-quantum-qaoa/blob/master/examples/qaoa_multiple_optimizers.zqwl).
+You can find a workflow running these optimizers in parallel in [z-quantum-qaoa repository](https://github.com/zapatacomputing/z-quantum-qaoa/blob/master/examples/qaoa_multiple_optimizers.yaml).
 
 **3. Running the Workflow**
 
-Now run the workflow the same way you did for the layer-by-layer case: `qe submit workflow <path/to/workflow/vqe-workflow.zqwl>`.
+Now run the workflow the same way you did for the layer-by-layer case: `qe submit workflow <path/to/workflow/vqe-workflow.yaml>`.
 
 To monitor the progress run `qe get workflow <workflow-ID>` and once it's ready get the results using `qe get workflowresult <workflow-ID>`.
 

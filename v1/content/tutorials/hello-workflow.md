@@ -107,7 +107,7 @@ You may need to contact your Orquestra support representitive for your account d
 
 #### Submit the Workflow
 
-From your terminal, `welcome-workflow.yaml` can be submitted to the Quantum Engine by running `qe submit workflow <path/to/workflow/welcome-workflow.zqwl>`
+From your terminal, `welcome-workflow.yaml` can be submitted to the Quantum Engine by running `qe submit workflow <path/to/workflow/welcome-workflow.yaml>`
 
 The qe CLI should respond with the workflow ID that corresponds to that particular execution of your workflow:
 
@@ -186,19 +186,12 @@ This file will look like the following (except for the comments, which were adde
 
 The section `hello-workflow-36779dcb- ... -3219967381` corresponds to the step that was run by your workflow. Note that this ID matches that in the output of `qe get workflow`. This section contains information about the step that was executed, any input parameters or input artifacts, and the output artifacts. More information on the contents of this file are found on the [workflow results via JSON page](../../data-management/workflow-result/).
 
-## Summary
-
-We have now seen how to construct a working workflow from an existing component, importing the component and using code from it.
-
-Additionally, we submitted a workflow to Quantum Engine and got its result in JSON format.
-This hopefully illucidated some of the key concepts and mechanics in using Orquestra Quantum Engine.
-
 ## Completed Tutorial Materials
 
-For your convenience, here are the completed components and workflow:
+For your convenience, you can find the completed workflow and components used in this tutorial on GitHub:
 
 [Welcome component](https://github.com/zapatacomputing/tutorial-0-welcome)
 
-[Complete workflow](https://github.com/zapatacomputing/tutorial-0-welcome/blob/workflow-v1/hello-workflow.zqwl)
+[Complete workflow](https://github.com/zapatacomputing/tutorial-0-welcome/blob/workflow-v1/hello-workflow.yaml)
 
 Note that this workflow has another step after the first `greeting` step. That step is added in the next tutorial, [Hello Component](../hello-component)

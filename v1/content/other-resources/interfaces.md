@@ -33,33 +33,28 @@ You might find very basic examples of such integrations in the [`mock_objects`](
 Once you've done your integration, there are two ways you can use it in your template.
 The first one is obvious – you can simply import from the module you've just created, create a python object and voila!
 
-# TODO: Update this to v1 standards
-However, this means that the class that implements the interface will be hardcoded in your template and using another one will require changing the template.
-That's why you can use `create_object` function from `zquantum.core.utils`. It takes a dictionary with specification of the object you'd like to create and creates it inside the template. Take a look at the following example:
+However, this means that the class that implements the interface will be hardcoded in your component and using another one will require changing the component.
+That's why you can use `create_object` function from `zquantum.core.utils`. It takes a dictionary with specification of the object you'd like to create and creates it inside the component. Take a look at the following example workflow step and the code it calls:
 
-# TODO: Update this to v1 standards - do we even need it since it's a template?
 ```yaml
-templates:
 - name: use-any-backend
-  parent: generic-task
+  config:
+    runtime:
+      type: python3
+      imports: [z-quantum-core]
+      parameters:
+        file: z-quantum-core/tasks/main_script.py
+        function: any_backend
   inputs:
-    parameters:
-    - name: backend-specs
-    - name: command
-      value: bash main_script.sh
-    artifacts:
-    - name: main-script
-      path: /app/main_script.sh
-      raw:
-        data: |
-          python3 python_script.py
-    - name: python-script
-      path: /app/python_script.py
-      raw:
-        data: |
-          from zquantum.core.utils import create_object
-          backend_specs = {{inputs.parameters.backend-specs}}
-          backend = create_object(backend_specs)
+   backend-specs: '{"module_name": "zquantum.core.interfaces.mock_objects", "function_name": "MockQuantumSimulator", "n_samples": 1000}'
+    type: string
+```
+
+```python
+from zquantum.core.utils import create_object
+
+def any_backend(backend_specs):
+    backend = create_object(backend_specs)
 ```
 
 `backend-specs` dictionary should have the following fields:
@@ -82,7 +77,6 @@ You can find [the interface definition here](https://github.com/zapatacomputing/
 - [qHiPSTER](https://github.com/zapatacomputing/qe-qhipster)
 - [Forest QVM](https://github.com/zapatacomputing/qe-forest)
 - [qulacs](https://github.com/zapatacomputing/qe-qulacs)
-# TODO: maybe add qiskit?
 
 
 ### Optimizer
