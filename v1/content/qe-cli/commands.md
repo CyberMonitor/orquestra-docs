@@ -11,10 +11,10 @@ weight: 2
 | [Update]({{<ref "#update">}}) | Update specified resource(s) locally |
 | [Version]({{<ref "#version">}}) |  Display Quantum Engine version |
 | [Help]({{<ref "#help">}}) |  Help about any command  |
-| [Submit](../submit) | Submits one or more resources |
-| [Get](../get) | Displays information about one or more resources |
-| [List](../list) |  Displays a resource list  |
-| [Install](../install) | Installs one or more resources |
+| [Submit](../submit/) | Submits one or more resources |
+| [Get](../get/) | Displays information about one or more resources |
+| [List](../list/) |  Displays a resource list  |
+| [Install](../install/) | Installs one or more resources |
 
 ## Login
 

@@ -45,7 +45,7 @@ While there are no restrictions on how to organize an Orquestra Component, we re
 
 Using your terminal or the text editor of your choice, recreate this folder structure in the `welcome-component` repository.
 
-**Note** You can find more informationa bout the structure of a Component on the [Components page](../../quantum-engine/components).
+**Note** You can find more informationa bout the structure of a Component on the [Components page](../../quantum-engine/components/).
 
 ### Adding Some Code
 
@@ -154,7 +154,7 @@ Once you are satisified with your work, commit your changes and push them to Git
 
 ### Building a Workflow
 
-The component is now ready to be used in an Orquestra workflow. Please refer to the [Hello Worfklow](../hello-workflow) tutorial for an example of invoking a component from within a task.
+The component is now ready to be used in an Orquestra workflow. Please refer to the [Hello Worfklow](../hello-workflow/) tutorial for an example of invoking a component from within a step.
 
 ## Completed Tutorial Materials
 

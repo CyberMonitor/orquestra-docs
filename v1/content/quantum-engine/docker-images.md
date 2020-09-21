@@ -38,7 +38,7 @@ spec:
         path: /app/welcome.json
 ```
 
-When you use this [resource](../resources) in a [workflow](../workflow-basics/), it will use the referenced Docker image.
+When you use this [resource](../resources/) in a [workflow](../workflow-basics/), it will use the referenced Docker image.
 
 A full list of pages for Zapata's pre-made images, which contain the `docker-image` and `docker-tag` values, is below:
 - [Machine Learning image](../../other-resources/using-classical-machine-learning-libraries/)
