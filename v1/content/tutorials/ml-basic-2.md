@@ -195,4 +195,4 @@ The only thing you need to change is the GitHub repository. In lines 12 and 13 o
 
 ### 6. Conclusion
 
-Congratulations! You have now written your first Orquestra workflow. In the next tutorial you'll learn how to write a workflow that 
+Congratulations! You have now written your first Orquestra workflow. In the next tutorial you'll learn how to write a more complex workflow that runs more than one step.

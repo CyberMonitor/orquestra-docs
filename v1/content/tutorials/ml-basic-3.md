@@ -353,3 +353,5 @@ types:
  - f1score_type
  ```
 
+### 7. Conclusions
+Congratulations! In this tutorial you've learned how to write complex workflows. We now invite you to check out some of the more advanced [tutorials](http://docs.orquestra.io/tutorials/) in other classical and quantum algorithms to really harness the power of Orquestra!
