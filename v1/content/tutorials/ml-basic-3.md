@@ -4,11 +4,11 @@ summary: Write a workflow template to run a machine learning model with several 
 weight: 5
 ---
 
-# Tutorial 3: Building a modular Orquestra workflow
+# ML Tutorial 3: Building a modular Orquestra workflow
 
 In the previous tutorial you learned how to write a simple workflow with one step, which trained a machine learning model in sklearn. In this tutorial you'll learn to write a more complex workflow, one with more steps and which passes artifats (data) between the steps.
 
-![](img/workflow-3.png)
+![](../../img/tutorials/ML_Workflow3.png)
 
 Why is this important? Modularity is actually one of Orquestra's greatest strengths for the following reasons:
 1. **Reusability:** By splitting your code into steps, you can easily reuse these steps in many different workflows.
@@ -21,7 +21,7 @@ The main things we have to modify from the workflow from tutorials 1 and 2 are t
 
 ### 1. Preliminaries
 
-The code for this tutorial is all in this [repository](http://www.github.com/zapatacomputing/tutorial-orquestra-sklearn) to follow. We recommend you to clone it to follow this tutorial, although if you'd like the extra challenge, you can make your own repo which will end up with this folder structure. If you use your own repo, make sure you change any references to `z-scikit-learn` to your repo.
+The code for this tutorial is all in this [repository](http://www.github.com/zapatacomputing/tutorial-orquestra-sklearn) to follow. We recommend you to clone it to follow this tutorial, although if you'd like the extra challenge, you can make your own repo which will end up with this folder structure. If you use your own repo, make sure you change any references to `tutorial-orquestra-sklearn` to your repo.
 
 ```Bash
 .
@@ -44,7 +44,7 @@ In tutorial 2 we wrote a workflow template to run the function `generate_train_s
 - `generate_preprocess_step`, which will generate the dataset and preprocess it as features and labels.
 - `train_predict_accuracy_step`, which will train the model, make predictions, and calculate the accuracy.
 
-![](img/two-steps.png)
+![](../../img/tutorials/ML_TwoSteps.png)
 
 Pay special attention to the outputs of the functions, as they are serialized and saved as json files. The code below can also be found [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/steps/tutorial_3_steps.py).
 
@@ -162,9 +162,9 @@ In this exercise, you'll turn it into a workflow consisting of five steps:
 
 The outputs of this dataset are the predictions and the accuracy.
 
-![](img/exercise-workflow.png)
+![](../../img/tutorials/ML_ExerciseWorkflow.png)
 
-##### 4.1 Solution
+##### 5.1 Solution
 
 We need to write a workflow with 4 steps. The links to the answers are below.
 - [Steps](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/steps/tutorial_3_exercise_steps.py)
@@ -172,23 +172,22 @@ We need to write a workflow with 4 steps. The links to the answers are below.
 
 
  ### 6. Combining code from different components
- One of the greatest strengths of Orquestra is the ability to combine code from different sources. The code above all lives in the [www.github.com/zapatacomputing/z-scikit-learn](www.github.com/zapatacomputing/z-scikit-learn). Imagine the following scenario: You want to run this repo, but you don't want the model to calculate accuracy, instead, you'd like it to calculate any other metric, say, [F1-score](https://en.wikipedia.org/wiki/F1_score). You can write this function in another component of your own and call it from the workflow template. Here is how to do this.
+ One of the greatest strengths of Orquestra is the ability to combine code from different sources. The code above all lives in the [www.github.com/zapatacomputing/tutorial-orquestra-sklearn](www.github.com/zapatacomputing/tutorial-orquestra-sklearn). Imagine the following scenario: You want to run this repo, but you don't want the model to calculate accuracy, instead, you'd like it to calculate any other metric, say, [F1-score](https://en.wikipedia.org/wiki/F1_score). You can write this function in another component of your own and call it from the workflow template. Here is how to do this.
 
-![](img/components.png)
+![](../../img/tutorials/ML_WorkflowComponents.png)
 
 ##### 6.1 Create the component
-
-Create a repo on GitHub called `other-metrics` (or any name you'd like), with the following folder structure.
+The idea is that we want to run functions from the `tutorial-orquestra-sklearn` repo, but without modifying it. So to follow this exercise, we recommend you to create one called `tutorial-additional-metrics` using your personal GitHub account. You can see the solutions in [here](https://github.com/zapatacomputing/tutorial-additional-metrics).
 
  ```
 .
 ├── examples
-│   └── other-metrics-workflow.yaml
+│   └── additional-metrics-workflow.yaml
 ├── steps
 │   └── f1_score_step.py
 └── src
     ├── python
-    │   └── tutorial
+    │   └── metrics
     │       ├── functions.py
     │       └── utils.py
     └── setup.py
@@ -206,6 +205,8 @@ def calculate_f1_score(predictions, labels):
     return f1
  ```
 
+ Also, make sure you have a `utils.py` in the same folder that will help us read and save json files. The code can be found [here](www.github.com/https://github.com/zapatacomputing/tutorial-additional-metrics/blob/master/src/python/metrics/utils.py).
+
 ##### `f1_score_step.py`
  ```python
 from metrics.functions import calculate_f1_score
@@ -222,16 +223,16 @@ def calculate_f1_score_step(labels, predictions):
     save_json(f1_score_dict, 'f1_score.json')
  ```
 
-Don't forget to change the name of the repo in `setup.py`.
+Don't forget to change the name of the repo in line 6 of `setup.py`.
 
 ##### `setup.py`
  ```python
 import setuptools
 
 setuptools.setup(
-    name                            = "other-metrics",
-    description                     = "Other metrics for models in orquestra.",
-    url                             = "https://github.com/<your-github-id>/other-metrics",
+    name                            = "tutorial-additional-metrics",
+    description                     = "Additional metrics for models in orquestra.",
+    url                             = "https://github.com/zapatacomputing/tutorial-additional-metrics",
     packages                        = setuptools.find_packages(where = "python"),
     package_dir                     = {"" : "python"},
     classifiers                     = (
@@ -245,7 +246,7 @@ setuptools.setup(
 )
  ```
 
-And finally, the workflow should look like this. Notice that we are calling two different components, `other-metrics` for calculating the f1-score and `z-scikit-learn` for all the other functions.
+And finally, the workflow should look like this. Notice that we are calling two different components, `additional-metrics` for calculating the f1-score and `tutorial-orquestra-sklearn` for all the other functions.
 
 ##### `other-metrics-workflow.yaml`
 
@@ -254,7 +255,7 @@ And finally, the workflow should look like this. Notice that we are calling two 
 apiVersion: io.orquestra.workflow/1.0.0
 
 # Prefix for workflow ID
-name: tutorial-3-modular
+name: additional-metrics
 
 # List components needed by workflow.
 imports:
@@ -263,10 +264,10 @@ imports:
   parameters:
     repository: "git@github.com:zapatacomputing/tutorial-orquestra-sklearn.git"
     branch: "master"
-- name: other-metrics-component
+- name: additional-metrics-component
   type: git
   parameters:
-    repository: "git@github.com:luisguiserrano/other-metrics.git"
+    repository: "git@github.com:zapatacomputing/tutorial-additional-metrics.git"
     branch: "master"
 
 steps:
@@ -278,7 +279,7 @@ steps:
       type: python3
       imports: [sklearn-component]
       parameters:
-        file: sklearn-component/steps/tutorial_3_exercise_step.py
+        file: sklearn-component/steps/tutorial_3_exercise_steps.py
         function: generate_data_step
   inputs:
     - dataset_name: "simple_dataset"
@@ -295,7 +296,7 @@ steps:
       type: python3
       imports: [sklearn-component]
       parameters:
-        file: sklearn-component/steps/tutorial_3_exercise_step.py
+        file: sklearn-component/steps/tutorial_3_exercise_steps.py
         function: preprocess_data_step
   inputs:
     - data: ((generate-data.data))
@@ -314,7 +315,7 @@ steps:
       type: python3
       imports: [sklearn-component]
       parameters:
-        file: sklearn-component/steps/tutorial_3_exercise_step.py
+        file: sklearn-component/steps/tutorial_3_exercise_steps.py
         function: train_predict_step
   inputs:
     - model_name: "perceptron"
@@ -333,9 +334,9 @@ steps:
   config:
     runtime:
       type: python3
-      imports: [other-metrics-component]
+      imports: [additional-metrics-component]
       parameters:
-        file: other-metrics-component/steps/f1_score_step.py
+        file: additional-metrics-component/steps/f1_score_step.py
         function: calculate_f1_score_step
   inputs:
     - predictions: ((train-predict.predictions))
@@ -351,7 +352,7 @@ types:
  - labels_type
  - predictions_type
  - f1score_type
- ```
+```
 
 ### 7. Conclusions
 Congratulations! In this tutorial you've learned how to write complex workflows. We now invite you to check out some of the more advanced [tutorials](http://docs.orquestra.io/tutorials/) in other classical and quantum algorithms to really harness the power of Orquestra!

@@ -6,15 +6,15 @@ weight: 4
 
 FEEDBACK: EXPLAIN DIFFERENCE BETWEEN UTILS AND FUNCTIONS
 
-# Tutorial 2: Building an Orquestra workflow
+# ML Tutorial 2: Building an Orquestra Workflow
 
 In Tutorial 1 you learned to run a workflow which ran an existing step that trained a machine learning model. In this tutorial you'll learn how to build the step.
 
-![](img/workflow-2.png)
+![](../../img/tutorials/ML_Workflow2.png)
 
 Recall that in Tutorial 1, we built a workflow template that ran a function called `generate_train`, which generates a dataset, trains a machine learning model on it, and then outputs the predictions and the accuracy of the model on that same dataset.
 
-![](img/function.png)
+![](../../img/tutorials/ML_Function.png)
 
 The code to run this function locally is below. Our goal is to turn this code into Orquestra, to be able to run it with the workflow template from Tutorial 1.
 

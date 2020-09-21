@@ -3,9 +3,9 @@ title: "Running a simple machine learning workflow"
 summary: Write a workflow template to run a simple machine learning model.
 weight: 3
 ---
-# Tutorial 1: Running an Orquestra workflow
+# ML Tutorial 1: Running an Orquestra workflow
 
-The following three tutorials will take you through the basics of writing and running an Orquestra workflow.
+The following three tutorials will take you through the basics of writing and running an Orquestra workflow to train a simple machine learning model.
 
 ##### What is Orquestra?
 Orquestra is a platform for building repeatable workflows, orchestrated by a quantum engine that systematically organizes experiment data and resources. Orquestra workflows offer solutions when it comes to reproducing experiments, repurposing code, sharing data, and solving dependency problems in projects. For more information, check out this blog [post](https://www.zapatacomputing.com/quantum-enabled-workflows/).
@@ -13,7 +13,7 @@ Orquestra is a platform for building repeatable workflows, orchestrated by a qua
 ##### How does Orquestra work?
 An orquestra workflow works in a similar way as an actual orchestra. In an orchestra we have the orquestra director presiding over a set of musicians, producing a melody. The orquestra director tells the musicians when to start and end, and she can also pass information to the musicians. In Orquestra, these are the corresponding components:
 
-![](img/orquestra.png)
+![](../../img/tutorials/OrquestraPicture.png)
 
 - **A workflow template:** This is the Orquestra director which dictates what happens in the workflow.
 - **Steps:** These are the musicians which play parts of the melody. They correspond to functions that do a particular step.
@@ -27,7 +27,7 @@ Throughout the following three tutorials, we'll teach you the basics of how to b
 
 This tutorial will walk you through running a basic Orquestra workflow. The workflow runs  existing code that trains some machine learning models. More specifically, in this tutorial we'll write a workflow template that runs a single step. This step trains a simple machine learning model.
 
-![](img/workflow-1.png)
+![](../../img/tutorials/ML_Workflow1.png)
 
 The code for this tutorial lives in this [repo](https://github.com/zapatacomputing/tutorial-orquestra-sklearn), and we encourage you to clone it and look at it as you go through the steps below.
 
@@ -44,11 +44,11 @@ The code we'll run is a simple step (function) called `generate_train`, which tr
 
 The two choices for the dataset are `simple_dataset` and `square_dataset`, seen in the image below.
 
-![](img/datasets.png)
+![](../../img/tutorials/ML_Datasets.png)
 
 The three choices for the model are `perceptron`, `decision_tree`, and `svm` (for support vector machine). Their boundaries are pictured below on both datasets.
 
-![](img/models.png)
+![](../../img/tutorials/ML_Models.png)
 
 Notice, that most models manage to classify the points of the dataset properly, except for one of them. The perceptron model didn't classify the square dataset well, since perceptron models draw a linear boundary, and there is no line that is able to separate the two classes in the square dataset.
 
@@ -60,7 +60,7 @@ A simple example of the `generate_train` function is the following:
 ```
 indicating that the predictions on the four points are 1, 1, 0, 0, and the accuracy is 1.0, since the model predicted the four of them correctly.
 
-![](img/function.png)
+![](../../img/tutorials/ML_Function.png)
 
 ### 3. The workflow template
 
