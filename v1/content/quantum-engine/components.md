@@ -6,11 +6,7 @@ weight: 3
 
 ## Overview
 
-<<<<<<< HEAD
 Components are reusable pieces of code that can be imported into your workflows. Compononts can accept data as inputs, execute code and produce and produce data as outputs.
-=======
-Components are the building blocks for your workflows. They define what steps you are able to perform and what data you will produce.
->>>>>>> b5035fe08f9d36f3cdbd9e0a5508575d7da257ff
 
 Once built, components can be imported into a workflow can be invoked within `steps`. This makes components an easily re-usable and shareable block of code across multiple workflows and experiments.
 
