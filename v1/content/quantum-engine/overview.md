@@ -17,7 +17,7 @@ weight: 1
 | API  |  RESTful service that that interfaces and handles user interaction with the rest of the quantum engine. It is the gateway for workflows and controls intercommunication between the various components.  |
 | Security | Authentication service that acts as an intemediary to an privilaged action the user may take. |
 |  **Workflow Engine** | 
-| Transpiler  |  Handles logical translation from Orquestra workflow to argo workflow. Controls order of execution of tasks.  |
+| Transpiler  |  Handles logical translation from Orquestra workflow to argo workflow. Controls order of execution of steps.  |
 | Argo |  Workflow engine technology used to run workflows.  |
 | **DCS** | Data Correlation Service |
 | Elastic  |  The service used to handle user workflow logs. Also logs other activities within Quantum Engine, used for debugging purposes.  |

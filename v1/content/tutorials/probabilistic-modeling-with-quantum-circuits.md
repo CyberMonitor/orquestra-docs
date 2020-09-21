@@ -223,7 +223,7 @@ steps:
       type: python3
       imports: [z-quantum-core, z-quantum-qcbm]
       parameters:
-        file: z-quantum-core/tasks/circuit_tasks.py
+        file: z-quantum-core/steps/circuit.py
         function: generate_random_ansatz_params
     resources:
       cpu: "1000m"
@@ -275,7 +275,7 @@ steps:
       type: python3
       imports:  [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-qiskit, z-quantum-qcbm]
       parameters:
-        file: z-quantum-qcbm/tasks/optimize_variational_qcbm_circuit.py
+        file: z-quantum-qcbm/steps/optimize_variational_qcbm_circuit.py
         function: optimize_variational_qcbm_circuit
     resources:
       cpu: "1000m"
@@ -293,7 +293,7 @@ steps:
     type: string
   - backend_specs: '{"module_name": "qeqiskit.simulator", "function_name": "QiskitSimulator", "device_name": "statevector_simulator"}'
     type: string
-  - optimizer_specs: '{"module_name": "zquantum.optimizers.cma_es_optimizer", "function_name": "CMAESOptimizer", "options": {"popsize": 5, "sigma_0": 0.1, "tolx": 1e-5}}'
+  - optimizer_specs: '{"module_name": "zquantum.optimizers.cma_es_optimizer", "function_name": "CMAESOptimizer", "options": {"popsize": 5, "sigma_0": 0.1, "tolx": 1e-4}}'
     type: string
   - initial_parameters: ((get-initial-parameters.params))
     type: ansatz-params
@@ -391,8 +391,8 @@ This file will look like the following. (Note that we have formatted and truncat
             },
             "id": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292/distribution",
             "schema": "zapata-v1-bitstring-probability-distribution",
-            "taskClass": "get-bars-and-stripes-distribution",
-            "taskId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292",
+            "stepName": "get-bars-and-stripes-distribution",
+            "stepId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292",
             "workflowId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50"
         },
         "id": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-2874596292",
@@ -446,8 +446,8 @@ This file will look like the following. (Note that we have formatted and truncat
                 ]
             },
             "schema": "zapata-v1-circuit_template_params",
-            "taskClass": "get-initial-parameters",
-            "taskId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077",
+            "stepName": "get-initial-parameters",
+            "stepId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50-4235178077",
             "workflowId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50"
         },
         "workflowId": "qcbm-opt-dc0976a4-0367-4579-b0e1-b58af0842f50"
