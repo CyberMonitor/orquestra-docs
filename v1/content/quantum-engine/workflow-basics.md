@@ -54,6 +54,13 @@ imports:
 
 Each workflow run in Orquestra is assigned a randomly generated workflow ID. For the sake of clarity and record keeping, the `name` key allows you to set the prefix of each workflow ID.
 
+There are some restrictions to the workflow `name`:
+* Step `name` need to be unique to the workflow.
+* start with an alphanumeric character
+* end with an alphanumeric character
+* contains only lowercase alphanumeric characters or '-'
+* `name` cannot be greater than 30 characters in length
+
 ```YAML
 # Prefix for workflow ID
 name: welcome-to-orquestra-
