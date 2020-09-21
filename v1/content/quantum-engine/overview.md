@@ -8,8 +8,6 @@ weight: 1
 
 ## **Quantum Engine Overview**
 
-
-
 |  **Component** | **Description**|
 |---|---|
 |       **QE**     |
