@@ -89,7 +89,7 @@ steps:
 
 #### Runtime
 
-This is written under the `config` section of the step. The runtime specifies how the Quantum Engine will interpret/compile the source code in your component. Currently, the only supported runtime type is `python3`.
+This is written under the `config` section of the step. The runtime specifies how the Quantum Engine will interpret/compile the source code in your component. Currently, the only supported runtime language is `python3`.
 
 Under runtime you will also specify what source code you would like to run from what component. In order to do that, specify the component(s) that the source code will require and the relative path to the source code in that component.
 
@@ -98,7 +98,7 @@ In this example, we're running the `welcome` function in the `welcome.py` file w
 ```YAML
   config:
     runtime:
-      type: python3
+      language: python3
       imports: [welcome-to-orquestra]
       parameters:
         file: welcome-to-orquestra/welcome.py
@@ -172,7 +172,7 @@ steps:
 - name: greeting
   config:
     runtime:
-      type: python3
+      language: python3
       imports: [welcome-to-orquestra]
       parameters:
         file: welcome-to-orquestra/welcome.py

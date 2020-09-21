@@ -220,7 +220,7 @@ steps:
 - name: get-initial-parameters
   config:
     runtime:
-      type: python3
+      language: python3
       imports: [z-quantum-core, z-quantum-qcbm]
       parameters:
         file: z-quantum-core/steps/circuit.py
@@ -246,7 +246,7 @@ steps:
 - name: get-bars-and-stripes-distribution
   config:
     runtime:
-      type: python3
+      language: python3
       imports: [z-quantum-core, bars-and-stripes]
       parameters:
         file: bars-and-stripes/target.py
@@ -272,7 +272,7 @@ steps:
   passed: [get-bars-and-stripes-distribution, get-initial-parameters]
   config:
     runtime:
-      type: python3
+      language: python3
       imports:  [z-quantum-core, qe-openfermion, z-quantum-optimizers, qe-qiskit, z-quantum-qcbm]
       parameters:
         file: z-quantum-qcbm/steps/optimize_variational_qcbm_circuit.py

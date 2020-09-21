@@ -132,7 +132,7 @@ In the example below, we have a component consisting of two steps. `greeting` pr
 - name: greeting
   config:
     runtime:
-      type: python3
+      language: python3
       imports: [welcome-to-orquestra]
       parameters:
         file: welcome-to-orquestra/src/python/orquestra/welcome.py
@@ -148,7 +148,7 @@ In the example below, we have a component consisting of two steps. `greeting` pr
   passed: [greeting]
   config:
     runtime:
-      type: python3
+      language: python3
       imports: [ztransform]
       parameters:
         file: ztransform/tasks/ztransformation.py
