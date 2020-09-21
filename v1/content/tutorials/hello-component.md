@@ -45,7 +45,7 @@ While there are no restrictions on how to organize an Orquestra Component, we re
 
 Using your terminal or the text editor of your choice, recreate this folder structure in the `welcome-component` repository.
 
-**Note** You can find more informationa bout the structure of a Component on the [Components page](../../quantum-engine/components).
+**Note** You can find more information about the structure of a Component on the [Components page](../../quantum-engine/components).
 
 ### Adding Some Code
 
@@ -127,7 +127,7 @@ setuptools.setup(
 )
 ```
 
-- `name` is the given name of your package which you can reference in your template
+- `name` is the given name of your package
 - `packages` tells the installer to look for a subdirectory called `python`
 which contains your source code
 - `package_dir` allows the contents of the `python` directory to be imported

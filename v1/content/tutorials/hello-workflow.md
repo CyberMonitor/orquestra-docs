@@ -47,7 +47,7 @@ imports:
   type: git
   parameters:
     repository: "git@github.com:zapatacomputing/tutorial-0-welcome"
-    branch: "workflow-v1"
+    branch: "master"
 ```
 
 In this snippet, we specified the `apiVersion`, the `name` of the workflow, and list of components to bring in under `import`.
@@ -192,6 +192,6 @@ For your convenience, you can find the completed workflow and components used in
 
 [Welcome component](https://github.com/zapatacomputing/tutorial-0-welcome)
 
-[Complete workflow](https://github.com/zapatacomputing/tutorial-0-welcome/blob/workflow-v1/hello-workflow.yaml)
+[Complete workflow](https://github.com/zapatacomputing/tutorial-0-welcome/blob/master/hello-workflow.yaml)
 
 Note that this workflow has another step after the first `greeting` step. That step is added in the next tutorial, [Hello Component](../hello-component)
