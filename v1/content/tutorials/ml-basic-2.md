@@ -1,7 +1,7 @@
 ---
 title: "Building a simple machine learning workflow"
 summary: Write the steps in a workflow template that runs a simple machine learning model.
-weight: 7
+weight: 4
 ---
 
 FEEDBACK: EXPLAIN DIFFERENCE BETWEEN UTILS AND FUNCTIONS

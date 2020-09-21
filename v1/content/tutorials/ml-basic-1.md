@@ -1,7 +1,7 @@
 ---
 title: "Running a simple machine learning workflow"
 summary: Write a workflow template to run a simple machine learning model.
-weight: 6
+weight: 3
 ---
 # Tutorial 1: Running an Orquestra workflow
 

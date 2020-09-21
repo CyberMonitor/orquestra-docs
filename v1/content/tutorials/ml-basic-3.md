@@ -1,7 +1,7 @@
 ---
 title: "Writing a modular machine learning workflow"
 summary: Write a workflow template to run a machine learning model with several steps.
-weight: 8
+weight: 5
 ---
 
 # Tutorial 3: Building a modular Orquestra workflow
@@ -10,9 +10,9 @@ In the previous tutorial you learned how to write a simple workflow with one ste
 
 ![](img/workflow-3.png)
 
-Why is this important? Modularity is actually one of Orquestra's greatest strengths for several reasons:
-1. Reusability: By splitting your code into steps, you can easily reuse these steps in many different workflows.
-2. Flexibility: You are allowed to switch steps and reuse code from different repositories As new libraries and hardware backends become available, you can plug-and-play them into your workflow seamlessly.
+Why is this important? Modularity is actually one of Orquestra's greatest strengths for the following reasons:
+1. **Reusability:** By splitting your code into steps, you can easily reuse these steps in many different workflows.
+2. **Flexibility:** You are allowed to switch steps and reuse code from different repositories As new libraries and hardware backends become available, you can plug-and-play them into your workflow seamlessly.
 
 The main things we have to modify from the workflow from tutorials 1 and 2 are the following:
 
