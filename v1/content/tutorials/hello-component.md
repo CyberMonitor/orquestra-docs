@@ -41,11 +41,12 @@ While there are no restrictions on how to organize an Orquestra Component, we re
 
 * The `src/` will contain:
   * A `setup.py` file that is responsible for installing your code in the machine where your workflow is executed. This installation is done automatically for you conforming to [Python3 setuptools standard](https://docs.python.org/3/distutils/setupscript.html) for Setup Scripts.
-  * A folder name `python/` containing the source code to be invoked by a `task` in a workflow
+  * A folder name `python/` containing the source code to be invoked by a `step` in a workflow
 
 Using your terminal or the text editor of your choice, recreate this folder structure in the `welcome-component` repository.
 
-**Note** You can find more informationa bout the structure of a Component on the [Components page](../../quantum-engine/components/).
+
+**Note** You can find more information about the structure of a Component on the [Components page](../../quantum-engine/components/).
 
 ### Adding Some Code
 
@@ -127,7 +128,7 @@ setuptools.setup(
 )
 ```
 
-- `name` is the given name of your package which you can reference in your template
+- `name` is the given name of your package
 - `packages` tells the installer to look for a subdirectory called `python`
 which contains your source code
 - `package_dir` allows the contents of the `python` directory to be imported

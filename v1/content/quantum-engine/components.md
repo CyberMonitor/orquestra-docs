@@ -6,33 +6,33 @@ weight: 3
 
 ## Overview
 
-Components are the building blocks for your workflows. They define what tasks you are able to perform and what data you will produce.
+Components are reusable pieces of code that can be imported into your workflows. Compononts can accept data as inputs, execute code and produce and produce data as outputs.
 
-By incorporating source code into a _component_, it becomes easily usable and shareable within Orquestra. Through the use of _components_, we hope to make it as easy as possible to navigate the minefield of bringing your own source code into harmony with others'.
+Once built, components can be imported into a workflow can be invoked within `steps`. This makes components an easily re-usable and shareable block of code across multiple workflows and experiments.
 
-## What is a component?
+## What is a Component?
 
-You can think of components as the "libraries" available in your workflow. A component is made of the **source code** that will be executed at the runtime of a step inside an Orquestra workflow - this can contain one or more functions that take in input parameters and data and produce output data.
+You can think of components as the "libraries" available in your workflow. A component is made of the **source code** that will be executed at the `runtime` of a step inside an Orquestra workflow. A component can contain one or more functions that take in input parameters and data and produce output data.
 
 ### Source Code
 
 The *source code* for a component is exactly that: it contains all the code to run the process you want. This code will typically be a set of functions that take in inputs and then produce output objects that can be serialized into [artifact(s)](../../data-management/workflow-artifacts/).
 
-###### Note: Currently, new components must use Python 3.7 source code to be natively supported in Orquestra, however we will be expanding this support to other languages in the future.
+Supported Languages:
+* Python 3.x
 
-## How do I build my own component?
+Orquestra currently has limited support for component languages. However we will be expanding this support to other languages in the future.
+
+## Building Python Components
 
 ### Structure
 
-To be used by Orquestra, components must contain a `src/` folder, containing your source code
-
-An example of the full structure of a component is below:
+While there are no restrictions on how to organize an Orquestra Component, we recommend the following folder structure:
 
 ```bash
 .
 ├─ README.md
 └─ src
-   ├── README.md
    ├── python
    │   └── orquestra
    │       ├── __init__.py
@@ -78,7 +78,7 @@ For more information regarding how to make your source code available as a `pack
 
 #### Initialization File
 
-The initialization file must be called `__init__.py`. An example is shown below:
+Python3 components must be initialized as a package. This can simply be done through the inclusion of a `__init__.py` file. An example is shown below:
 
 ```Python
 from .welcome import welcome

@@ -7,7 +7,7 @@ weight: 1
 This tutorial will guide you through the process of building a simple Orquestra workflow. By the end of this tutorial you will have written an Orquestra workflow that prints "Welcome to Orquestra!". To do this, you will:
 
 * Import an Orquestra `component` into a workflow
-* Invoke the `component` from within a `task` in the workflow `steps`
+* Invoke the `component` from within a `step` in the workflow `steps`
 * Submit the workflow into to the Quantum Engine for processing
 * Retrieve the workflow results
 
@@ -23,8 +23,8 @@ An Orquestra workflow consists of 4 fields:
 
   1. **`apiVersion`**: the workflow API version `io.orquestra.workflow/1.0.0`
   2. **`name`**: the workflow name. This will be used asa a prefix for your generated workflow ID
-  3. **`imports`**: a list of Orquestra Components to be pulled in for this workflow. Orquestra Components are imported into the workflow so that they can be invoked by `tasks`. This minimizes the amount of code duplication and allows you to incorporate existing code libraries. For the purposes of this tutorial we will be using an Orquestra Component. You can learn how to build a custom Orquestra Component in the [Hello Component Tutorial](../hello-component/)
-  4. **`steps`**: a list of Orquestra `tasks` that will be executed. A `task` can invoke a `component` in the context of a specified `runtime` using a desired set of `resources`. 
+  3. **`imports`**: a list of Orquestra Components to be pulled in for this workflow. Orquestra Components are imported into the workflow so that they can be invoked by `steps`. This minimizes the amount of code duplication and allows you to incorporate existing code libraries. For the purposes of this tutorial we will be using an Orquestra Component. You can learn how to build a custom Orquestra Component in the [Hello Component Tutorial](../hello-component/)
+  4. **`steps`**: a list of Orquestra `steps` that will be executed. A `step` can invoke a `component` in the context of a specified `runtime` using a desired set of `resources`. 
 
 For custom `types` we will always include a `types` field.
 
@@ -47,14 +47,14 @@ imports:
   type: git
   parameters:
     repository: "git@github.com:zapatacomputing/tutorial-0-welcome"
-    branch: "workflow-v1"
+    branch: "master"
 ```
 
 In this snippet, we specified the `apiVersion`, the `name` of the workflow, and list of components to bring in under `import`.
 
 `import` has a single entry that brings in the `tutorial-0-welcome` component from GitHub. `tutorial-0-welcome` is a simple component that runs a Python script that prints "Welcome to Orquestra!". You can find the source code for this component [here](https://github.com/zapatacomputing/tutorial-0-welcome).
 
-Next, we'll invoke the `welcome-to-orquestra` component in by creating a task entry under the `steps` field. We can do this by inserting the following code snippet below the the `welcome-to-orquestra` component in your `welcome-workflow.yaml`:
+Next, we'll invoke the `welcome-to-orquestra` component in by creating a step entry under the `steps` field. We can do this by inserting the following code snippet below the the `welcome-to-orquestra` component in your `welcome-workflow.yaml`:
 
 ```YAML
 steps:
@@ -77,7 +77,7 @@ steps:
     type: message
 ```
 
-The final step is just to include a `types` field to the end of the workflow. In the `greeting` task we declared the `output` to be of `type: message`, therefore we'll declare the message type by adding following snippet to the end of this workflow:
+The final step is just to include a `types` field to the end of the workflow. In the `greeting` step we declared the `output` to be of `type: message`, therefore we'll declare the message type by adding following snippet to the end of this workflow:
 
 ```YAML
 types:
@@ -94,7 +94,7 @@ The workflow is now complete and we are now ready to submit it to the Quantum En
 To run the workflow and get our results back we'll need to:
 * Login to the `qe` CLI
 * Submit the workflow to the Quantum Engine
-* Wait for the Quantum Engine to process the workflow and execute the `tasks`
+* Wait for the Quantum Engine to process the workflow and execute the `steps`
 * Retrieve the results using the `qe CLI
 
 #### Logging in to the QE CLI
@@ -165,7 +165,7 @@ This file will look like the following (except for the comments, which were adde
 
 ```JSON
 {
-    "hello-workflow-36779dcb-d0af-4802-9462-41a41e254fa1-3219967381": { # The step that executed the `greeting` task
+    "hello-workflow-36779dcb-d0af-4802-9462-41a41e254fa1-3219967381": { # The ID of the step that executed the `greeting` step
         "class": "greeting",
         "id": "hello-workflow-36779dcb-d0af-4802-9462-41a41e254fa1-3219967381",
         "inputParam:docker-image": "z-quantum-default",
@@ -175,8 +175,8 @@ This file will look like the following (except for the comments, which were adde
             "id": "hello-workflow-36779dcb-d0af-4802-9462-41a41e254fa1-3219967381/welcome",
             "message": "Welcome to Orquestra!", # The message generated by this step
             "schema": "message",
-            "taskClass": "greeting",
-            "taskId": "hello-workflow-36779dcb-d0af-4802-9462-41a41e254fa1-3219967381",
+            "stepName": "greeting",
+            "stepId": "hello-workflow-36779dcb-d0af-4802-9462-41a41e254fa1-3219967381",
             "workflowId": "hello-workflow-36779dcb-d0af-4802-9462-41a41e254fa1"
         },
         "workflowId": "hello-workflow-36779dcb-d0af-4802-9462-41a41e254fa1"
@@ -192,6 +192,6 @@ For your convenience, you can find the completed workflow and components used in
 
 [Welcome component](https://github.com/zapatacomputing/tutorial-0-welcome)
 
-[Complete workflow](https://github.com/zapatacomputing/tutorial-0-welcome/blob/workflow-v1/hello-workflow.yaml)
+[Complete workflow](https://github.com/zapatacomputing/tutorial-0-welcome/blob/master/hello-workflow.yaml)
 
 Note that this workflow has another step after the first `greeting` step. That step is added in the next tutorial, [Hello Component](../hello-component/)

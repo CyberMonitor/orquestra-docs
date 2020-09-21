@@ -16,7 +16,7 @@ In your [resource template](../templates/), add parameters for `docker-image` an
 spec:
   templates:
   - name: welcome-to-orquestra
-    parent: generic-task
+    parent: generic-step
     inputs:
       parameters:
       - name: docker-image
