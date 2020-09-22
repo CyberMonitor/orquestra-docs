@@ -1,12 +1,12 @@
 ---
-title: "Writing a modular machine learning workflow"
-summary: Write a workflow template to run a machine learning model with several steps.
+title: "ML 3: Building a modular workflow"
+summary: Write a workflow with several steps that trains a machine learning model.
 weight: 5
 ---
 
 # ML Tutorial 3: Building a modular Orquestra workflow
 
-In the previous tutorial you learned how to write a simple workflow with one step, which trained a machine learning model in sklearn. In this tutorial you'll learn to write a more complex workflow, one with more steps and which passes artifats (data) between the steps.
+In the previous [tutorial](http://docs.orquestra.io/tutorials/ml-basic-2) you learned how to write a simple workflow with one step, which trained a machine learning model in sklearn. In this tutorial you'll learn to write a more complex workflow, one with more steps and which passes artifacts (data) between the steps.
 
 ![](../../img/tutorials/ML_Workflow3.png)
 
@@ -14,9 +14,9 @@ Why is this important? Modularity is actually one of Orquestra's greatest streng
 1. **Reusability:** By splitting your code into steps, you can easily reuse these steps in many different workflows.
 2. **Flexibility:** You are allowed to switch steps and reuse code from different repositories As new libraries and hardware backends become available, you can plug-and-play them into your workflow seamlessly.
 
-The main things we have to modify from the workflow from tutorials 1 and 2 are the following:
+The main things we have to modify from the workflow from that of [ML Tutorial 2](http://docs.orquestra.io/tutorials/ml-basic-2) are the following:
 
-1. Turn the `tutorial_2_step.py` step into two steps, one that generates and preprocesses the data, and one that trains the model, makes predictions, and finds the accuracy.
+1. Turn the `ml_tutorial_2_step.py` step into two steps, one that generates and preprocesses the data, and one that trains the model, makes predictions, and finds the accuracy.
 2. Modify the workflow template to run these two steps in series, and to pass the output of the first step into the second step.
 
 ### 1. Preliminaries
@@ -26,10 +26,10 @@ The code for this tutorial is all in this [repository](http://www.github.com/zap
 ```Bash
 .
 ├── examples
-│   └── tutorial3
+│   └── ml_tutorial_3
 │           └── workflow.yaml
 ├── steps
-│   └── tutorial_3_steps.py
+│   └── ml_tutorial_3_steps.py
 └── src
     ├── python
     │   └── tutorial
@@ -46,9 +46,9 @@ In tutorial 2 we wrote a workflow template to run the function `generate_train_s
 
 ![](../../img/tutorials/ML_TwoSteps.png)
 
-Pay special attention to the outputs of the functions, as they are serialized and saved as json files. The code below can also be found [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/steps/tutorial_3_steps.py).
+Pay special attention to the outputs of the functions, as they are serialized and saved as json files. The code below can also be found [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/steps/ml_tutorial_3_steps.py).
 
-##### `tutorial_3_steps.py`
+##### `ml_tutorial_3_steps.py`
 ```python
 from tutorial.functions import *
 from tutorial.utils import *
@@ -86,14 +86,14 @@ def train_predict_accuracy_step(features, labels, model_name):
     # Saving the prediction and accuracy as results
     result = {}
     result['predictions'] = predictions.tolist()
-    result['accuracy'] = [accuracy]
+    result['accuracy'] = accuracy
     save_json(result, 'result.json')
 ```
 
 Notice that we used a `save_json` and a `read_json` functions. These are located in [utils.py](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/src/python/tutorial/utils.py).
 
 ### 3. Adding a step to the workflow template
-First we need is to modify the workflow to run two steps instead of one. The first step is called `generate-data` and the second one `train-model`. The resulting workflow template is [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/tutorial3/workflow.yaml).
+First we need is to modify the workflow to run two steps instead of one. The first step is called `generate-data` and the second one `train-model`. The resulting workflow template is [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/ml_tutorial_3/workflow.yaml).
 
 Pay special attention to the output of the first step. This step has two ouputs, `features` and `labels`, and they are both numpy arrays. We have created two classes to hold them, called `features_type` and `labels_type` (and we have declared them at the end of the workflow template).
 ```yaml
@@ -129,10 +129,10 @@ Note that the output from the first step is `features, labels`, and the output f
 ```Bash
 >>> qe submit workflow path/to/workflow.yaml
 Successfully submitted workflow to quantum engine!
-Workflow ID: tutorial-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e
+Workflow ID: ml-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e
 
->>>nqe get workflow tutorial-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e
-Name:                tutorial-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e
+>>>nqe get workflow ml-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e
+Name:                ml-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e
 Namespace:           default
 Status:              Succeeded
 Created:             Sun Sep 20 02:25:31 +0000 (39 seconds ago)
@@ -144,10 +144,25 @@ Parameters:
   s3-key:            projects/v1
 
 STEP                                                               STEP ID                                                              DURATION  MESSAGE
-  tutorial-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e (qeDagWorkflow)                                                                                                  
- ├- generate-data (generate-data)                                           tutorial-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e-994578722   11s       features,labels  
- └- train-model (train-model)                                               tutorial-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e-1611110470  9s        result 
+  ml-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e (qeDagWorkflow)                                                                                                  
+ ├- generate-data (generate-data)                                           ml-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e-994578722   11s       features,labels  
+ └- train-model (train-model)                                               ml-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e-1611110470  9s        result 
 ```
+
+After running `qe get workflowresult`, storing the results, like in [ML Tutorial 1](http://docs.orquestra.io/tutorials/ml-basic-1), one gets a results file like [this one](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/outputs/ml-3-workflow-output.json). Using a [script](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/outputs/display_output.py), we can print out the results and get the following:
+
+Output:
+```Bash
+Predictions
+0
+1
+1
+0
+
+Accuracy
+1
+```
+
 
 ### 5. Exercise: Modularizing the template even more
 In this tutorial we wrote a workflow consisting of two steps:
@@ -167,17 +182,21 @@ The outputs of this dataset are the predictions and the accuracy.
 ##### 5.1 Solution
 
 We need to write a workflow with 4 steps. The links to the answers are below.
-- [Steps](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/steps/tutorial_3_exercise_steps.py)
-- [Workflow](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/tutorial3/exercise.yaml)
+- [Steps](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/steps/ml_tutorial_3_steps.py)
+- [Workflow](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/ml_tutorial_3/exercise.yaml)
 
 
  ### 6. Combining code from different components
- One of the greatest strengths of Orquestra is the ability to combine code from different sources. The code above all lives in the [www.github.com/zapatacomputing/tutorial-orquestra-sklearn](www.github.com/zapatacomputing/tutorial-orquestra-sklearn). Imagine the following scenario: You want to run this repo, but you don't want the model to calculate accuracy, instead, you'd like it to calculate any other metric, say, [F1-score](https://en.wikipedia.org/wiki/F1_score). You can write this function in another component of your own and call it from the workflow template. Here is how to do this.
+One of the greatest strengths of Orquestra is the ability to combine code from different sources. For example, you may find a workflow very useful in Zapata's (or someone else's) repo and you may want to run it, but changing a small function on it. This is very easy to do using workflows.
+
+For example, let's say that we want to run the workflow from Exercise 5 which lives in this [repo](www.github.com/zapatacomputing/tutorial-orquestra-sklearn). However, we are not interested in the accuracy of the model. Instead, we want to calculate another metric, say, the [F1-score](https://en.wikipedia.org/wiki/F1_score). What we'll do is write this function in another component and call it from the workflow template.
 
 ![](../../img/tutorials/ML_WorkflowComponents.png)
 
 ##### 6.1 Create the component
 The idea is that we want to run functions from the `tutorial-orquestra-sklearn` repo, but without modifying it. So to follow this exercise, we recommend you to create one called `tutorial-additional-metrics` using your personal GitHub account. You can see the solutions in [here](https://github.com/zapatacomputing/tutorial-additional-metrics).
+
+The folder structure is the following.
 
  ```
 .
@@ -205,8 +224,6 @@ def calculate_f1_score(predictions, labels):
     return f1
  ```
 
- Also, make sure you have a `utils.py` in the same folder that will help us read and save json files. The code can be found [here](www.github.com/https://github.com/zapatacomputing/tutorial-additional-metrics/blob/master/src/python/metrics/utils.py).
-
 ##### `f1_score_step.py`
  ```python
 from metrics.functions import calculate_f1_score
@@ -223,7 +240,9 @@ def calculate_f1_score_step(labels, predictions):
     save_json(f1_score_dict, 'f1_score.json')
  ```
 
-Don't forget to change the name of the repo in line 6 of `setup.py`.
+Also, make sure you have a `utils.py` in the same folder that will help us read and save json files. The code can be found [here](https://github.com/zapatacomputing/tutorial-additional-metrics/blob/master/src/python/metrics/utils.py).
+
+Also, we need a `setup.py`. Don't forget to change the name of the repo in line 6 to your own.
 
 ##### `setup.py`
  ```python
@@ -276,10 +295,10 @@ steps:
 - name: generate-data
   config:
     runtime:
-      type: python3
+      language: python3
       imports: [sklearn-component]
       parameters:
-        file: sklearn-component/steps/tutorial_3_exercise_steps.py
+        file: sklearn-component/steps/ml_tutorial_3_exercise_steps.py
         function: generate_data_step
   inputs:
     - dataset_name: "simple_dataset"
@@ -293,10 +312,10 @@ steps:
   passed: [generate-data]
   config:
     runtime:
-      type: python3
+      language: python3
       imports: [sklearn-component]
       parameters:
-        file: sklearn-component/steps/tutorial_3_exercise_steps.py
+        file: sklearn-component/steps/ml_tutorial_3_exercise_steps.py
         function: preprocess_data_step
   inputs:
     - data: ((generate-data.data))
@@ -312,10 +331,10 @@ steps:
   passed: [preprocess-data]
   config:
     runtime:
-      type: python3
+      language: python3
       imports: [sklearn-component]
       parameters:
-        file: sklearn-component/steps/tutorial_3_exercise_steps.py
+        file: sklearn-component/steps/ml_tutorial_3_exercise_steps.py
         function: train_predict_step
   inputs:
     - model_name: "perceptron"
@@ -333,7 +352,7 @@ steps:
   passed: [train-predict]
   config:
     runtime:
-      type: python3
+      language: python3
       imports: [additional-metrics-component]
       parameters:
         file: additional-metrics-component/steps/f1_score_step.py
@@ -352,6 +371,20 @@ types:
  - labels_type
  - predictions_type
  - f1score_type
+```
+
+##### 6.2 Submit the workflow and display the results
+
+Just like before, we can submit the workflow and display the [outputs](https://github.com/zapatacomputing/tutorial-additional-metrics/blob/master/examples/additional-metrics-output.json) with a [script](https://github.com/zapatacomputing/tutorial-additional-metrics/blob/master/examples/display_output.py) to get the following.
+
+```Bash
+Predictions
+0
+1
+1
+0
+F1-score:
+1
 ```
 
 ### 7. Conclusions
