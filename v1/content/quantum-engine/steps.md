@@ -64,6 +64,7 @@ A `config` is used to specify the `component` to invoke, its `runtime` context a
 | field      | Description |
 |------------|-------------|
 | `language` |  `python3`  |
+| `customImage` | Optional. Defaults to `zapatacomputing/z-quantum-default:latest` |
 | `imports` | The `imports` field is a list of the names of the components we want to use for the current task.  |
 | `parameters` | The entrypoint for this step's execution.<br/><br/> `file`: the path to the file to execute, must exist in one of the `components` referenced in `imports` list.<br/> `function`: specifies the function to invoke.|
 
