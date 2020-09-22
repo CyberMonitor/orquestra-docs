@@ -13,7 +13,7 @@ This tutorial will guide you through the process of building a simple Orquestra 
 
 ## Prepare your environment
 
-* Install the [Quantum Engine CLI](../../qe-cli/install-cli)
+* Install the [Quantum Engine CLI](../../qe-cli/install-cli/)
 * Install a text editor ([VSCode](https://code.visualstudio.com/), [Atom](https://atom.io/), etc.) of your choice
 
 
@@ -99,7 +99,7 @@ To run the workflow and get our results back we'll need to:
 
 #### Logging in to the QE CLI
 
-Please make sure you have the Quantum Engine CLI installed and configured for your operating system. You can find the instructions for installing the CLI [here](../../qe-cli/install-cli).
+Please make sure you have the Quantum Engine CLI installed and configured for your operating system. You can find the instructions for installing the CLI [here](../../qe-cli/install-cli/).
 
 Open your terminal and login to Quantum Engine using CLI by running the following command `qe login -e <your-email> -s <quantum-engine-uri>`
 
@@ -194,4 +194,4 @@ For your convenience, you can find the completed workflow and components used in
 
 [Complete workflow](https://github.com/zapatacomputing/tutorial-0-welcome/blob/master/hello-workflow.yaml)
 
-Note that this workflow has another step after the first `greeting` step. That step is added in the next tutorial, [Hello Component](../hello-component)
+Note that this workflow has another step after the first `greeting` step. That step is added in the next tutorial, [Hello Component](../hello-component/)
