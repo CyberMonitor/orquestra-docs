@@ -4,9 +4,7 @@ summary: Write a workflow with several steps that trains a machine learning mode
 weight: 5
 ---
 
-# ML Tutorial 3: Building a modular Orquestra workflow
-
-In the previous [tutorial](http://docs.orquestra.io/tutorials/ml-basic-2) you learned how to write a simple workflow with one step, which trained a machine learning model in sklearn. In this tutorial you'll learn to write a more complex workflow, one with more steps and which passes artifacts (data) between the steps.
+In [ML Tutorial 1](http://docs.orquestra.io/tutorials/ml-basic-1) and [ML Tutorial 2](http://docs.orquestra.io/tutorials/ml-basic-2) you learned how to write and run a simple workflow with one step, which trained a machine learning model in sklearn. In this tutorial you'll learn to write a more complex workflow, one with more steps and which passes artifacts (data) between the steps.
 
 ![](../../img/tutorials/ML_Workflow3.png)
 
@@ -14,7 +12,9 @@ Why is this important? Modularity is actually one of Orquestra's greatest streng
 1. **Reusability:** By splitting your code into steps, you can easily reuse these steps in many different workflows.
 2. **Flexibility:** You are allowed to switch steps and reuse code from different repositories As new libraries and hardware backends become available, you can plug-and-play them into your workflow seamlessly.
 
-The main things we have to modify from the workflow from that of [ML Tutorial 2](http://docs.orquestra.io/tutorials/ml-basic-2) are the following:
+Recall that in the workflow from [ML Tutorial 2](http://docs.orquestra.io/tutorials/ml-basic-2) we ran one step. This step did everything, namely, it generated and preprocessed the data, trained a model, made predictions, and calculated the accuracy. This is too much for one step, it's like directing an orchestra with one musician which plays all the instruments.
+
+In this tutorial we'll modify this and turn it into two steps (don't worry, in the exercises you'll have the chance to turn it into even more steps!). The main things we have to modify from the workflow from the previous owrkflow are the following:
 
 1. Turn the `ml_tutorial_2_step.py` step into two steps, one that generates and preprocesses the data, and one that trains the model, makes predictions, and finds the accuracy.
 2. Modify the workflow template to run these two steps in series, and to pass the output of the first step into the second step.
@@ -131,7 +131,7 @@ Note that the output from the first step is `features, labels`, and the output f
 Successfully submitted workflow to quantum engine!
 Workflow ID: ml-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e
 
->>>nqe get workflow ml-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e
+>>> qe get workflow ml-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e
 Name:                ml-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e
 Namespace:           default
 Status:              Succeeded

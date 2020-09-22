@@ -4,10 +4,6 @@ summary: Write a simple workflow that trains a machine learning model.
 weight: 4
 ---
 
-FEEDBACK: EXPLAIN DIFFERENCE BETWEEN UTILS AND FUNCTIONS
-
-# ML Tutorial 2: Building an Orquestra Workflow
-
 In [ML Tutorial 1](http://docs.orquestra.io/tutorials/ml-basic-1) you learned to run a workflow which ran an existing step that trained a machine learning model. In this tutorial you'll learn how to build the step.
 
 ![](../../img/tutorials/ML_Workflow2.png)
@@ -22,9 +18,9 @@ The code to run this function locally is below. Our goal is to turn this code in
 Here is the code that we have in our machine, that we intend to run in Orquestra. There are two files, one is called `main.py` which contains the main function `generate_train`, and the other one is called `functions.py`, which contains the helper functions.
 
 The `generate_train` function does the following:
-- Generates the data based on the dataset name we input.
+- Generates the data based on the name of the dataset that we input.
 - Preprocesses the data by splitting it into features and labels.
-- Trains a model on this data, based on the model name we input.
+- Trains a model on this data, based on the name of the model that we input.
 - Makes predictions on the existing dataset using the model.
 - Calculates the accuracy of the model.
 - Outputs the predictions and the accuracy.
@@ -33,22 +29,24 @@ The `generate_train` function does the following:
 from functions import *
 
 def generate_train(dataset_name, model_name):
-    # Generates the data
+    # Generates the data. The two choices for the name of the dataset are
+    # 'simple_dataset' and 'square_dataset'
     data = generate_dataset(dataset_name)
 
-    # Processes the data
+    # Preprocesses the data by splitting it into features and labels
     features, labels = preprocess_data(data)
     
-    # Trains the model
+    # Trains the model. The three choices for the name of the model
+    # are 'perceptron', 'decisiontree' and "svm"
     model = train_model(features, labels, model_name)
     
-    # Makes predictions
+    # Makes predictions using the model and the features
     predictions = make_predictions(model, features)
     
-    # Calculates the accuracy of the model
+    # Calculates the accuracy of the model on the training dataset
     accuracy = calculate_accuracy(predictions, labels)
     
-    # Outputs the predictions and the accuracy
+    # Outputs the predictions and the accuracy of the model
     return predictions, accuracy
 ```
 
@@ -64,6 +62,8 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 
+# Generates the data. The two choices for the name of the dataset are
+# 'simple_dataset' and 'square_dataset'
 def generate_dataset(dataset_name = "simple_dataset"):
     if dataset_name == "simple_dataset":
         data = pd.DataFrame({
@@ -79,26 +79,32 @@ def generate_dataset(dataset_name = "simple_dataset"):
         })
     return data
 
+# Preprocesses the data by splitting it into features and labels
 def preprocess_data(data):
     features = np.array(data[data.keys()[:-1]])
     labels = np.array(data[data.keys()[-1]])
     return features, labels
 
+# Trains a perceptron model
 def train_perceptron(features, labels):
     model = LogisticRegression()
     model.fit(features, labels)
     return model
 
+# Trains a decision tree model
 def train_decision_tree(features, labels):
     model = DecisionTreeClassifier()
     model.fit(features, labels)
     return model
 
+# Trains a support vector machine
 def train_svm(features, labels):
     model = SVC()
     model.fit(features, labels)
     return model
 
+# Trains the model. The three choices for the name of the model
+# are 'perceptron', 'decision_tree' and "svm"
 def train_model(features, labels, model_name="perceptron"):
     if model_name == "perceptron":
         return train_perceptron(features, labels)
@@ -109,19 +115,21 @@ def train_model(features, labels, model_name="perceptron"):
     else:
         return train_perceptron(features, labels)
 
+# Makes predictions using the model and the features
 def make_predictions(model, features):
     predictions = model.predict(features)
     return predictions
 
+# Calculates the accuracy of the model on the training dataset
 def calculate_accuracy(predictions, labels):
     accuracy = accuracy_score(predictions, labels)
     return accuracy
 ```
 
 ### 2. Folder structure of the workflow
-For code to run in Orquestra it needs to live in a GitHub repo. Go to [GitHub](http://www.github.com) and create a public repository called `tutorial-repository` (or any name you'd like to use). If you are unfamiliar with GitHub you can reference their [create a repo guide](https://help.github.com/en/github/getting-started-with-github/create-a-repo) for help.
+For code to run in Orquestra it needs to live in a GitHub repo. Go to [GitHub](http://www.github.com) and create a public repository called `tutorial-orquestra-sklearn` (or any name you'd like to use). If you are unfamiliar with GitHub you can reference their [create a repo guide](https://help.github.com/en/github/getting-started-with-github/create-a-repo) for help.
 
-This repository will be where you build the component that we call in the workflow template. [This GitHub repo](https://www.github.com/tutorial-orquestra-sklearn) can be used as a reference for how the repo `tutorial-repository` should look like throughout the tutorial.
+This repository will be where you build the component that we call in the workflow template. [This GitHub repo](https://www.github.com/tutorial-orquestra-sklearn) can be used as a reference for how the repo `tutorial-orquestra-sklearn` should look like throughout the tutorial.
 
 Once we have the GitHub repo, we need to define the folder structure of our workflow. In order to be recognized by Orquestra, a component must contain two folders: `steps` and `src`. A typical Orquestra workflow has the following folder structure:
 
@@ -185,7 +193,7 @@ def generate_train_step(dataset_name, model_name):
 
 We use the `save_json` function, which is a standard json encoder and lives in [utils.py](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/src/python/tutorial/utils.py).
 
-Note that by convention, the functions that are relevant to our training are in `functions.py`, while those that help us with serializing input/output and similar tasks are in `utils.py`.
+By convention, the functions that are relevant to our training are in `functions.py`, while those that help us with serializing input/output and similar tasks are in `utils.py`.
 
 ### 4. Installations, etc.
 The last thing we need to do is tell Orquestra what packages we need to run our code. We do this in the file `setup.py`. For this workflow, we use `sklearn`, `numpy`, and `pandas`.

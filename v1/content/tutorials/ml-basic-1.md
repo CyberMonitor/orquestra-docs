@@ -3,7 +3,6 @@ title: "ML 1: Running a simple workflow"
 summary: Learn how to write a workflow template to run a machine learning model.
 weight: 3
 ---
-# ML Tutorial 1: Running an Orquestra workflow
 
 The following three tutorials will take you through the basics of writing and running an Orquestra workflow to train a simple machine learning model.
 
@@ -11,17 +10,22 @@ The following three tutorials will take you through the basics of writing and ru
 Orquestra is a platform for building repeatable workflows, orchestrated by a quantum engine that systematically organizes experiment data and resources. Orquestra workflows offer solutions when it comes to reproducing experiments, repurposing code, sharing data, and solving dependency problems in projects. For more information, check out this blog [post](https://www.zapatacomputing.com/quantum-enabled-workflows/).
 
 ##### How does Orquestra work?
-An orquestra workflow works in a similar way as an actual orchestra. In an orchestra we have the orquestra director presiding over a set of musicians, producing a melody. The orquestra director tells the musicians when to start and end, and she can also pass information to the musicians. In Orquestra, these are the corresponding components:
+An orquestra workflow works in a similar way as an actual orchestra. In an orchestra we have the director presiding over a set of musicians, producing a melody. The orchuestra director tells the musicians when to start and end, and she can also pass information to the musicians.
 
 ![](../../img/tutorials/OrquestraPicture.png)
 
+In Orquestra, these are the corresponding components:
 - **A workflow template:** This is the Orquestra director which dictates what happens in the workflow.
-- **Steps:** These are the musicians which play parts of the melody. They correspond to functions that do a particular step.
+- **Steps:** These are the musicians which play parts of the melody. They correspond to functions, or tasks, that do a particular step.
 - **Artifacts:** These can be parameters or data that are passed from the workflow template to the steps, or between steps.
 
 The output of the workflow is also an artifact that gets passed to us when the workflow ends.
 
-Throughout the following three tutorials, we'll teach you the basics of how to build an Orquestra workflow.
+Throughout the following three tutorials, we'll teach you the basics of how to build an Orquestra workflow that trains a machine learning model. More specifically:
+
+- In this tutorial, ML Tutorial 1, you'll learn to run a simple workflow that runs pre-written code.
+- In the next tutorial, [ML Tutorial 2](http://docs.orquestra.io/tutorials/ml-basic-2/), you'll be writing the code for the workflow that you run in this tutorial.
+- In the third tutorial, [ML Tutorial 3](http://docs.orquestra.io/tutorials/ml-basic-3/), you'll be writing a more complex workflow.
 
 ### 1. In this tutorial
 
@@ -42,7 +46,9 @@ The code we'll run is a simple step (function) called `generate_train`, which tr
   - The predictions of the model on our dataset (list).
   - The accuracy of the model in the dataset (float). The accuracy is the ratio between the number of correctly classified points and the total number of points.
 
-The two choices for the dataset are `simple_dataset` and `square_dataset`, seen in the image below.
+The function will be treated as a black box during this tutorial, but you can find the code for it [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/src/python/tutorial/functions.py).
+
+The two choices for the dataset are `simple_dataset` and `square_dataset`, seen in the image below, where the points with label 1 are drawn as blue triangles, and those with label 0 are drawn as red squares.
 
 ![](../../img/tutorials/ML_Datasets.png)
 
@@ -58,7 +64,7 @@ A simple example of the `generate_train` function is the following:
 >>> generate_train('simple_dataset', 'perceptron')
 [0.0, 1.0, 1.0, 0.0], 1.0
 ```
-indicating that the predictions on the four points are 1, 1, 0, 0, and the accuracy is 1.0, since the model predicted the four of them correctly.
+indicating that the predictions on the four points are 0, 1, 1, 0, and the accuracy is 1.0, since the model predicted all four points correctly.
 
 ![](../../img/tutorials/ML_Function.png)
 
@@ -92,7 +98,7 @@ imports:
 ```
 
 ##### 3.3 Steps
-Here we specify the steps we'll be running in our workflow. Each step is one function. By default, steps run synchronously, but we can specify dependencies, in other words, we can tell Orquestra if a particular step can't start until another one finishes. In this tutorial, we only have one step, but later in this tutorial we'll be running a workflow with several steps.
+Here we specify the steps we'll be running in our workflow to train a perceptron model on the simple dataset. Each step is one function. By default, steps run synchronously, but we can specify dependencies, in other words, we can tell Orquestra if a particular step can't start until another one finishes. In this tutorial, we only have one step, but later in this tutorial we'll be running a workflow with several steps.
 
 Inside each step, we need to specify several things:
 
@@ -119,7 +125,7 @@ In `runtime`, we'll tell Orquestra exactly where the code that we're running liv
 In this section, if needed, we can also specify the computing resources we need for our workflow, such as CPU, memory, etc. This is a small workflow so we'll use Orquestra's defaults, which are the following:
 - cpu: "1000m"
 - memory: "1Gi"
-- disk: "1OGi"
+- disk: "10Gi"
 
 ###### 3.3.3 Inputs
 In here we specify the inputs to our function. Recall that the function takes two strings, the name of the dataset and the name of the model. We specify it as follows:
@@ -156,10 +162,12 @@ Now that we've written the workflow template, it's time to run it! First, we nee
 ##### 4.1 Running the workflow
 - Install the [Quantum Engine CLI](https://orquestra.io/docs/qe-cli/install-cli/) (you only need to do this the first time).
 - Log into quantum engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your terminal. Contact support to register your email and/or receive the `quantum-engine-uri`.
-- Submit your workflow by running `qe submit workflow <path/to/workflow/tutorial-1-workflow.yaml>`
+- Submit your workflow by running `qe submit workflow <path-to-workflow/workflow.yaml>`
 
-This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like:
+This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like this:
 ```Bash
+>>> qe submit workflow /path-to-workflow/workflow.yaml
+
 Successfully submitted workflow to quantum engine!
 Workflow ID: ml-1-workflow-6f8d2ae0-a709-4123-ad89-7a46b7a05dcb
 ```
@@ -173,6 +181,8 @@ To see details of the execution of your workflow, run `qe get workflow <workflow
 The output will look like this.
 
 ```Bash
+>>> qe get workflow ml-1-workflow-6f8d2ae0-a709-4123-ad89-7a46b7a05dcb
+
 STEP                                                               STEP ID                                                              DURATION  MESSAGE
   ml-1-workflow-6f8d2ae0-a709-4123-ad89-7a46b7a05dcb (qeDagWorkflow)                                                                                         
  └- perceptron-training (perceptron-training)                               ml-1-workflow-6f8d2ae0-a709-4123-ad89-7a46b7a05dcb-2461011646  9s        result  
@@ -184,7 +194,7 @@ STEP                                                               STEP ID      
 To get the results of your workflow, run `qe get workflowresult <workflow-ID>` with your workflow ID.
 
 ```Bash
-qe get workflowresult ml-1-84deb2de-d2bd-442a-ab16-5621e098d8d8
+>>> qe get workflowresult ml-1-84deb2de-d2bd-442a-ab16-5621e098d8d8
 ```
 
 After a worfkflow runs, it takes time for the data to be processed. This results file cannot be created until the data is done being processed. You can try running the above command every few minutes until it returns a link to download a file.
@@ -200,7 +210,7 @@ Location:    http://a49397a7334b711ea99a80ac353ea38d-1340393531.us-east-1.elb.am
 ##### 4.4 Downloading the results
 When your workflow is completed, the `workflowresult` command will provide you with a http web-link under `Location` in the console output. Click on or copy and paste the link into your browser to download the file.
 
-The file can be seen [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/outputs/ml-1-workflow-output.json)
+The file can be seen [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/outputs/ml-1-workflow-output.json).
 
 Note that inside this file, there is a `result` key, and the value is a dictionary. In this dictionary we can see `predictions` and `accuracy`. There is a lot more information there, but under these we can see that the predictions are `0, 1, 1, 0` and the accuracy is `1`, as desired.
 
@@ -266,4 +276,4 @@ For this, we simply add an extra step to our workflow. We now have two steps whi
 The solution is [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/ml_tutorial_1/exercise-2.yaml).
 
 ### 6. Conclusion
-Congratulations! You've ran your first Orquestra workflow to train a machine learning model. In the next [tutorial](http://docs.orquestra.io/tutorials/ml-basic-2) we'll open the hood and write the step that you ran in this workflow.
+Congratulations! You've ran your first Orquestra workflow to train a machine learning model. In the next [tutorial](http://docs.orquestra.io/tutorials/ml-basic-2) we'll open the hood and write the code for the step that you ran in this workflow.
