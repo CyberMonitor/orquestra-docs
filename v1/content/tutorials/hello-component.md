@@ -19,7 +19,7 @@ This tutorial will help you build Orquestra Components, the unit of re-useable c
 
 ## Building a Component
 
-### Create a GitHub Repositry
+### Create a GitHub Repository
 
 Go to [GitHub](https://github.com/) and create a public repository called `welcome-component`. If you are unfamiliar with GitHub you can reference GitHub's [create a repo guide](https://help.github.com/en/github/getting-started-with-github/create-a-repo) for help.
 
@@ -50,7 +50,7 @@ Using your terminal or the text editor of your choice, recreate this folder stru
 
 ### Adding Some Code
 
-Orquestra can support any Python3 source that is installable via `pip` using a `setup.py` script.
+Orquestra can support any Python3 source that can be installed via `pip` using a `setup.py` script.
 
 Moving into `src/python/orquestra/` create a Python script called `welcome.py`. Your repo structure should now look like this:
 
@@ -151,11 +151,11 @@ For more information regarding how to make your source code available as a `pack
 
 The `welcome-component` is now complete and ready to be used in a workflow. 
 
-Once you are satisified with your work, commit your changes and push them to GitHub
+Once you are satisfied with your work, commit your changes and push them to GitHub
 
 ### Building a Workflow
 
-The component is now ready to be used in an Orquestra workflow. Please refer to the [Hello Worfklow](../hello-workflow/) tutorial for an example of invoking a component from within a step.
+The component is now ready to be used in an Orquestra workflow. Please refer to the [Hello Workflow](../hello-workflow/) tutorial for an example of invoking a component from within a step.
 
 ## Completed Tutorial Materials
 

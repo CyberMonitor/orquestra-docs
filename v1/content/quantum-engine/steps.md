@@ -8,7 +8,7 @@ weight: 4
 
 An Orquestra workflow executes a collection of `steps`. A `step` is a unit of execution in a workflow and supports the following fields:
 
-| field      | Description |
+| Field      | Description |
 |------------|-------------|
 | [`name`]({{<ref "#name">}}) | Name of the step |
 | [`config`]({{<ref "#config">}}) | The configuration and execution plan for this step. This is where a runtime is declared and where components are invoked |
@@ -54,14 +54,14 @@ The `name` of the step. Some restrictions:
 ### Config
 A `config` is used to specify the `component` to invoke, its `runtime` context and the amount of compute `resources` for the quantum engine to allocate. `config` supports the following fields:
 
-| field      | Description |
+| Field      | Description |
 |------------|-------------|
 | [`runtime`]({{<ref "#runtime">}}) | The runtime and imports to use for this step's execution |
 | [`resources`]({{<ref "#resources">}}) | The desired resource for this step |
 
 #### Runtime
 
-| field      | Description |
+| Field      | Description |
 |------------|-------------|
 | `language` |  `python3`  |
 | `customImage` | Optional. Defaults to `zapatacomputing/z-quantum-default:latest` |
@@ -75,7 +75,7 @@ The `resources` field is an _optional_ field that allows a workflow author to re
 **NOTE** The requested amount of `resources` is not guaranteed by the Quntum Engine and is subject to the current runtime environment.
 
 
-| field      | Description |
+| Field      | Description |
 |------------|-------------|
 | `cpu` | Default is `1000m`   |
 | `memory`| Default value is `1Gi`|
@@ -85,7 +85,7 @@ The `resources` field is an _optional_ field that allows a workflow author to re
 
 The `inputs` field is a list of arguments that will be made available to the step. 
 
-| field      | Description |
+| Field      | Description |
 |------------|-------------|
 | `<name>` | `<name>` is the argument to be exposed to the component, with its value set in the field  |
 | `type`  | The type of the value specified in `<name>`. Can be one of `string`, `int`, `json`, or `<custom>`.  |
@@ -105,7 +105,7 @@ The `inputs` field is a list of arguments that will be made available to the ste
 
 The `ouputs` field is a list of arguments that result from the completion of the step. 
 
-| field      | Description |
+| Field      | Description |
 |------------|-------------|
 | `<name>` | `<name>` is the argument to be exposed to the component, with its value set in the field  |
 | `type`  | The type of the value specified in `<name>`. Can be one of `string`, `int`, `json`, or `<custom>`.  |
