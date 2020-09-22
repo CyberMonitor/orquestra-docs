@@ -63,7 +63,7 @@ steps:
 - name: greeting
   config:
     runtime:
-      type: python3
+      language: python3
       imports: [welcome-to-orquestra] 
       parameters:
         file: welcome-to-orquestra/welcome.py

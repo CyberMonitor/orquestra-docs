@@ -35,7 +35,7 @@ With a traditional environment, you would have to piece together each step into 
 - name: star-wars-characters
   config:
     runtime:
-      type: python3
+      language: python3
       imports: [star-wars]
       parameters:
         file: star-wars/src/python/orquestra/welcome.py
