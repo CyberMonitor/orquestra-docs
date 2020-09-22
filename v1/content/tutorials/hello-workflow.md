@@ -24,7 +24,7 @@ An Orquestra workflow consists of 4 fields:
   1. **`apiVersion`**: the workflow API version `io.orquestra.workflow/1.0.0`
   2. **`name`**: the workflow name. This will be used asa a prefix for your generated workflow ID
   3. **`imports`**: a list of Orquestra Components to be pulled in for this workflow. Orquestra Components are imported into the workflow so that they can be invoked by `steps`. This minimizes the amount of code duplication and allows you to incorporate existing code libraries. For the purposes of this tutorial we will be using an Orquestra Component. You can learn how to build a custom Orquestra Component in the [Hello Component Tutorial](../hello-component/)
-  4. **`steps`**: a list of Orquestra `steps` that will be executed. A `step` can invoke a `component` in the context of a specified `runtime` using a desired set of `resources`. 
+  4. **`steps`**: a list of Orquestra `steps` that will be executed. A `step` can invoke a `component` in the context of a specified `runtime`.
 
 For custom `types` we will always include a `types` field.
 
@@ -68,10 +68,6 @@ steps:
       parameters:
         file: welcome-to-orquestra/welcome.py
         function: welcome
-    resources:
-      cpu: "1000m"
-      memory: "1Gi"
-      disk: "15Gi"
   outputs:
   - name: welcome
     type: message
