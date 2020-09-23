@@ -1,7 +1,7 @@
 ---
 title: "Simulate H₂ with VQE"
 summary: Calculate the equilibrium bond length of H₂ with a variational quantum eigensolver.
-weight: 3
+weight: 6
 publishdate: 2099-01-01
 ---
 
