@@ -6,7 +6,7 @@ weight: 3
 
 ### Overview
 
-Components represent reusable step inputs of a workflow. Each component is versioned, stored external to Orquestra and treated as the source of truth. When a workflow step begins Orquestra `get` each configured component and ensures it is placed into the runtime environment.
+Components represent reusable bits used within a step of a workflow. Each component is versioned, stored external to Orquestra and treated as the source of truth. When a workflow step begins Orquestra `get` each component and ensures it is placed into the runtime environment.
 
 Once a component is placed into the runtime environment, the bits are then available to the task within `/app/qeruntime/task`.
 
@@ -14,7 +14,7 @@ Once a component is placed into the runtime environment, the bits are then avail
 
 Each component in the workflow has a `type`. This type determines what bits are retrieved, and where they are placed into the runtime environment.
 
-Orquestra comes with a "core" component type to cover the common use case `git`. Other component types can be community developed, deployed and then used within your workflow as well. 
+Orquestra comes with a "core" component type to cover the common use case `git`. Other component types can be community developed, deployed and then used within your workflow as well. `
 
 
 ### Referencing a Component in a Workflow
