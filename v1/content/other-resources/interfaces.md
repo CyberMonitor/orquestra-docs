@@ -40,10 +40,10 @@ That's why you can use `create_object` function from `zquantum.core.utils`. It t
 - name: use-any-backend
   config:
     runtime:
-      type: python3
+      language: python3
       imports: [z-quantum-core]
       parameters:
-        file: z-quantum-core/tasks/main_script.py
+        file: z-quantum-core/steps/main_script.py
         function: any_backend
   inputs:
    backend-specs: '{"module_name": "zquantum.core.interfaces.mock_objects", "function_name": "MockQuantumSimulator", "n_samples": 1000}'
