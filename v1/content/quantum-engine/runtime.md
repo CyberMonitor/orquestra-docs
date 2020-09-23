@@ -5,9 +5,10 @@ weight: 3
 ---
 
 ### Overview
+When requesting a step to run as part of a workflow, Orquestra provides the connection between the underlying infrastructure and your step through the use of the runtime.
 
-Runtimes provide a lifecycle framework for steps in a workflow. Runtimes typically:
-- ensure all orquestra components are available in the step context
+Runtimes provide a lifecycle framework for steps in a workflow as follows:
+- ensure all Orquestra components are available in the step context
 - aid in type checking all inputs to the step
 - deserialize input data
 - ensure the step has all dependencies required to run successfully
@@ -15,8 +16,7 @@ Runtimes provide a lifecycle framework for steps in a workflow. Runtimes typical
 - serialize output data
 
 ### Using Runtimes
-
-When requesting a step to run as part of a workflow, Orquestra provides the connection between the underlying infrastructure and your step through the use of the runtime. How to use a runtime in a workflow step can be found [here](../steps/#runtime) 
+How to use a runtime in a workflow step can be found [here](../quantum-engine/steps/#runtime) 
 
 Each runtime must specify a `language`. This language determines what software language is utilized during a step of the workflow.
 
@@ -34,67 +34,41 @@ Each runtime language must contain the following three binaries:
 `supply` provides all dependencies for this step.
 `run` ensure all types of inputs are correct types, calls the required functions or commands (with correct inputs) to run the step.
 
-### Python3 Runtime Language
+### Python3
 
 Supported Python Versions:
-* Python 3.7
+* Python 3.x
 
-While there are no restrictions on how to organize an Orquestra Component, we 
+When requesting python3 code to run within a step of the workflow, set the `language` key to `python3`.
+Additionally both the desired python3 `file` and `function` to run should be specified under the `parameters` key.
 
-### Source Code Installation
+Below is an example:
 
-Orquestra provides automatic installation of your source code. By configuring your component with either a 
-
-
-
-
-
-----
-
-
-you will be able to reference your source code (marked by `welcome.py` in the above example) easily from within your template. The source code can be any valid python code.
-
-#### Setup File
-
-The setup file must be called `setup.py`. It is responsible for installing your code before being called by the template.
-
-An example is shown below:
-
-```Python
-import setuptools
-
-setuptools.setup(
-    name                            = "orquestra",
-    packages                        = setuptools.find_packages(where = "python"),
-    package_dir                     = {
-        "" : "python"
-    },
-    classifiers                     = (
-        "Programming Language :: Python :: 3",
-        "Operating System :: OS Independent",
-    ),
-)
+```yaml
+steps:
+- name: helloworkflow
+  config:
+    runtime:
+      language: python3                               # <-----------------
+      parameters:
+        file: hellov1/src/python/orquestra/main.py    # <-----------------
+        function: main                                # <-----------------
 ```
 
-For clarity, in this example:
-- `name` is the name of your package which you can reference in your template
-- `packages` tells the installer to look for a subdirectory called `python`
-which contains your source code
-- `package_dir` allows the contents of the `python` directory to be imported
-without the python path prefix, for example, with `from orquestra import all`
+#### Dependency Management
+While there are no restrictions on how to organize source code when using the python3 runtime, Orquestra does provides automatic installation of python dependencies as follows:
 
-For more information regarding how to make your source code available as a `package`, please refer to the [setuptools documentation](https://setuptools.readthedocs.io/en/latest/setuptools.html#developer-s-guide).
+1. with pip using `requirements.txt` file in the root directory of your component
+1. with pip using `setup.py` file in the root directory of your component
+1. with pip using `vendor/` directory in the root directory of your component
 
+**NOTE:**
+To ensure proper installation of dependencies, it is recommended to package vendor'd dependencies as non-binary. The following `pip download` command achieves this.
 
-#### Initialization File
+```sh
+$ cd YOUR-COMPONENT-DIR
+$ mkdir -p vendor
 
-Python3 components must be initialized as a package. This can simply be done through the inclusion of a `__init__.py` file. An example is shown below:
-
-```Python
-from .welcome import welcome
+# vendors pip *.tar.gz into vendor/
+$ pip download -r requirements.txt --no-binary=:none: -d vendor
 ```
-
-Only the functions that are imported in this file will be accessible when using your source code as a package. Here you will want to import any functions that you need to call from the script in your workflow.
-
-
- 
