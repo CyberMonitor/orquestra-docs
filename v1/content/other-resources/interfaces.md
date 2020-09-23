@@ -65,7 +65,7 @@ def any_backend(backend_specs):
 For example, for the `MockSimulator` it might look like this:
 
 ```yaml
-- backend-specs: "{'module_name': 'zquantum.core.interfaces.mock_objects', 'function_name': 'MockQuantumSimulator', 'n_samples': 1000}"
+- backend-specs: '{"module_name": "zquantum.core.interfaces.mock_objects", "function_name": "MockQuantumSimulator", "n_samples": 1000}'
 ```
 
 ### QuantumBackend and QuantumSimulator
@@ -77,19 +77,20 @@ You can find [the interface definition here](https://github.com/zapatacomputing/
 - [qHiPSTER](https://github.com/zapatacomputing/qe-qhipster)
 - [Forest QVM](https://github.com/zapatacomputing/qe-forest)
 - [qulacs](https://github.com/zapatacomputing/qe-qulacs)
+- [Qiskit Aer and IBMQ simulator](https://github.com/zapatacomputing/qe-qiskit)
 
 
 ### Optimizer
 
 Optimizer is an interface that allows using different optimizers within Orquestra, [here you can find the interface definition](https://github.com/zapatacomputing/z-quantum-core/blob/dev/src/python/zquantum/core/interfaces/optimizer.py).
 
-All the currently implemented optimizers live in the [z-quantum-optimizers repository](https://github.com/zapatacomputing/z-quantum-optimizers):
-
+Available optimizers:
 - grid search - brute-force approach checking all the values from a grid.
 - scipy optimizers - integration with `scipy.minimize` optimizers.
 - qiskit optimizers - integration with `ADAM`, `AMSGRAD` and `SPSA`.
 - CMA-ES - Covariance Matrix Adaptation Evolution Strategy.
 
+The interfaces for these optimizers live in the [z-quantum-optimizers repository](https://github.com/zapatacomputing/z-quantum-optimizers), except for the qiskit optimizers which reside in qe-qiskit](https://github.com/zapatacomputing/qe-qiskit).
 
 ### Cost functions
 
