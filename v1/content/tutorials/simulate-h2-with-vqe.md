@@ -5,6 +5,9 @@ weight: 3
 publishdate: 2099-01-01
 ---
 
+An [example workflow for simulating a H₂ molecule with VQE](https://github.com/zapatacomputing/z-quantum-vqe/blob/master/examples/hydrogen.yaml) is available in [`z-quantum-vqe`](https://github.com/zapatacomputing/z-quantum-vqe). More details coming soon!
+
+<!-- 
 This tutorial will walk through using the Orquestra Quantum Engine to implement the Variational Quantum Eigensolver (VQE) to calculate the binding energy curve of a H₂ molecule.
 
 ## Composing a workflow to calculate the Hartree-Fock energy
@@ -719,4 +722,4 @@ plt.ylabel('Energy (Ha)')
 plt.legend(basis_set_list)
 plt.tight_layout()
 plt.show()
-```
+``` -->

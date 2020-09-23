@@ -7,6 +7,10 @@ weight: 6
 publishdate: 2099-01-01
 ---
 
+
+An [example workflow for solving MAXCUT with QAOA](https://github.com/zapatacomputing/z-quantum-qaoa/blob/master/examples/maxcut-qaoa.yaml) is available in [`z-quantum-qaoa`](https://github.com/zapatacomputing/z-quantum-qaoa). More details coming soon!
+
+<!-- 
 This tutorial will walk through using the Orquestra Quantum Engine to use Quantum Approximate Optimization Algorithm to solve MaxCut problem and use different optimizers to solve it.
 
 In addition to that we'll cover some advanced workflow features (e.g. recursive steps) and using Orquestra interfaces.
@@ -618,4 +622,4 @@ ax2.set_xlabel("Iterations")
 ax2.set_ylabel("Value")
 plt.tight_layout()
 plt.show()
-```
+``` -->
