@@ -10,6 +10,8 @@ The following three tutorials will take you through the basics of writing and ru
 Orquestra is a platform for building repeatable workflows, orchestrated by a quantum engine that systematically organizes experiment data and resources. Orquestra workflows offer solutions when it comes to reproducing experiments, repurposing code, sharing data, and solving dependency problems in projects. For more information, check out this blog [post](https://www.zapatacomputing.com/quantum-enabled-workflows/).
 
 ##### How does Orquestra work?
+Begin by watching an [introductory video](https://youtu.be/yJJ2uhE09eg) about Orquestra and the following three tutorials.
+
 An orquestra workflow works in a similar way as an actual orchestra. In an orchestra we have the director presiding over a set of musicians, producing a melody. The orchuestra director tells the musicians when to start and end, and she can also pass information to the musicians.
 
 ![](../../img/tutorials/OrquestraPicture.png)
@@ -28,6 +30,8 @@ Throughout the following three tutorials, we'll teach you the basics of how to b
 - In the third tutorial, [ML Tutorial 3](http://docs.orquestra.io/tutorials/ml-basic-3/), you'll be writing a more complex workflow.
 
 ### 1. In this tutorial
+
+This [video](https://youtu.be/veetJEO0isM) describes what we'll do in this tutorial.
 
 This tutorial will walk you through running a basic Orquestra workflow. The workflow runs  existing code that trains some machine learning models. More specifically, in this tutorial we'll write a workflow template that runs a single step. This step trains a simple machine learning model.
 

@@ -4,6 +4,8 @@ summary: Write a simple workflow that trains a machine learning model.
 weight: 4
 ---
 
+This [video](https://youtu.be/5d2EUbZxQjc) describes what we'll do in this tutorial.
+
 In [ML Tutorial 1](http://docs.orquestra.io/tutorials/ml-basic-1) you learned to run a workflow which ran an existing step that trained a machine learning model. In this tutorial you'll learn how to build the step.
 
 ![](../../img/tutorials/ML_Workflow2.png)

@@ -4,6 +4,8 @@ summary: Write a workflow with several steps that trains a machine learning mode
 weight: 5
 ---
 
+This [video](https://youtu.be/UyYk6hVuly8) describes what we'll do in this tutorial.
+
 In [ML Tutorial 1](http://docs.orquestra.io/tutorials/ml-basic-1) and [ML Tutorial 2](http://docs.orquestra.io/tutorials/ml-basic-2) you learned how to write and run a simple workflow with one step, which trained a machine learning model in sklearn. In this tutorial you'll learn to write a more complex workflow, one with more steps and which passes artifacts (data) between the steps.
 
 ![](../../img/tutorials/ML_Workflow3.png)
