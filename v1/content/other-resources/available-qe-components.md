@@ -13,6 +13,7 @@ The following QE components are available for workflow authors:
 |[qe-openfermion](https://github.com/zapatacomputing/qe-openfermion )| integration with OpenFermion. | [Zapata Computing](https://github.com/zapatacomputing) |
 |[qe-psi4](https://github.com/zapatacomputing/ )| Integration with the Psi4 quantum-chemistry package. | [Zapata Computing](https://github.com/zapatacomputing) |
 |[qe-qhipster](https://github.com/zapatacomputing/qe-qhipster )| Integration with the Intel-QS quantum circuit simulator. | [Zapata Computing](https://github.com/zapatacomputing) |
+|[qe-qiskit](https://github.com/zapatacomputing/qe-qiskit )| Integration with the Qiskit. | [Zapata Computing](https://github.com/zapatacomputing) |
 |[qe-qulacs](https://github.com/zapatacomputing/qe-qulacs )| Integration with the Qulacs circuit simulator. | [Zapata Computing](https://github.com/zapatacomputing) |
 |[z-lstm](https://github.com/zapatacomputing/z-lstm )| Basic LSTM for time series analysis. | [Zapata Computing](https://github.com/zapatacomputing) |
 |[z-quantum-core](https://github.com/zapatacomputing/z-quantum-core )| core components used in quantum algorithms. | [Zapata Computing](https://github.com/zapatacomputing) |
