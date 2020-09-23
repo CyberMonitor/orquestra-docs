@@ -6,7 +6,7 @@ weight: 3
 
 ## Overview
 
-Components are reusable pieces of code that can be imported into your workflows. Compononts can accept data as inputs, execute code and produce and produce data as outputs.
+Components are reusable pieces of code that can be imported into your workflows. Components can accept data as inputs, execute code and produce and produce data as outputs.
 
 Once built, components can be imported into a workflow can be invoked within `steps`. This makes components an easily re-usable and shareable block of code across multiple workflows and experiments.
 
