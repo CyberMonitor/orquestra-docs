@@ -28,36 +28,33 @@ In order to integrate code which fits the interfaces, you need to create a class
 You might find very basic examples of such integrations in the [`mock_objects`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/interfaces/mock_objects.py) file in [`z-quantum-core`](https://github.com/zapatacomputing/z-quantum-core). Note that these are created only for testing purposes, but you'll find links to other implementations in appropriate sections.
 
 
-### Using integration
+### Using the Interface
 
 Once you've done your integration, there are two ways you can use it in your template.
 The first one is obvious – you can simply import from the module you've just created, create a python object and voila!
 
-However, this means that the class that implements the interface will be hardcoded in your template and using another one will require changing the template.
-That's why you can use `create_object` function from `zquantum.core.utils`. It takes a dictionary with specification of the object you'd like to create and creates it inside the template. Take a look at the following example:
+However, this means that the class that implements the interface will be hardcoded in your component and using another one will require changing the component.
+That's why you can use `create_object` function from `zquantum.core.utils`. It takes a dictionary with specification of the object you'd like to create and creates it inside the component. Take a look at the following example workflow step and the code it calls:
 
 ```yaml
-templates:
 - name: use-any-backend
-  parent: generic-task
+  config:
+    runtime:
+      language: python3
+      imports: [z-quantum-core]
+      parameters:
+        file: z-quantum-core/steps/main_script.py
+        function: any_backend
   inputs:
-    parameters:
-    - name: backend-specs
-    - name: command
-      value: bash main_script.sh
-    artifacts:
-    - name: main-script
-      path: /app/main_script.sh
-      raw:
-        data: |
-          python3 python_script.py
-    - name: python-script
-      path: /app/python_script.py
-      raw:
-        data: |
-          from zquantum.core.utils import create_object
-          backend_specs = {{inputs.parameters.backend-specs}}
-          backend = create_object(backend_specs)
+   backend-specs: '{"module_name": "zquantum.core.interfaces.mock_objects", "function_name": "MockQuantumSimulator", "n_samples": 1000}'
+    type: string
+```
+
+```python
+from zquantum.core.utils import create_object
+
+def any_backend(backend_specs):
+    backend = create_object(backend_specs)
 ```
 
 `backend-specs` dictionary should have the following fields:
@@ -68,35 +65,36 @@ templates:
 For example, for the `MockSimulator` it might look like this:
 
 ```yaml
-- backend-specs: "{'module_name': 'zquantum.core.interfaces.mock_objects', 'function_name': 'MockQuantumSimulator', 'n_samples': 1000}"
+- backend-specs: '{"module_name": "zquantum.core.interfaces.mock_objects", "function_name": "MockQuantumSimulator", "n_samples": 1000}'
 ```
 
 ### QuantumBackend and QuantumSimulator
 
-`QuantumBackend` and `QuantumSimulator` are interfaces which allow you to integrate different bakcends for running quantum circuits. The main difference between the two of them is that `QuantumSimulator` allows using wavefunction representation of a quantum state.
+`QuantumBackend` and `QuantumSimulator` are interfaces which allow you to integrate different backends for running quantum circuits. The main difference between the two of them is that `QuantumSimulator` allows using a wavefunction representation of a quantum state.
 
 You can find [the interface definition here](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/interfaces/backend.py). Currently available integrations are:
 
 - [qHiPSTER](https://github.com/zapatacomputing/qe-qhipster)
 - [Forest QVM](https://github.com/zapatacomputing/qe-forest)
 - [qulacs](https://github.com/zapatacomputing/qe-qulacs)
+- [Qiskit Aer and IBMQ simulator](https://github.com/zapatacomputing/qe-qiskit)
 
 
 ### Optimizer
 
 Optimizer is an interface that allows using different optimizers within Orquestra, [here you can find the interface definition](https://github.com/zapatacomputing/z-quantum-core/blob/dev/src/python/zquantum/core/interfaces/optimizer.py).
 
-All the currently implemented optimizers live in the [z-quantum-optimizers repository](https://github.com/zapatacomputing/z-quantum-optimizers):
-
+Available optimizers:
 - grid search - brute-force approach checking all the values from a grid.
 - scipy optimizers - integration with `scipy.minimize` optimizers.
 - qiskit optimizers - integration with `ADAM`, `AMSGRAD` and `SPSA`.
 - CMA-ES - Covariance Matrix Adaptation Evolution Strategy.
 
+The interfaces for these optimizers live in the [z-quantum-optimizers repository](https://github.com/zapatacomputing/z-quantum-optimizers), except for the qiskit optimizers which reside in qe-qiskit](https://github.com/zapatacomputing/qe-qiskit).
 
 ### Cost functions
 
-In Orquestra we also have interfaces for the cost functions that are being minimized by the optimizers. Cost functions can vary in their complexity – from just calling a simple python function in `BasicCostFunction` to execution and evaluation of quantum circuits on any backend using `AnsatzBasedCostFunction`, but for evaluation they all should need just an array of numerical parameters. This interface can also be used for calculating gradients of given cost function – all cost function support finite differences method by default.
+In Orquestra we also have interfaces for the cost functions that are being minimized by the optimizers. Cost functions can vary in their complexity – from just calling a simple python function in `BasicCostFunction` to execution and evaluation of quantum circuits on any backend using `AnsatzBasedCostFunction`, but for evaluation they all should need just an array of numerical parameters. This interface can also be used for calculating gradients of given cost function – all cost functions support finite differences method by default.
 
 Right now the following cost functions are implemented in Orquestra:
 - **[`BasicCostFunction`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/cost_function.py):** it allows to use an arbitrary python function as cost function we want to minimize.

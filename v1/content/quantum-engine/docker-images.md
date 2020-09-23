@@ -1,7 +1,8 @@
 ---
 title: 'Docker Images'
 summary: Docker Images are used in workflow steps to give your scripts access to library dependencies and tools/
-weight: 5
+weight: 6
+publishdate: 2099-01-01
 ---
 
 When writing workflows, you often need to use certain libraries. These libraries can be made available to the Quantum Engine by creating Docker images with the libraries you need, or by using one of our pre-made Docker images. For more information about what Docker images are, go to the [Docker website](https://www.docker.com/resources/what-container).
@@ -15,7 +16,7 @@ In your [resource template](../templates/), add parameters for `docker-image` an
 spec:
   templates:
   - name: welcome-to-orquestra
-    parent: generic-task
+    parent: generic-step
     inputs:
       parameters:
       - name: docker-image
@@ -37,7 +38,7 @@ spec:
         path: /app/welcome.json
 ```
 
-When you use this [resource](../resources) in a [workflow](../workflow-basics/), it will use the referenced Docker image.
+When you use this [resource](../resources/) in a [workflow](../workflow-basics/), it will use the referenced Docker image.
 
 A full list of pages for Zapata's pre-made images, which contain the `docker-image` and `docker-tag` values, is below:
 - [Machine Learning image](../../other-resources/using-classical-machine-learning-libraries/)

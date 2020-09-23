@@ -1,7 +1,8 @@
 ---
 title: "Recurrent Neural Networks with LSTM"
 summary: Predict a noisy sine function by means of Recurrent Neural Networks.
-weight: 3
+weight: 7
+publishdate: 2099-01-01
 ---
 
 This tutorial will walk through the implementation of a neural network model that can learn how to reconstruct the shape of a noisy sine function using *Recurrent Neural Networks (RNNs)*.
@@ -140,8 +141,7 @@ Below is a plot representing the training history, i.e., the loss function (MSE)
 
 
 ## Composing a workflow to generate an LSTM predictor model
-In the next steps, it will be stated the code necessary to build and train this RNN model in Orquestra. The code consists of the following main parts:
-- `generate-data.yaml`: generates the dataset and runs the entire workflow.
+In the next steps, it will be stated the code necessary to build and train this RNN model in Orquestra. The code consists of the following parts:
 - `data_manipulator.py`: builds and preprocesses the data.
 - `lstm_model.py`: builds and trains the network model.
 
@@ -149,7 +149,7 @@ In the next steps, it will be stated the code necessary to build and train this 
 
 Go to [GitHub](https://github.com/) and create a public repository called `lstm`. If you are unfamiliar with GitHub, you can reference the [create a repo guide](https://help.github.com/en/github/getting-started-with-github/create-a-repo) for help.
 
-This repository will be where you build your resource. [This GitHub repo](https://github.com/zapatacomputing/z-lstm) can be used as a reference for how the `lstm` resource should look like throughout the tutorial.
+This repository will be where you build your component. [This GitHub repo](https://github.com/zapatacomputing/z-lstm) can be used as a reference for how the `lstm` component should look like throughout the tutorial.
 
 **2. Add python code to the repository**
 
@@ -654,7 +654,7 @@ def nested_lists_to_arrays(obj):
 def save_model_h5(model:Sequential, filename:str) -> None:
     """
     Saves a complete model as an H5 file. H5 files can be used to pass models 
-    between tasks but cannot be returned in a workflowresult.
+    between steps but cannot be returned in a workflowresult.
 
     Args:
       model (keras.models.Sequential):
@@ -671,7 +671,7 @@ def save_model_h5(model:Sequential, filename:str) -> None:
 def load_model_h5(filename:str) -> Sequential:
     """
     Loads a keras model from an H5 file. H5 files can be used to pass models 
-    between tasks but cannot be returned in a workflowresult.
+    between steps but cannot be returned in a workflowresult.
 
     Args:
       filename (str):
@@ -744,342 +744,28 @@ setuptools.setup(
 )
 ```
 
-**4. Adding `templates`**
-
-Create in the *templates* folder the following files:
-
-- `generate-data.yaml`:
-```YAML
-# Every template YAML file must begin with a `spec`, without which your template won't compile.
-spec:
-
-  # The `templates` section is where you list one or more templates
-  templates:
-
-  # This is the name of the template, which is used to reference it in the workflow. This field is required.
-  - name: generate-data
-
-    # `generic-task` is the supertemplate that all templates (that don't contain a `steps` section) must inherit from
-    parent: generic-task
-
-    # This section is for the inputs needed to run the template. This section is required.
-    inputs:
-
-      # `parameters` represent initialization values for a template. 
-      parameters:
-      - name: docker-image
-        value: z-ml
-      - name: docker-tag
-        value: latest
-
-      # The `command` parameter is required because that is what is run by `generic-task`.
-      - name: command
-        value: python3 main.py
-
-      # The `numsamples` parameter allows you to change the number of samples created in your workflow
-      - name: time-range
-        # This value acts as a default but can be overridden in the workflow
-        value: 100
-      - name: time-step
-        value: 0.1
-      - name: noise-std
-        value: 0.2
-
-      # This section creates a script called `main.py` containing the code below under `data`. It must be under the `app` directory in order for the command above to locate it.
-      artifacts:
-      - name: main-script
-        path: /app/main.py
-        raw:
-          data: |
-            from lstm.data_manipulator import noisy_sine_generation, save_data
-            
-            data = noisy_sine_generation({{inputs.parameters.time-range}},
-                                  {{inputs.parameters.time-step}},
-                                  {{inputs.parameters.noise-std}})
-            save_data([data], ['data.json'])
-
-      # This section is where output artifacts are listed. They must be listed here, or else they will get deleted when the template completes. They must be under the `app` directory in order to be saved.
-    outputs:
-      artifacts:
-      - name: data
-        path: /app/data.json
-```
-
-- `preprocess-data.yaml`:
-```YAML
-# Every template YAML file must begin with a `spec`, without which your template won't compile.
-spec:
-
-  # The `templates` section is where you list one or more templates
-  templates:
-
-  # This is the name of the template, which is used to reference it in the workflow. This field is required.
-  - name: preprocess-data
-
-    # `generic-task` is the supertemplate that all templates (that don't contain a `steps` section) must inherit from
-    parent: generic-task
-
-    # This section is for the inputs needed to run the template. This section is required.
-    inputs:
-
-      # `parameters` represent initialization values for a template. 
-      parameters:
-      - name: docker-image
-        value: z-ml
-      - name: docker-tag
-        value: latest
-
-      # The `command` parameter is required because that is what is run by `generic-task`.
-      - name: command
-        value: python3 main.py
-
-      - name: train-frac
-        # This value acts as a default but can be overridden in the workflow
-        value: 0.8
-      - name: window-size
-        value: 10
-
-      # This section creates a script called `main.py` containing the code below under `data`. It must be under the `app` directory in order for the command above to locate it.
-      artifacts:
-      - name: data
-        path: /app/data.json
-      - name: main-script
-        path: /app/main.py
-        raw:
-          data: |
-            from lstm.data_manipulator import load_data, save_data, preprocess_data
-
-            data = load_data('data.json')
-            preprocessed_data = preprocess_data(data["data"],
-                                  {{inputs.parameters.train-frac}},
-                                  {{inputs.parameters.window-size}})
-            filenames = ['training_data.json',
-                        'testing_data.json',
-                        'training_data_windows.json',
-                        'testing_data_windows.json']
-            save_data(preprocessed_data, filenames)
-
-      # This section is where output artifacts are listed. They must be listed here, or else they will get deleted when the template completes. They must be under the `app` directory in order to be saved.
-    outputs:
-      artifacts:
-      - name: training-data
-        path: /app/training_data.json
-      - name: testing-data
-        path: /app/testing_data.json
-      - name: training-data-windows
-        path: /app/training_data_windows.json
-      - name: testing-data-windows
-        path: /app/testing_data_windows.json
-```
-
-- `build-model.yaml`:
-```YAML
-# Every template YAML file must begin with a `spec`, without which your template won't compile.
-spec:
-
-  # The `templates` section is where you list one or more templates
-  templates:
-
-  # This is the name of the template, which is used to reference it in the workflow. This field is required.
-  - name: build-model
-
-    # `generic-task` is the supertemplate that all templates (that don't contain a `steps` section) must inherit from
-    parent: generic-task
-
-    # This section is for the inputs needed to run the template. This section is required.
-    inputs:
-
-      # `parameters` represent initialization values for a template. 
-      parameters:
-      - name: docker-image
-        value: z-ml
-      - name: docker-tag
-        value: latest
-
-      # The `command` parameter is required because that is what is run by `generic-task`.
-      - name: command
-        value: python3 main.py
-
-      - name: hnodes
-        # This value acts as a default but can be overridden in the workflow
-        value: 32
-      - name: dropout
-        value: 0.2
-
-      # This section creates a script called `main.py` containing the code below under `data`. It must be under the `app` directory in order for the command above to locate it.
-      artifacts:
-      - name: preprocessed-data
-        path: /app/preprocessed_data.json
-      - name: main-script
-        path: /app/main.py
-        raw:
-          data: |
-            from lstm.data_manipulator import load_data
-            from lstm.lstm_model import build_model, save_model_json
-            
-            data = load_data('preprocessed_data.json')
-            model = build_model(data["data"],
-                                  {{inputs.parameters.hnodes}},
-                                  {{inputs.parameters.dropout}})
-            save_model_json(model, 'model.json')
-
-      # This section is where output artifacts are listed. They must be listed here, or else they will get deleted when the template completes. They must be under the `app` directory in order to be saved.
-    outputs:
-      artifacts:
-      - name: model
-        path: /app/model.json
-```
-
-- `train-model.yaml`:
-```YAML
-# Every template YAML file must begin with a `spec`, without which your template won't compile.
-spec:
-
-  # The `templates` section is where you list one or more templates
-  templates:
-
-  # This is the name of the template, which is used to reference it in the workflow. This field is required.
-  - name: train-model
-
-    # `generic-task` is the supertemplate that all templates (that don't contain a `steps` section) must inherit from
-    parent: generic-task
-
-    # This section is for the inputs needed to run the template. This section is required.
-    inputs:
-
-      # `parameters` represent initialization values for a template. 
-      parameters:
-      - name: docker-image
-        value: z-ml
-      - name: docker-tag
-        value: latest
-
-      # The `command` parameter is required because that is what is run by `generic-task`.
-      - name: command
-        value: python3 main.py
-
-      - name: nepochs
-        # This value acts as a default but can be overridden in the workflow
-        value: 30
-      - name: batch-size
-        value: 32
-      - name: val-split
-        value: 0.1
-      - name: learning-rate
-        value: 0.01
-
-      # This section creates a script called `main.py` containing the code below under `data`. It must be under the `app` directory in order for the command above to locate it.
-      artifacts:
-      - name: model
-        path: /app/model.json
-      - name: training-data
-        path: /app/training_data.json
-      - name: main-script
-        path: /app/main.py
-        raw:
-          data: |
-            from lstm.data_manipulator import load_data
-            from lstm.lstm_model import load_model_json, train_model, save_loss_history, save_model_json
-            
-            data = load_data('training_data.json')
-            model = load_model_json('model.json')
-            history, model = train_model(model,
-                                  data["data"],
-                                  {{inputs.parameters.nepochs}},
-                                  {{inputs.parameters.batch-size}},
-                                  {{inputs.parameters.val-split}},
-                                  {{inputs.parameters.learning-rate}})
-            save_loss_history(history, 'history.json')
-            save_model_json(model, 'trained_model.json')
-
-      # This section is where output artifacts are listed. They must be listed here, or else they will get deleted when the template completes. They must be under the `app` directory in order to be saved.
-    outputs:
-      artifacts:
-      - name: trained-model
-        path: /app/trained_model.json
-      - name: history
-        path: /app/history.json
-```
-
-- `predict-using-model.yaml`:
-```YAML
-# Every template YAML file must begin with a `spec`, without which your template won't compile.
-spec:
-
-  # The `templates` section is where you list one or more templates
-  templates:
-
-  # This is the name of the template, which is used to reference it in the workflow. This field is required.
-  - name: predict-using-model
-
-    # `generic-task` is the supertemplate that all templates (that don't contain a `steps` section) must inherit from
-    parent: generic-task
-
-    # This section is for the inputs needed to run the template. This section is required.
-    inputs:
-
-      # `parameters` represent initialization values for a template. 
-      parameters:
-      - name: docker-image
-        value: z-ml
-      - name: docker-tag
-        value: latest
-
-      # The `command` parameter is required because that is what is run by `generic-task`.
-      - name: command
-        value: python3 main.py
-
-      # This section creates a script called `main.py` containing the code below under `data`. It must be under the `app` directory in order for the command above to locate it.
-      artifacts:
-      - name: model
-        path: /app/model.json
-      - name: testing-data
-        path: /app/testing_data.json
-      - name: main-script
-        path: /app/main.py
-        raw:
-          data: |
-            from lstm.data_manipulator import load_data, save_data
-            from lstm.lstm_model import load_model_json, predict
-
-            data = load_data('testing_data.json')
-            model = load_model_json('model.json')
-            predictions = predict(model, data["data"])
-            save_data([predictions], ['predictions.json'])
-
-      # This section is where output artifacts are listed. They must be listed here, or else they will get deleted when the template completes. They must be under the `app` directory in order to be saved.
-    outputs:
-      artifacts:
-      - name: predictions
-        path: /app/predictions.json
-```
-
-**5. Commit and push your resource**
+**4. Commit and push your component**
 
 Commit your changes and push them to GitHub (please note that you will not need to do this if you are using the GitHub UI to modify the repository).
 The structure of your repository should look like this:
 ```
 .
-├── src
-│   ├── python/lstm
-│   │   ├── data_manipulator.py
-│   │   └── lstm_model.py
-│   └── setup.py
-└── templates
-    └── generate-data.yaml
-    └── preprocess-data.yaml
-    └── build-model.yaml
-    └── train-model.yaml
+└── src
+   ├── python/lstm
+   │   ├── data_manipulator.py
+   │   └── lstm_model.py
+   └── setup.py
 ```
 
-**6. Building a Workflow**
+**5. Building a Workflow**
 
-Create file `lstm-tutorial.yaml` (with code shown below), insert the URL of your GitHub repository on line 15. This file can go anywhere (except the `templates` folder), and in the repo, you'll find it under `example`.
+Create file `lstm-tutorial.yaml` (with code shown below), insert the URL of your GitHub repository on line 15. This file can go anywhere, and in the repo, you'll find it under `example`.
 
-This YAML file orchestrates all the different steps corresponding to data generation and preprocessing, and the building up and training of the model, ending up with running the model prediction on the test dataset.
+This yaml file orchestrates all the different steps corresponding to data generation and preprocessing, and the building up and training of the model, ending up with running the model prediction on the test dataset.
 
 - `lstm-tutorial.yaml`:
 
+# TODO: Update this to v1
 ```YAML
 # Workflow API version
 ZapOSApiVersion: v1alpha1
@@ -1234,7 +920,7 @@ ___
 
 To plot the result from the training and testing processes, run `plot_lstm.py`, which can be found inside the `example` directory. This file plots the results from the existing final `JSON` file generated by the workflow above, and it can be run passing the JSON file as a parameter after the python script, i.e., `python3 plot_lstm.py <you_own_json_file>`. 
 
-- `plot_lstm.yaml`:
+- `plot_lstm.py`:
 
 ```python
 import sys

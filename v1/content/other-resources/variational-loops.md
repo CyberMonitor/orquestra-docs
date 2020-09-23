@@ -2,6 +2,7 @@
 title: Variational Loops
 Summary: Implementing variational loops in Orquestra
 weight: 1
+publishdate: 2099-01-01
 ---
 
 Variational Quantum Algorithms (VQA) such as Varational Quantum Eigensolver (VQE) or Quantum Approximate Optimization Algorithm (QAOA) rely on hybrid approach to quantum computing.
