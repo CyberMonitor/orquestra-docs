@@ -14,7 +14,12 @@ As explained in [why workflows?](../../getting-started/why-workflows/), here at 
 
 Below we will step through the basics of the Orquestra workflow language by building a workflow from scratch.
 
-### Workflow Declarations
+![](../../img/workflow-components.jpg)
+
+
+### Workflow Metadata
+
+#### API Version
 
 At the beginning of every workflow, we define the workflow API version
 
@@ -25,7 +30,25 @@ These will always be set to `io.orquestra.workflow/1.0.0` for the current versio
 apiVersion: io.orquestra.workflow/1.0.0
 ```
 
-### Components
+#### Name
+
+Each workflow run in Orquestra is assigned a randomly generated workflow ID. For the sake of clarity and record keeping, the `name` key allows you to set the prefix of each workflow ID.
+
+There are some restrictions to the workflow `name`:
+* Step `name` need to be unique to the workflow.
+* start with an alphanumeric character
+* end with an alphanumeric character
+* contains only lowercase alphanumeric characters or '-'
+* `name` cannot be greater than 30 characters in length
+
+```YAML
+# Prefix for workflow ID
+name: welcome-to-orquestra-
+```
+
+Using this example workflow, a possible workflow ID would be: `welcome-to-orquestra-97d0b34c-9dab-4055-8330-96b82e039193`
+
+### Imports
 
 Components contain the definitions and implementations of the functions that one can perform from within a workflow. To learn more about what comprises a component and how to build one yourself, check out out the [components](../../quantum-engine/components/) page.
 
@@ -50,17 +73,6 @@ imports:
     branch: "master"
 ```
 
-### Name
-
-Each workflow run in Orquestra is assigned a randomly generated workflow ID. For the sake of clarity and record keeping, the `name` key allows you to set the prefix of each workflow ID.
-
-```YAML
-# Prefix for workflow ID
-name: welcome-to-orquestra-
-```
-
-Using this example workflow, a possible workflow ID would be: `welcome-to-orquestra-97d0b34c-9dab-4055-8330-96b82e039193`
-
 ### Steps
 
 The `steps` block is the most important section of a workflow. This is where you define the step-by-step instructions of your workflow for the Quantum Engine to execute. Each step needs a name, a `runtime`, the amount of compute resources specified, and what the inputs and outputs to the step are.
@@ -77,7 +89,7 @@ steps:
 
 #### Runtime
 
-This is written under the `config` section of the step. The runtime specifies how the Quantum Engine will interpret/compile the source code in your component. Currently, the only supported runtime type is `python3`.
+This is written under the `config` section of the step. The runtime specifies how the Quantum Engine will interpret/compile the source code in your component. Currently, the only supported runtime language is `python3`.
 
 Under runtime you will also specify what source code you would like to run from what component. In order to do that, specify the component(s) that the source code will require and the relative path to the source code in that component.
 
@@ -86,7 +98,7 @@ In this example, we're running the `welcome` function in the `welcome.py` file w
 ```YAML
   config:
     runtime:
-      type: python3
+      language: python3
       imports: [welcome-to-orquestra]
       parameters:
         file: welcome-to-orquestra/welcome.py
@@ -160,7 +172,7 @@ steps:
 - name: greeting
   config:
     runtime:
-      type: python3
+      language: python3
       imports: [welcome-to-orquestra]
       parameters:
         file: welcome-to-orquestra/welcome.py

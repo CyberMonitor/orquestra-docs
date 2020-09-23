@@ -19,7 +19,7 @@ This tutorial will help you build Orquestra Components, the unit of re-useable c
 
 ## Building a Component
 
-### Create a GitHub Repositry
+### Create a GitHub Repository
 
 Go to [GitHub](https://github.com/) and create a public repository called `welcome-component`. If you are unfamiliar with GitHub you can reference GitHub's [create a repo guide](https://help.github.com/en/github/getting-started-with-github/create-a-repo) for help.
 
@@ -41,15 +41,16 @@ While there are no restrictions on how to organize an Orquestra Component, we re
 
 * The `src/` will contain:
   * A `setup.py` file that is responsible for installing your code in the machine where your workflow is executed. This installation is done automatically for you conforming to [Python3 setuptools standard](https://docs.python.org/3/distutils/setupscript.html) for Setup Scripts.
-  * A folder name `python/` containing the source code to be invoked by a `task` in a workflow
+  * A folder name `python/` containing the source code to be invoked by a `step` in a workflow
 
 Using your terminal or the text editor of your choice, recreate this folder structure in the `welcome-component` repository.
 
-**Note** You can find more informationa bout the structure of a Component on the [Components page](../../quantum-engine/components).
+
+**Note** You can find more information about the structure of a Component on the [Components page](../../quantum-engine/components/).
 
 ### Adding Some Code
 
-Orquestra can support any Python3 source that is installable via `pip` using a `setup.py` script.
+Orquestra can support any Python3 source that can be installed via `pip` using a `setup.py` script.
 
 Moving into `src/python/orquestra/` create a Python script called `welcome.py`. Your repo structure should now look like this:
 
@@ -127,7 +128,7 @@ setuptools.setup(
 )
 ```
 
-- `name` is the given name of your package which you can reference in your template
+- `name` is the given name of your package
 - `packages` tells the installer to look for a subdirectory called `python`
 which contains your source code
 - `package_dir` allows the contents of the `python` directory to be imported
@@ -150,11 +151,11 @@ For more information regarding how to make your source code available as a `pack
 
 The `welcome-component` is now complete and ready to be used in a workflow. 
 
-Once you are satisified with your work, commit your changes and push them to GitHub
+Once you are satisfied with your work, commit your changes and push them to GitHub
 
 ### Building a Workflow
 
-The component is now ready to be used in an Orquestra workflow. Please refer to the [Hello Worfklow](../hello-workflow) tutorial for an example of invoking a component from within a task.
+The component is now ready to be used in an Orquestra workflow. Please refer to the [Hello Workflow](../hello-workflow/) tutorial for an example of invoking a component from within a step.
 
 ## Completed Tutorial Materials
 

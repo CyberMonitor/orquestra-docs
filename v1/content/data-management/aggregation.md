@@ -12,11 +12,11 @@ The function of aggregation is to transform all of the [artifacts](../../data-ma
 
 ## Format of Aggregation Result
 
-The top level of a workflow result file has [task data objects](../../data-management/workflow-artifacts/). Each task is labeled uniquely by its ID. To retrieve the IDs corresponding to tasks run in a workflow, run
+The top level of a workflow result file has [step data objects](../../data-management/workflow-artifacts/). Each step is labeled uniquely by its ID. To retrieve the IDs corresponding to steps run in a workflow, run
 
 `qe get workflow <workflow ID>`
 
-This will produce an output with task IDs next to the names of tasks:
+This will produce an output with step IDs next to the names of steps:
 
 ```Bash
 STEP                                                          STEP ID                                                         DURATION  MESSAGE
@@ -25,18 +25,18 @@ STEP                                                          STEP ID           
  └- transform-welcome (transform-welcome)                              hello-workflow-814ffb7c-5fbb-45df-aedb-4ea76f76b9f1-3320375620  9s        zelcome
 ```
 
-The result of aggregation is a single JSON file, with task data objects at the top level. Each task data object includes information such as:
-- `id` - unique task ID
+The result of aggregation is a single JSON file, with step data objects at the top level. Each step data object includes information such as:
+- `id` - unique step ID
 - `workflowId` - originating workflow ID
-- `class` - type of the task
+- `class` - type of the step
 - `inputParam:_` - input parameters
 
-Each task data object has one or more [artifacts](../../data-management/workflow-artifacts/) inside of it. These are labeled by the name of the artifact given in the workflow. Each artifact includes information such as:
+Each step data object has one or more [artifacts](../../data-management/workflow-artifacts/) inside of it. These are labeled by the name of the artifact given in the workflow. Each artifact includes information such as:
 - `id` - unique artifact ID
 - `workflowId` - originating workflow ID
 - `schema` - type of the artifact
-- `taskClass` - name of the step that produced the artifact
-- `taskId` - originating task ID
+- `stepName` - name of the step that produced the artifact
+- `stepId` - originating step ID
 
 ```JSON
 {
@@ -55,8 +55,6 @@ Each task data object has one or more [artifacts](../../data-management/workflow
       "schema": "message",
       "stepId": "hello-workflow-814ffb7c-5fbb-45df-aedb-4ea76f76b9f1-1576635836",
       "stepName": "greeting",
-      "taskClass": "greeting",
-      "taskId": "hello-workflow-814ffb7c-5fbb-45df-aedb-4ea76f76b9f1-1576635836",
       "workflowId": "hello-workflow-814ffb7c-5fbb-45df-aedb-4ea76f76b9f1"
     }
   }

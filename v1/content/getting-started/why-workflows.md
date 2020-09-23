@@ -27,7 +27,7 @@ Developing your workflow with the Orquestra platform gives you access to modern 
 
 One of the main advantages of adopting workflows is their declarative approach to expressing a process. No longer will there be numerous files being moved around across virtual machines, HPC clusters, and containers. It is a common situation for scientists and engineers to spend whole days, if not weeks, managing these activities. With these tasks fully automated, the time is brought down to minutes.
 
-With a workflow, there's no need to configure an environment for each step within a process, move code into each step, execute it, and finally aggregate the data manually. Instead, from a high-level, you specify the task you need in your workflow and the Quantum Engine orchestrates how that task meshes with the rest of your workflow.
+With a workflow, there's no need to configure an environment for each step within a process, move code into each step, execute it, and finally aggregate the data manually. Instead, from a high-level, you specify the step you need in your workflow and the Quantum Engine orchestrates how that step meshes with the rest of your workflow.
 
 With a traditional environment, you would have to piece together each step into a bespoke script, which, when called, runs your experiment. Not only is this approach time-consuming, it's also prone to error and difficult to reuse logic. Compare this with a workflow's declarative way of expressing an experiment:
 
@@ -35,7 +35,7 @@ With a traditional environment, you would have to piece together each step into 
 - name: star-wars-characters
   config:
     runtime:
-      type: python3
+      language: python3
       imports: [star-wars]
       parameters:
         file: star-wars/src/python/orquestra/welcome.py

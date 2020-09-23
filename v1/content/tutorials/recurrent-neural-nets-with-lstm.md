@@ -654,7 +654,7 @@ def nested_lists_to_arrays(obj):
 def save_model_h5(model:Sequential, filename:str) -> None:
     """
     Saves a complete model as an H5 file. H5 files can be used to pass models 
-    between tasks but cannot be returned in a workflowresult.
+    between steps but cannot be returned in a workflowresult.
 
     Args:
       model (keras.models.Sequential):
@@ -671,7 +671,7 @@ def save_model_h5(model:Sequential, filename:str) -> None:
 def load_model_h5(filename:str) -> Sequential:
     """
     Loads a keras model from an H5 file. H5 files can be used to pass models 
-    between tasks but cannot be returned in a workflowresult.
+    between steps but cannot be returned in a workflowresult.
 
     Args:
       filename (str):
