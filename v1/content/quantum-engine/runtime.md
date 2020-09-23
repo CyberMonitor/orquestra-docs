@@ -16,7 +16,7 @@ Runtimes provide a lifecycle framework for steps in a workflow as follows:
 - serialize output data
 
 ### Using Runtimes
-How to use a runtime in a workflow step can be found [here](../quantum-engine/steps/#runtime) 
+How to use a runtime in a workflow step can be found [here](../steps/#runtime)
 
 Each runtime must specify a `language`. This language determines what software language is utilized during a step of the workflow.
 
