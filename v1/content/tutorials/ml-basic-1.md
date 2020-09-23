@@ -7,10 +7,10 @@ weight: 3
 The following three tutorials will take you through the basics of writing and running an Orquestra workflow to train a simple machine learning model.
 
 ##### What is Orquestra?
-Orquestra is a platform for building repeatable workflows, orchestrated by a quantum engine that systematically organizes experiment data and resources. Orquestra workflows offer solutions when it comes to reproducing experiments, repurposing code, sharing data, and solving dependency problems in projects. For more information, check out this blog [post](https://www.zapatacomputing.com/quantum-enabled-workflows/).
+Orquestra is a platform for building repeatable workflows, orchestrated by a quantum engine that systematically organizes experiment data and resources. Orquestra workflows offer solutions when it comes to reproducing experiments, repurposing code, sharing data, and solving dependency problems in projects. For more information, check out this blog [post](https://orquestra.io/post/workflows-and-quantum-go-together-like-peanut-butter-jelly).
 
 ##### How does Orquestra work?
-An orquestra workflow works in a similar way as an actual orchestra. In an orchestra we have the director presiding over a set of musicians, producing a melody. The orchuestra director tells the musicians when to start and end, and she can also pass information to the musicians.
+An Orquestra workflow works in a similar way as an actual orchestra. In an orchestra we have the director presiding over a set of musicians, producing a melody. The orchestra director tells the musicians when to start and end, and she can also pass information to the musicians.
 
 ![](../../img/tutorials/OrquestraPicture.png)
 
@@ -24,12 +24,12 @@ The output of the workflow is also an artifact that gets passed to us when the w
 Throughout the following three tutorials, we'll teach you the basics of how to build an Orquestra workflow that trains a machine learning model. More specifically:
 
 - In this tutorial, ML Tutorial 1, you'll learn to run a simple workflow that runs pre-written code.
-- In the next tutorial, [ML Tutorial 2](http://docs.orquestra.io/tutorials/ml-basic-2/), you'll be writing the code for the workflow that you run in this tutorial.
-- In the third tutorial, [ML Tutorial 3](http://docs.orquestra.io/tutorials/ml-basic-3/), you'll be writing a more complex workflow.
+- In the next tutorial, [ML Tutorial 2](../ml-basic-2), you'll be writing the code for the workflow that you run in this tutorial.
+- In the third tutorial, [ML Tutorial 3](../ml-basic-3), you'll be writing a more complex workflow.
 
 ### 1. In this tutorial
 
-This tutorial will walk you through running a basic Orquestra workflow. The workflow runs  existing code that trains some machine learning models. More specifically, in this tutorial we'll write a workflow template that runs a single step. This step trains a simple machine learning model.
+This tutorial will walk you through running a basic Orquestra workflow. The workflow runs existing code that trains some machine learning models. More specifically, in this tutorial we'll write a workflow template that runs a single step. This step trains a simple machine learning model.
 
 ![](../../img/tutorials/ML_Workflow1.png)
 
@@ -98,7 +98,7 @@ imports:
 ```
 
 ##### 3.3 Steps
-Here we specify the steps we'll be running in our workflow to train a perceptron model on the simple dataset. Each step is one function. By default, steps run synchronously, but we can specify dependencies, in other words, we can tell Orquestra if a particular step can't start until another one finishes. In this tutorial, we only have one step, but later in this tutorial we'll be running a workflow with several steps.
+Here we specify the steps we'll be running in our workflow to train a perceptron model on the simple dataset. Each step is one function. By default, steps run in parallel, but we can specify dependencies, in other words, we can tell Orquestra if a particular step can't start until another one finishes. In this tutorial, we only have one step, but later in [tutorial 3](../ml-basic-3) we'll be running a workflow with several steps.
 
 Inside each step, we need to specify several things:
 
@@ -276,4 +276,4 @@ For this, we simply add an extra step to our workflow. We now have two steps whi
 The solution is [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/ml_tutorial_1/exercise-2.yaml).
 
 ### 6. Conclusion
-Congratulations! You've ran your first Orquestra workflow to train a machine learning model. In the next [tutorial](http://docs.orquestra.io/tutorials/ml-basic-2) we'll open the hood and write the code for the step that you ran in this workflow.
+Congratulations! You've ran your first Orquestra workflow to train a machine learning model. In the next [tutorial](../ml-basic-2) we'll open the hood and write the code for the step that you ran in this workflow.
