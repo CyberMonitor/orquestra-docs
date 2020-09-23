@@ -12,7 +12,7 @@ Orquestra is a platform for building repeatable workflows, orchestrated by a qua
 ##### How does Orquestra work?
 Begin by watching an [introductory video](https://youtu.be/yJJ2uhE09eg) about Orquestra and the following three tutorials.
 
-An orquestra workflow works in a similar way as an actual orchestra. In an orchestra we have the director presiding over a set of musicians, producing a melody. The orchuestra director tells the musicians when to start and end, and she can also pass information to the musicians.
+An Orquestra workflow works in a similar way as an actual orchestra. In an orchestra we have the director presiding over a set of musicians, producing a melody. The orchuestra director tells the musicians when to start and end, and she can also pass information to the musicians.
 
 ![](../../img/tutorials/OrquestraPicture.png)
 
