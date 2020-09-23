@@ -6,7 +6,7 @@ weight: 5
 
 This [video](https://youtu.be/UyYk6hVuly8) describes what we'll do in this tutorial.
 
-In [ML Tutorial 1](http://docs.orquestra.io/tutorials/ml-basic-1) and [ML Tutorial 2](http://docs.orquestra.io/tutorials/ml-basic-2) you learned how to write and run a simple workflow with one step, which trained a machine learning model in sklearn. In this tutorial you'll learn to write a more complex workflow, one with more steps and which passes artifacts (data) between the steps.
+In [ML Tutorial 1](../ml-basic-1) and [ML Tutorial 2](../ml-basic-2) you learned how to write and run a simple workflow with one step, which trained a machine learning model in sklearn. In this tutorial you'll learn to write a more complex workflow, one with more steps and which passes artifacts (data) between the steps.
 
 ![](../../img/tutorials/ML_Workflow3.png)
 
@@ -14,7 +14,7 @@ Why is this important? Modularity is actually one of Orquestra's greatest streng
 1. **Reusability:** By splitting your code into steps, you can easily reuse these steps in many different workflows.
 2. **Flexibility:** You are allowed to switch steps and reuse code from different repositories As new libraries and hardware backends become available, you can plug-and-play them into your workflow seamlessly.
 
-Recall that in the workflow from [ML Tutorial 2](http://docs.orquestra.io/tutorials/ml-basic-2) we ran one step. This step did everything, namely, it generated and preprocessed the data, trained a model, made predictions, and calculated the accuracy. This is too much for one step, it's like directing an orchestra with one musician which plays all the instruments.
+Recall that in the workflow from [ML Tutorial 2](../ml-basic-2) we ran one step. This step did everything, namely, it generated and preprocessed the data, trained a model, made predictions, and calculated the accuracy. This is too much for one step, it's like directing an orchestra with one musician which plays all the instruments.
 
 In this tutorial we'll modify this and turn it into two steps (don't worry, in the exercises you'll have the chance to turn it into even more steps!). The main things we have to modify from the workflow from the previous owrkflow are the following:
 
@@ -151,7 +151,7 @@ STEP                                                               STEP ID      
  └- train-model (train-model)                                               ml-3-workflow-26c594c7-a4c6-4d79-a782-ef9a7dbbd53e-1611110470  9s        result 
 ```
 
-After running `qe get workflowresult`, storing the results, like in [ML Tutorial 1](http://docs.orquestra.io/tutorials/ml-basic-1), one gets a results file like [this one](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/outputs/ml-3-workflow-output.json). Using a [script](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/outputs/display_output.py), we can print out the results and get the following:
+After running `qe get workflowresult`, storing the results, like in [ML Tutorial 1](../ml-basic-1), one gets a results file like [this one](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/outputs/ml-3-workflow-output.json). Using a [script](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/outputs/display_output.py), we can print out the results and get the following:
 
 Output:
 ```Bash
@@ -390,4 +390,4 @@ F1-score:
 ```
 
 ### 7. Conclusions
-Congratulations! In this tutorial you've learned how to write complex workflows. We now invite you to check out some of the more advanced [tutorials](http://docs.orquestra.io/tutorials/) in other classical and quantum algorithms to really harness the power of Orquestra!
+Congratulations! In this tutorial you've learned how to write complex workflows. We now invite you to check out some of the more advanced [tutorials](../) in other classical and quantum algorithms to really harness the power of Orquestra!
