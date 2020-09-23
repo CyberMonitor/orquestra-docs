@@ -16,3 +16,4 @@ This starts the aggregation process. To see if the aggregation has finished, run
 This link will expire after seven days. If the link expires and you did not get the file, please contact support.
 
 The format of the output is described in more detail on [the aggregation page](../../data-management/aggregation/). For a tutorial on how to make a plot from a workflow result file, see [the H₂ VQE tutorial](../../tutorials/simulate-h2-with-vqe/).
+For information about additional tools to support the analysis of workflow results, see  [Supporting Tools](../../other-resources/supporting-tools).
