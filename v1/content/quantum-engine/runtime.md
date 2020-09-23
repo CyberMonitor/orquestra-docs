@@ -16,7 +16,7 @@ Runtimes provide a lifecycle framework for steps in a workflow. Runtimes typical
 
 ### Using Runtimes
 
-When requesting a step to run as part of a workflow, Orquestra provides the connection between the underlying infrastructure and your step through the use of the runtime. An example of a workflow step can be found [here](../quantum-engine/steps/#runtime) 
+When requesting a step to run as part of a workflow, Orquestra provides the connection between the underlying infrastructure and your step through the use of the runtime. How to use a runtime in a workflow step can be found [here](../steps/#runtime) 
 
 Each runtime must specify a `language`. This language determines what software language is utilized during a step of the workflow.
 
