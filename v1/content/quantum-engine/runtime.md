@@ -16,30 +16,30 @@ Runtimes provide a lifecycle framework for steps in a workflow as follows:
 - serialize output data
 
 ### Using Runtimes
-How to use a runtime in a workflow step can be found [here](../steps/#runtime)
+Specifications for using a runtime in a workflow `step` can be found [here](../steps/#runtime)
 
 Each runtime must specify a `language`. This language determines what software language is utilized during a step of the workflow.
 
 ### Where do Runtime Languages come from?
 
-Orquestra comes with a "core" runtime language type to cover the common use case `python3`. This runtime is open source and can be found [here](https://github.com/zapatacomputing/python3-runtime).
+Orquestra comes with a "core" runtime language type to cover the common use case of `python3`. This runtime is open source and can be found [here](https://github.com/zapatacomputing/python3-runtime).
 
-Other runtime languages can be community developed, deployed and then used within your runtime as well.
+Other runtime languages be developed and deployed and then used within your runtime as well.
 
 ### How do Runtime Languages work?
 
 Each runtime language must contain the following three binaries:
 
-`install` determines and sets up what is required to support this runtime language.
-`supply` provides all dependencies for this step.
-`run` ensure all types of inputs are correct types, calls the required functions or commands (with correct inputs) to run the step.
+1. `install` determines and sets up what is required to support this runtime language.
+2. `supply` provides all dependencies for this step.
+3. `run` ensure all types of inputs are correct types, calls the required functions or commands (with correct inputs) to run the step.
 
-### Python3
+### Python3 Runtime
 
 Supported Python Versions:
 * Python 3.x
 
-When requesting python3 code to run within a step of the workflow, set the `language` key to `python3`.
+When requesting `python3` code to run within a step of the workflow, set the `language` key to `python3`.
 Additionally both the desired python3 `file` and `function` to run should be specified under the `parameters` key.
 
 Below is an example:
