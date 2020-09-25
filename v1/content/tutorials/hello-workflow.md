@@ -91,7 +91,7 @@ To run the workflow and get our results back we'll need to:
 * Login to the `qe` CLI
 * Submit the workflow to the Quantum Engine
 * Wait for the Quantum Engine to process the workflow and execute the `steps`
-* Retrieve the results using the `qe CLI
+* Retrieve the results using the `qe` CLI
 
 #### Logging in to the QE CLI
 
@@ -105,7 +105,7 @@ You may need to contact your Orquestra support representitive for your account d
 
 From your terminal, `welcome-workflow.yaml` can be submitted to the Quantum Engine by running `qe submit workflow <path/to/workflow/welcome-workflow.yaml>`
 
-The qe CLI should respond with the workflow ID that corresponds to that particular execution of your workflow:
+The `qe` CLI should respond with the workflow ID that corresponds to that particular execution of your workflow:
 
 ```Bash
 Successfully submitted workflow to quantum engine!
