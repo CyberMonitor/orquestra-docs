@@ -66,7 +66,7 @@ steps:
       language: python3
       imports: [welcome-to-orquestra] 
       parameters:
-        file: welcome-to-orquestra/welcome.py
+        file: welcome-to-orquestra/src/python/orquestra/welcome.py
         function: welcome
   outputs:
   - name: welcome
