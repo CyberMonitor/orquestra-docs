@@ -27,8 +27,6 @@ The `welcome-component` repository will be where th. [This GitHub repo](https://
 
 ### Adding Some Code
 
-Orquestra can support any Python3 source that can be installed via `pip` using a `setup.py` script.
-
 Orquestra currently supports Python3 source code. There are different ways to organize a component. In this example, we will put the python script at the root of the component. You can find more information about Components on the [Components page](../../quantum-engine/components/), and you can find more information about how to make your component compatible with the Python3 runtime on the [Runtime page](../../quantum-engine/runtime/).
 
 At the root of your github repo, create a Python script called `welcome.py`. Orquestra does support other file structures in components, but the workflow included in this tutorial expects this script to be at the root.
