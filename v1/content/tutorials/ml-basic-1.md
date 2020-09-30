@@ -49,7 +49,7 @@ The code we'll run is a simple step (function) called `generate_train`, which tr
   - The predictions of the model on our dataset (list).
   - The accuracy of the model in the dataset (float). The accuracy is the ratio between the number of correctly classified points and the total number of points.
 
-The function will be treated as a black box during this tutorial, but you can find the code for it [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/src/python/tutorial/functions.py).
+The function will be treated as a black box during this tutorial, but you can find the code for it [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/tutorial/functions.py).
 
 The two choices for the dataset are `simple_dataset` and `square_dataset`, seen in the image below, where the points with label 1 are drawn as blue triangles, and those with label 0 are drawn as red squares.
 

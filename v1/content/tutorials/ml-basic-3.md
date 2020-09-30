@@ -26,18 +26,16 @@ In this tutorial we'll modify this and turn it into two steps (don't worry, in t
 The code for this tutorial is all in this [repository](http://www.github.com/zapatacomputing/tutorial-orquestra-sklearn) to follow. We recommend you to clone it to follow this tutorial, although if you'd like the extra challenge, you can make your own repo which will end up with this folder structure. If you use your own repo, make sure you change any references to `tutorial-orquestra-sklearn` to your repo.
 
 ```Bash
-.
 ├── examples
-│   └── ml_tutorial_3
+│    └── ml_tutorial_3
 │           └── workflow.yaml
 ├── steps
-│   └── ml_tutorial_3_steps.py
-└── src
-    ├── python
-    │   └── tutorial
-    │       ├── functions.py
-    │       └── utils.py
-    └── setup.py
+│    └── ml_tutorial_3_step.py
+├── tutorial
+│    ├── __init__.py
+│    ├── functions.py
+│    └── utils.py
+└── setup.py
 ```
 
 ### 2. Turning the step into two steps
@@ -92,7 +90,7 @@ def train_predict_accuracy_step(features, labels, model_name):
     save_json(result, 'result.json')
 ```
 
-Notice that we used a `save_json` and a `read_json` functions. These are located in [utils.py](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/src/python/tutorial/utils.py).
+Notice that we used a `save_json` and a `read_json` functions. These are located in [utils.py](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/tutorial/utils.py).
 
 ### 3. Adding a step to the workflow template
 First we need is to modify the workflow to run two steps instead of one. The first step is called `generate-data` and the second one `train-model`. The resulting workflow template is [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/ml_tutorial_3/workflow.yaml).
@@ -196,40 +194,23 @@ For example, let's say that we want to run the workflow from Exercise 5 which li
 ![](../../img/tutorials/ML_WorkflowComponents.png)
 
 ##### 6.1 Create the component
-The idea is that we want to run functions from the `tutorial-orquestra-sklearn` repo, but without modifying it. So to follow this exercise, we recommend you to create one called `tutorial-additional-metrics` using your personal GitHub account. You can see the solutions in [here](https://github.com/zapatacomputing/tutorial-additional-metrics).
+The idea is that we want to run functions from the `tutorial-orquestra-sklearn` repo, but without modifying it. So to follow this exercise, we recommend you to create one called `tutorial-additional-metrics` using your personal GitHub account. The component only needs to have two files: the workflow template, and a file to store the step that calculates F1-score. You can see the solutions in [here](https://github.com/zapatacomputing/tutorial-additional-metrics).
 
-The folder structure is the following.
+The step will consist of a function that calculates the F1-score and serializes it to json. For this, we'll use a few helper functions that you can find [here](https://github.com/zapatacomputing/tutorial-additional-metrics/blob/master/f1_score.py):
 
- ```
-.
-├── examples
-│   └── additional-metrics-workflow.yaml
-├── steps
-│   └── f1_score_step.py
-└── src
-    ├── python
-    │   └── metrics
-    │       ├── functions.py
-    │       └── utils.py
-    └── setup.py
- ```
+- `calculate_f1_score`: Given the predictions and the labels, it returns the F1-score.
+- `calculate_f1_score_step`: Uses the `calculate_f1_score` function, and returns the output as json.
+- `read_json`: Used to read the predictions and the labels.
+- `save_json`: Used to save the F1-score into json. 
 
-In `functions.py`, write the function for calculating `f1_score`, and call this function in `f1_score_step.py` just as before.
+The first two are below.
 
-##### `functions.py`
+##### `f1_score.py`
 
  ```python
-from sklearn.metrics import f1_score
-
 def calculate_f1_score(predictions, labels):
     f1 = f1_score(predictions, labels)
     return f1
- ```
-
-##### `f1_score_step.py`
- ```python
-from metrics.functions import calculate_f1_score
-from metrics.utils import read_json, save_json
 
 def calculate_f1_score_step(labels, predictions):
     lab = read_json(labels)['labels']
@@ -239,35 +220,14 @@ def calculate_f1_score_step(labels, predictions):
 
     f1_score_dict = {}
     f1_score_dict['f1_score'] = f1_score
+
+    # SERIALIZE HERE
     save_json(f1_score_dict, 'f1_score.json')
+
  ```
 
-Also, make sure you have a `utils.py` in the same folder that will help us read and save json files. The code can be found [here](https://github.com/zapatacomputing/tutorial-additional-metrics/blob/master/src/python/metrics/utils.py).
 
-Also, we need a `setup.py`. Don't forget to change the name of the repo in line 6 to your own.
-
-##### `setup.py`
- ```python
-import setuptools
-
-setuptools.setup(
-    name                            = "tutorial-additional-metrics",
-    description                     = "Additional metrics for models in orquestra.",
-    url                             = "https://github.com/zapatacomputing/tutorial-additional-metrics",
-    packages                        = setuptools.find_packages(where = "python"),
-    package_dir                     = {"" : "python"},
-    classifiers                     = (
-        "Programming Language :: Python :: 3",
-        "Operating System :: OS Independent",
-    ),
-    install_requires = [
-        "sklearn",
-        "numpy",
-   ],
-)
- ```
-
-And finally, the workflow should look like this. Notice that we are calling two different components, `additional-metrics` for calculating the f1-score and `tutorial-orquestra-sklearn` for all the other functions.
+And finally, the workflow should look like [this](https://github.com/zapatacomputing/tutorial-additional-metrics/blob/master/additional-metrics-workflow.yaml). Notice that we are calling two different components, `additional-metrics` for calculating the f1-score and `tutorial-orquestra-sklearn` for all the other functions.
 
 ##### `other-metrics-workflow.yaml`
 
@@ -357,7 +317,7 @@ steps:
       language: python3
       imports: [additional-metrics-component]
       parameters:
-        file: additional-metrics-component/steps/f1_score_step.py
+        file: additional-metrics-component/f1_score.py
         function: calculate_f1_score_step
   inputs:
     - predictions: ((train-predict.predictions))
@@ -377,7 +337,7 @@ types:
 
 ##### 6.2 Submit the workflow and display the results
 
-Just like before, we can submit the workflow and display the [outputs](https://github.com/zapatacomputing/tutorial-additional-metrics/blob/master/examples/additional-metrics-output.json) with a [script](https://github.com/zapatacomputing/tutorial-additional-metrics/blob/master/examples/display_output.py) to get the following.
+Just like before, we can submit the workflow and display the [outputs](https://github.com/zapatacomputing/tutorial-additional-metrics/blob/master/examples/additional-metrics-output.json) with a [script](https://github.com/zapatacomputing/tutorial-additional-metrics/blob/master/display_output.py) to get the following.
 
 ```Bash
 Predictions
@@ -385,6 +345,7 @@ Predictions
 1
 1
 0
+
 F1-score:
 1
 ```
