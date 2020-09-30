@@ -20,13 +20,23 @@ weight: 2
 
 In order to start being productive with Orquestra, you need to log into the platform using the Quantum Engine CLI.
 
-The Quantum Engine assumes that you have registered your login credentials with Zapata Computing. If you have not, please contact support. To log in, please run the following command:
+The Quantum Engine assumes that you have registered your login credentials with Zapata Computing. If you have not, please contact support.
+
+If you have been provided with an API key, please log in with the following command:
+
+```Bash
+qe login -a <your-api-key> -s <quantum-engine-server-uri>
+```
+
+If Orquestra support has requested you to log in with your email address, please run the following command:
 
 ```Bash
 qe login -e <your-email-address> -s <quantum-engine-server-uri>
 ```
 
 where the `quantum-engine-server-uri` will be provided to you by Orquestra Support.
+
+Note: Currently, it is not supported to log in with both an email address and an API key. Please choose one option.
 
 ## Update 
 
