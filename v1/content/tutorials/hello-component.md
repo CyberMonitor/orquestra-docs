@@ -65,7 +65,7 @@ Once you are satisfied with your work, commit your changes and push them to GitH
 
 ### Building a Workflow
 
-The component is now ready to be used in an Orquestra workflow. Create a local file using the workflow below, and replace `<your-github-username>` and `<your-repo-name>` with the details of the repo you just created. Please refer to the [Hello Workflow](../hello-workflow/) tutorial for an introduction to running a workflow.
+The component is now ready to be used in an Orquestra workflow. Create a local `.yaml` file with a name of your choosing. Paste in the workflow below, and replace `<your-github-username>` and `<your-repo-name>` with the details of the repo you just created. Please refer to the [Hello Workflow](../hello-workflow/) tutorial for an introduction to running a workflow.
 
 ```YAML
 # Workflow API version
