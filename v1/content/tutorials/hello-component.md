@@ -23,7 +23,7 @@ This tutorial will help you build Orquestra Components, the unit of re-useable c
 
 Go to [GitHub](https://github.com/) and create a public repository called `welcome-component`. If you are unfamiliar with GitHub you can reference GitHub's [create a repo guide](https://help.github.com/en/github/getting-started-with-github/create-a-repo) for help.
 
-The `welcome-component` repository will be where th. [This GitHub repo](https://github.com/zapatacomputing/tutorial-0-welcome) can be used as a reference for how `welcome-component` should look like throughout the tutorial.
+The `welcome-component` repository will be where code called by a workflow lives. [This GitHub repo](https://github.com/zapatacomputing/tutorial-0-welcome) can be used as a reference for how `welcome-component` should look like throughout the tutorial.
 
 ### Adding Some Code
 
