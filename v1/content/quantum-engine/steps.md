@@ -72,7 +72,7 @@ A `config` is used to specify the `component` to invoke, its `runtime` context a
 
 The `resources` field is an _optional_ field that allows a workflow author to request specific compute resources for their step. 
 
-**NOTE** The requested amount of `resources` is not guaranteed by the Quntum Engine and is subject to the current runtime environment.
+**NOTE** The requested amount of `resources` is not guaranteed by the Quantum Engine and is subject to the current runtime environment.
 
 
 | Field      | Description |
