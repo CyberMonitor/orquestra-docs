@@ -82,7 +82,7 @@ imports:
   type: git
   parameters:
     repository: "git@github.com:<your-github-username>/<your-repo-name>.git"
-    branch: "master"
+    branch: "main"
 
 steps:
 
