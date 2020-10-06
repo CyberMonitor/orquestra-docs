@@ -90,7 +90,7 @@ def train_predict_accuracy_step(features, labels, model_name):
     save_json(result, 'result.json')
 ```
 
-Notice that we used a `save_json` and a `read_json` functions. These are located in [utils.py](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/tutorial/utils.py).
+Notice that we used a `save_json` and a `read_json` functions. These are located in [`utils.py`](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/tutorial/utils.py).
 
 ### 3. Adding a step to the workflow template
 First we need is to modify the workflow to run two steps instead of one. The first step is called `generate-data` and the second one `train-model`. The resulting workflow template is [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/ml_tutorial_3/workflow.yaml).
