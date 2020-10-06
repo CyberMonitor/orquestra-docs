@@ -229,6 +229,8 @@ def calculate_f1_score_step(labels, predictions):
 
 And finally, the workflow should look like [this](https://github.com/zapatacomputing/tutorial-additional-metrics/blob/master/additional-metrics-workflow.yaml). Notice that we are calling two different components, `additional-metrics` for calculating the f1-score and `tutorial-orquestra-sklearn` for all the other functions.
 
+ _**Note:** According to recent [changes](https://www.zdnet.com/article/github-to-replace-master-with-main-starting-next-month/), GitHub will start using `main` instead of `master` as the default branch. If your workflow doesn't run, try changing the line below from `branch: "master"` to `branch: "main"`._
+
 ##### `other-metrics-workflow.yaml`
 
 ```yaml

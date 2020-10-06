@@ -77,7 +77,7 @@ name: hello-workflow
 # List components needed by workflow.
 imports:
 
-# A component named `welcome-to-orquestra` that is a public git repo. All the fields here are required except branch, which defaults to master.
+# A component named `welcome-to-orquestra` that is a public git repo. All the fields here are required except branch, which defaults to main.
 - name: welcome-to-orquestra
   type: git
   parameters:

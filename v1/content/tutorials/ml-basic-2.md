@@ -203,7 +203,7 @@ In the code below, change the url to your own GitHub repo. The file looks like [
 ### 5. Write workflow template and submit!
 Now that we've built our Orquestra workflow, all that's needed is to write the workflow template and submit! This has all been done in [ML Tutorial 1](../ml-basic-1), so please head there for the instructions. The workflow template is [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/ml_tutorial_2/workflow.yaml) for reference.
 
-The only thing you need to change is the GitHub repository. In lines 12 and 13 of the above file, add the path to your GitHub repo and the branch (usually master).
+The only thing you need to change is the GitHub repository. In lines 12 and 13 of the above file, add the path to your GitHub repo and the branch (usually master or main).
 
 ### 6. Conclusion
 
