@@ -32,7 +32,7 @@ For custom `types` we will always include a `types` field.
 
 Let's get started by opening up a text editor and creating an empty text file called `welcome-workflow.yaml`. This `yaml` file will contain the workflow definition for our Orquestra workflow. Go ahead and copy and paste the following code into your editor:
 
- _**Note:** According to recent [changes](https://www.zdnet.com/article/github-to-replace-master-with-main-starting-next-month/), GitHub will start using `main` instead of `master` as the default branch. If your workflow doesn't run, try changing the line below from `branch: "master"` to `branch: "main"`._
+ _**Note:** According to recent [changes](https://github.com/github/renaming), GitHub will start using `main` instead of `master` as the default branch. If your workflow doesn't run, try changing the line below from `branch: "master"` to `branch: "main"`._
 
 ```YAML
 # Workflow API version

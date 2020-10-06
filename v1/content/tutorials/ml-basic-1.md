@@ -92,7 +92,8 @@ Now let's study them in detail.
  ##### 3.2 Components
  The code that we'll be running is contained in a GitHub repo, and here is where we specify it (and it's branch). We'll give this one the name `sklearn-component`, so that when we need to call it later in the template, we'll use this name. We'll call this a _component_, and a workflow is allowed to have more than one component if you are planning to run code from different GitHub repositories.
 
- _**Note:** According to recent [changes](https://www.zdnet.com/article/github-to-replace-master-with-main-starting-next-month/), GitHub will start using `main` instead of `master` as the default branch. If your workflow doesn't run, try changing the line below from `branch: "master"` to `branch: "main"`._
+ _**Note:** According to recent [changes](https://github.com/github/renaming), GitHub will start using `main` instead of `master` as the default branch. If your workflow doesn't run, try changing the line below from `branch: "master"` to `branch: "main"`._
+
 ```yaml
 imports:
 - name: sklearn-component

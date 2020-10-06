@@ -176,7 +176,7 @@ Commit your changes and push them to GitHub.
 
 Create a file `optimize-qcbm-circuit.yaml` file with the code below, inserting the URL of your github repository in line 11. This file can go anywhere. A reference workflow can be found in the `examples` directory of the Orquestra [z-quantum-qcbm](https://github.com/zapatacomputing/z-quantum-qcbm) repository.
 
- _**Note:** According to recent [changes](https://www.zdnet.com/article/github-to-replace-master-with-main-starting-next-month/), GitHub will start using `main` instead of `master` as the default branch. If your workflow doesn't run, try changing the lines below from `branch: "master"` to `branch: "main"`._
+ _**Note:** According to recent [changes](https://github.com/github/renaming), GitHub will start using `main` instead of `master` as the default branch. If your workflow doesn't run, try changing the line below from `branch: "master"` to `branch: "main"`._
 
 ```YAML
 # Workflow API version
