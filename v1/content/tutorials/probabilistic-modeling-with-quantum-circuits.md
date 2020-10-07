@@ -329,7 +329,7 @@ Successfully submitted workflow to quantum engine!
 Workflow ID: qcbm-opt-l2btk
 ```
 
-**7. Worfklow Progress**
+**7. Workflow Progress**
 
 The workflow is now submitted to the Orquestra Quantum Engine and will be scheduled for execution when compute becomes available.
 
