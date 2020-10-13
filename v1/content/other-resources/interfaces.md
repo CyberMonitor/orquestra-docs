@@ -90,7 +90,7 @@ Available optimizers:
 - qiskit optimizers - integration with `ADAM`, `AMSGRAD` and `SPSA`.
 - CMA-ES - Covariance Matrix Adaptation Evolution Strategy.
 
-The interfaces for these optimizers live in the [z-quantum-optimizers repository](https://github.com/zapatacomputing/z-quantum-optimizers), except for the qiskit optimizers which reside in qe-qiskit](https://github.com/zapatacomputing/qe-qiskit).
+The interfaces for these optimizers live in the [z-quantum-optimizers repository](https://github.com/zapatacomputing/z-quantum-optimizers), except for the qiskit optimizers which reside in [qe-qiskit](https://github.com/zapatacomputing/qe-qiskit/tree/master/src/python/qeqiskit/optimizer).
 
 ### Cost functions
 
