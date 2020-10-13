@@ -99,7 +99,7 @@ To run the workflow and get our results back we'll need to:
 
 Please make sure you have the Quantum Engine CLI installed and configured for your operating system. You can find the instructions for installing the CLI [here](../../qe-cli/install-cli/).
 
-Open your terminal and login to Quantum Engine using CLI by running the following command `qe login -e <your-email> -s <quantum-engine-uri>`
+Open your terminal and login to Quantum Engine using CLI by running the following command `qe login -s <quantum-engine-uri>`
 
 You may need to contact your Orquestra support representitive for your account details and the  `quantum-engine-uri`.
 

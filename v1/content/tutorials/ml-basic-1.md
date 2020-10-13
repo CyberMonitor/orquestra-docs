@@ -167,7 +167,7 @@ Now that we've written the workflow template, it's time to run it! First, we nee
 
 ##### 4.1 Running the workflow
 - Install the [Quantum Engine CLI](https://orquestra.io/docs/qe-cli/install-cli/) (you only need to do this the first time).
-- Log into quantum engine by running `qe login -e <your-email> -s <quantum-engine-uri>` in your terminal. Contact support to register your email and/or receive the `quantum-engine-uri`.
+- Log into quantum engine by running `qe login -s <quantum-engine-uri>` in your terminal. Contact support to register your email and/or receive the `quantum-engine-uri`.
 - Submit your workflow by running `qe submit workflow <path-to-workflow/workflow.yaml>`
 
 This will return the workflow ID that corresponds to that particular execution of your workflow. The output will look like this:
