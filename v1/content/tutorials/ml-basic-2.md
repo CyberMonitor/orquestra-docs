@@ -159,7 +159,7 @@ Turning the code into a step is very simple. The code almost stays the same, exc
 
 Here is the modified [step](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/steps/ml_tutorial_2_step.py) that we'll run in Orquestra. Note that the difference from the original `generate-train` function at the beginning of the tutorial only lies in the last 4 lines of code.
 
-##### `tutorial_2_step.py`
+##### `ml_tutorial_2_step.py`
 ```python
 from tutorial.functions import *
 from tutorial.utils import *
@@ -191,17 +191,19 @@ def generate_train_step(dataset_name, model_name):
     save_json(result, 'result.json')
 ```
 
-We use the `save_json` function, which is a standard json encoder and lives in [utils.py](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/tutorial/utils.py). Also, we need an [`__init__.py`](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/tutorial/__init__.py).
+We use the `save_json` function, which is a standard json encoder and lives in [`utils.py`](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/tutorial/utils.py). Also, we need an [`__init__.py`](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/tutorial/__init__.py). Copy the contents of those files from the linked files on GitHub into your own `utils.py` and `__init__.py`.
 
 By convention, the functions that are relevant to our training are in `functions.py`, while those that help us with serializing input/output and similar tasks are in `utils.py`.
 
 ### 4. Installations, etc.
 The last thing we need to do is tell Orquestra what packages we need to run our code. We do this in the file `setup.py`, which should live in the root folder of our repo. For this workflow, we use `sklearn`, `numpy`, and `pandas`.
 
-In the code below, change the url to your own GitHub repo. The file looks like [this](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/setup.py), where the packages that we need to import are under `install_requires`.
+The file looks like [this](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/setup.py), where the packages that we need to import are under `install_requires`. In your code, change the url to your own GitHub repo. 
 
 ### 5. Write workflow template and submit!
 Now that we've built our Orquestra workflow, all that's needed is to write the workflow template and submit! This has all been done in [ML Tutorial 1](../ml-basic-1), so please head there for the instructions. The workflow template is [here](https://github.com/zapatacomputing/tutorial-orquestra-sklearn/blob/master/examples/ml_tutorial_2/workflow.yaml) for reference.
+
+Make sure you commit your changes and push then to your GitHub repo!
 
 The only thing you need to change is the GitHub repository. In lines 12 and 13 of the above file, add the path to your GitHub repo and the branch (usually master or main).
 

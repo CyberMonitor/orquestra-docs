@@ -189,8 +189,8 @@ imports:
 - name: bars-and-stripes
   type: git
   parameters:
-    repository: git@github.com:<your github username>/<your github repository name>
-    branch: master
+    repository: "git@github.com:<your github username>/<your github repository name>.git"
+    branch: "master"
 - name: z-quantum-core
   type: git
   parameters:
@@ -252,7 +252,7 @@ steps:
       imports: [z-quantum-core, bars-and-stripes]
       parameters:
         file: bars-and-stripes/target.py
-        function: generate_bars_and_stripes_target_distribution
+        function: get_bars_and_stripes_target_distribution
     resources:
       cpu: "1000m"
       memory: "1Gi"
