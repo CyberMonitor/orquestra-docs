@@ -28,8 +28,8 @@ qe login -s <quantum-engine-server-uri>
 
 where the `quantum-engine-server-uri` will be provided to you by Orquestra Support.
 
-**Note**: Currently, login is supported using `OpenConnectID` and you will get an access token that is valid for 24 hours once you have sucessfully logged in and approved access to required resources.
-          If your access token expired, you will be asked to authenticate again.
+**Note**: Currently, login is supported using `OpenIdConnect` and you will get an access token that is valid for 24 hours once you have sucessfully logged in and approved access to required resources.
+          If your access token has expired, you will be asked to re-authenticate to get a new token.
 
 ## Update 
 
