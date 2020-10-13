@@ -37,10 +37,9 @@ Each runtime language must contain the following three binaries:
 ### Python3 Runtime
 
 Supported Python Versions:
-* Python 3.x
+* Python 3.7
 
 When requesting `python3` code to run within a step of the workflow, set the `language` key to `python3`.
-Additionally both the desired python3 `file` and `function` to run should be specified under the `parameters` key.
 
 Below is an example:
 
@@ -58,9 +57,10 @@ steps:
 #### Dependency Management
 While there are no restrictions on how to organize source code when using the python3 runtime, Orquestra does provides automatic installation of python dependencies as follows:
 
-1. with pip using `requirements.txt` file in the root directory of your component
-1. with pip using `setup.py` file in the root directory of your component
-1. with pip using `vendor/` directory in the root directory of your component
+All components defined within the runtime imports will follow the following dependency resolution:
+1. with pip using `requirements.txt` file in the root directory of your imported components
+1. with pip using `setup.py` file in the root directory of your imported components
+1. with pip using `vendor/` directory in the root directory of your imported components
 
 **NOTE:**
 To ensure proper installation of dependencies, it is recommended to package vendor'd dependencies as non-binary. The following `pip download` command achieves this.
@@ -72,3 +72,9 @@ $ mkdir -p vendor
 # vendors pip *.tar.gz into vendor/
 $ pip download -r requirements.txt --no-binary=:none: -d vendor
 ```
+
+#### Running Functions
+Orquestra provides automatic calling of functions within a step of your workflow. In the python3 case:
+- **(required)** The function that is called is specified by `runtime.config.parameters.function` key.
+- **(required)** The function is expected to be found within a python file specified by `runtime.config.parameters.file`.
+- **(optional)** Inputs to this function are specified with the `steps.inputs` array.
