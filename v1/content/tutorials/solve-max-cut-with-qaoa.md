@@ -4,11 +4,11 @@ date: 2020-07-10T14:25:20-04:00
 draft: false
 summary: Find the maximum cut whose size is at least the size of any other cut using the Quantum Approximate Optimization Algorithm
 weight: 9
-publishdate: 2099-01-01
 ---
 
+Quantum Approximate Optimization Algorithm (QAOA) is a variational quantum algorithm which allows to solve combinatorial optimization problems. If you're interested in a more detailed description of QAOA you can read either [the original paper](https://arxiv.org/abs/1411.4028) or [this article](https://www.mustythoughts.com/Quantum-Approximate-Optimization-Algorithm-Explained.html).
 
-An [example workflow for solving MAXCUT with QAOA](https://github.com/zapatacomputing/z-quantum-qaoa/blob/master/examples/maxcut-qaoa.yaml) is available in [`z-quantum-qaoa`](https://github.com/zapatacomputing/z-quantum-qaoa). More details coming soon!
+An example workflow for using QAOA to solve MaxCut instances can be found in the [`z-quantum-qaoa`](https://github.com/zapatacomputing/z-quantum-qaoa/blob/master/examples/maxcut-qaoa.yaml) repository.
 
 <!-- 
 This tutorial will walk through using the Orquestra Quantum Engine to use Quantum Approximate Optimization Algorithm to solve MaxCut problem and use different optimizers to solve it.
@@ -30,8 +30,8 @@ Here we'll focus only on the last step – optimization.
 QAOA ansatz consists of several layers, sometimes called "steps", each layer parametrized by two parameters: &beta; and &gamma;, which we also call angles. The goal of the optimization step is to find such values of the angles which minimize the cost function.
 In our case the problem at hand is MaxCut problem – we try to divide a graph into two groups in such way, that the sum of the weights of the edges going between the groups is as big as possible.
 
-In this tutorial we will see how to solve this problem using layer-by-layer optimization and how we can use Orquestra to compare different optimizers.
-
+In this tutorial we will see how to solve this problem using layer-by-layer optimization and how we can use Orquestra to compare different optimizers. -->
+<!--
 ## Running QAOA – layer by layer optimization
 
 **1. Building workflow**
@@ -325,9 +325,10 @@ ___
 **Note:** The above link is only valid temporarily and typically expires after 7 days.
 ___
 
+-->
 
-## Running QAOA comparing optimizers
-
+<!-- ## Running QAOA comparing optimizers -->
+<!-- 
 Let's be honest – there are some more sophisticated optimizers than grid search. It only checks the values for the predefined grid and the chance that it will actually find the minimum depends on how dense the grid is. Therefore it might be a good idea to modify it and try some other optimizers.
 
 To make things simpler to visualize this time we will try to solve the problem for a one-layer case. To do that we will replace `optimize-lbl` step with `optimize-variational-circuit` – the same we used inside `optimize-lbl`.
@@ -621,5 +622,4 @@ ax2 = plot_cost_function(ax2, nelder_mead_results, color='r', label="Nelder-Mead
 ax2.set_xlabel("Iterations")
 ax2.set_ylabel("Value")
 plt.tight_layout()
-plt.show()
-``` -->
+plt.show() -->
