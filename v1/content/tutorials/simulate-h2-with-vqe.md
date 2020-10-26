@@ -1,11 +1,12 @@
 ---
 title: "Simulate H₂ with VQE"
 summary: Calculate the equilibrium bond length of H₂ with a variational quantum eigensolver.
-weight: 6
-publishdate: 2099-01-01
+weight: 8
 ---
 
-An [example workflow for simulating a H₂ molecule with VQE](https://github.com/zapatacomputing/z-quantum-vqe/blob/master/examples/hydrogen.yaml) is available in [`z-quantum-vqe`](https://github.com/zapatacomputing/z-quantum-vqe). More details coming soon!
+The Variational Quantum Eigensolver (VQE) is a quantum algorithm for estimating the ground state energy of a Hamiltonian. For more information, see [Quantum Chemistry in the Age of Quantum Computing](https://arxiv.org/abs/1812.09976).
+
+An example workflow for using VQE to find the ground state energy of an H₂ molecule can be found in the [`z-quantum-vqe`](https://github.com/zapatacomputing/z-quantum-vqe/blob/master/examples/hydrogen-vqe.yaml) repository.
 
 <!-- 
 This tutorial will walk through using the Orquestra Quantum Engine to implement the Variational Quantum Eigensolver (VQE) to calculate the binding energy curve of a H₂ molecule.
