@@ -4,12 +4,13 @@ summary: Description of integrations with quantum computing frameworks.
 weight: 4
 ---
 
-To enable users to use different quantum computing frameworks interchangably, compatibility layer is provided through `z-quantum-core` and various framework-specific components.
+Available quantum computing frameworks provide many valuable components, such as classes and functions representing circuits, backends, and optimizers.
+Because these frameworks in general not compatible, it can be difficult to swap components from different frameworks.
 
-Available framework integrations:
-* [Cirq](#cirq)
-* [Pyquil](#pyquil)
-* [Qiskit](#qiskit)
+To make it easier to interchangebly use components from across frameworks, Z-Quantum provides a compatibility layer that integrates widely used frameworks.
+This page walks through the key features of integrations with [Cirq](#cirq), [Pyquil](#pyquil), and [Qiskit](#qiskit).
+
+Note that while the compatibility layer provided by [Z-Quantum](https://github.com/zapatacomputing/z-quantum-core) is used extensively in the Orquestra tutorials, for use cases that do not require framework interoperability one can directly use a chosen framework in a [workflow step](../../quantum-engine/steps).
 
 ## Cirq {#cirq}
 
@@ -18,8 +19,7 @@ Cirq circuits can be converted to/from Z-Quantum circuits:
 from zquantum.core.circuit import Circuit
 import cirq
 
-cirq_circuit = cirq.Circuit()
-cirq_circuit.append(cirq.H(cirq.LineQubit))
+cirq_circuit = cirq.Circuit(cirq.H(cirq.LineQubit(0))) 
 
 # Convert a cirq circuit to a Z-Quantum circuit
 zircuit = Circuit(cirq_circuit)
