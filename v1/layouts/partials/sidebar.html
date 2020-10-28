@@ -7,7 +7,7 @@
       <a href="{{ .Permalink }}"><h5>{{ .Section | humanize | title }}</h5></a>
     {{ end }}
     <ul>
-      {{ range where .Site.RegularPages "Section" .Section }}
+      {{ range where .Pages "Section" .Section }}
         {{ if eq .Section $currentNode.Section }}
           <li class="{{ if eq .File.UniqueID $currentNode.File.UniqueID }}active {{ end }}">
             <a href="{{ .Permalink }}">{{ .Title }}</a>
