@@ -18,25 +18,30 @@ weight: 2
 
 ## Login
 
-In order to start being productive with Orquestra, you need to log into the platform using the Quantum Engine CLI.
+In order to start being productive with Orquestra, you need to log in to the platform using the Quantum Engine CLI.
 
-The Quantum Engine assumes that you have registered your login credentials with Zapata Computing. If you have not, please contact support.
+The Quantum Engine requires you to be a registered user with Zapata Computing. Please contact support if you do not yet have an account.
 
-If you have been provided with an API key, please log in with the following command:
-
-```Bash
-qe login -a <your-api-key> -s <quantum-engine-server-uri>
-```
-
-If Orquestra support has requested you to log in with your email address, please run the following command:
+The login process can be initiated through the CLI using the following command: 
 
 ```Bash
-qe login -e <your-email-address> -s <quantum-engine-server-uri>
+qe login -s <quantum-engine-server-uri>
 ```
 
 where the `quantum-engine-server-uri` will be provided to you by Orquestra Support.
 
-Note: Currently, it is not supported to log in with both an email address and an API key. Please choose one option.
+The CLI will provide a URL that can be accessed through a web browser in order to complete the login process. 
+Authenticate using the `Login with Orquestra` option.
+Upon successful authentication you will receive an access token that must be sent back to the CLI for usig Orquestra.
+
+**Note:** Currently, login is supported using `OpenIdConnect` and you will get an access token that is valid for 24 hours once you have sucessfully logged in and approved access to required resources.
+          If your access token has expired, you will be asked to re-authenticate to get a new token.
+
+After logging in for the first time, you can re-authenticate using the login command without the `-s` flag: 
+
+```Bash
+qe login
+```
 
 ## Update 
 
