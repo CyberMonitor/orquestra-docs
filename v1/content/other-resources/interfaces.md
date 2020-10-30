@@ -101,32 +101,82 @@ Right now the following cost functions are implemented in Orquestra:
 - **[`AnsatzBasedCostFunction`](https://github.com/zapatacomputing/z-quantum-core/blob/master/src/python/zquantum/core/cost_function.py):** cost function which evaluates an operator using given ansatz, useful for variational quantum algorithms.
 - **[`QCBMCostFunction`](https://github.com/zapatacomputing/z-quantum-qcbm/blob/master/src/python/zquantum/qcbm/cost_function.py):** builds off of the `AnsatzBasedCostFunction`, but tuned towards the Quantum Circuit Born Machine algorithm.
 
-### Estimators 
+### Estimators
 
-An `Estimator` is used to estimate the expectation value of an observable. 
-As input, an `Estimator` takes a `QuantumBackend`, a circuit $$C$$, and an observable $$O$$ and returns an estimate of the expectation value. 
-Specifically, say the state $$\ket{\psi}$$ is prepared by the circuit $$C$$. 
-Then, the `Estimator` returns an estimate of $$\braket{\psi \vert O \vert \psi}$$, the expectation value of the observable on the state prepared by the input circuit. 
+An `Estimator` is used to estimate the expectation value of an observable.
+As input, an `Estimator` takes a `QuantumBackend`, a circuit $$C$$, and an observable $$O$$ and returns an estimate of the expectation value.
+Specifically, say the state $$\ket{\psi}$$ is prepared by the circuit $$C$$.
+Then, the `Estimator` returns an estimate of $$\braket{\psi \vert O \vert \psi}$$, the expectation value of the observable on the state prepared by the input circuit.
 There are also optional inputs, depending on the `Estimator` being used.  
 
-Here is a list of the `Estimator` implementations currently available on Orquestra: 
+Here is a list of the `Estimator` implementations currently available on Orquestra:
 
-- **[`BasicEstimator`](https://github.com/zapatacomputing/z-quantum-core/blob/dev/src/python/zquantum/core/estimator.py#L43):** 
-Estimates expectation values with standard estimation techniques. 
-- **[`ExactEstimator`](https://github.com/zapatacomputing/z-quantum-core/blob/dev/src/python/zquantum/core/estimator.py#L108):** 
+- **[`BasicEstimator`](https://github.com/zapatacomputing/z-quantum-core/blob/dev/src/python/zquantum/core/estimator.py#L43):**
+Estimates expectation values with standard estimation techniques.
+- **[`ExactEstimator`](https://github.com/zapatacomputing/z-quantum-core/blob/dev/src/python/zquantum/core/estimator.py#L108):**
 Exactly computes expectation value. The backend must be a `QuantumSimulator`.  
 
-### Ansatzes 
+### Ansatzes
 
 An `Ansatz` is used to produce circuits that all belong to a similar family and all contain similar structures and are commonly used in variational quantum algorithms. Ansatzes can take various things as input (ranging from device specifications to hamiltonians), but all ansatzes share the same goal of producing Quantum Circuits.
 
 There are two very important properties of `Ansatz`, the first being the `parameterized_circuit` attribute. This will return a parameterized version of the Quantum Circuit that matches the current attributs of the ansatz such as the `number_of_qubits` and `number_of_layers`. Since producing these circuits can sometimes be a costly operation, the `parameterized_circuit` is cached and reproduced when certain attributes of the ansatz are modified. The second important property of all ansatzes is the `get_executable_circuit` method. Since parameterizable circuits are not supported by every ansatz, this is a way to get a non-parameterized circuit that still adheres to the given ansatz.
 
-Here is a list of the `Ansatz` implementations currently available on Orquestra: 
+Here is a list of the `Ansatz` implementations currently available on Orquestra:
 
-- **[`QAOAFarhiAnsatz`](https://github.com/zapatacomputing/z-quantum-qaoa/blob/dev/src/python/zquantum/qaoa/farhi_ansatz.py#L15):** 
+- **[`QAOAFarhiAnsatz`](https://github.com/zapatacomputing/z-quantum-qaoa/blob/dev/src/python/zquantum/qaoa/farhi_ansatz.py#L15):**
 Ansatz class representing QAOA ansatz as described in "A Quantum Approximate Optimization Algorithm" by E. Farhi and J. Goldstone (https://arxiv.org/abs/1411.4028)
-- **[`QCBMAnsatz`](https://github.com/zapatacomputing/z-quantum-qcbm/blob/dev/src/python/zquantum/qcbm/ansatz.py#L15):** 
+- **[`QCBMAnsatz`](https://github.com/zapatacomputing/z-quantum-qcbm/blob/dev/src/python/zquantum/qcbm/ansatz.py#L15):**
 An ansatz implementation used for running the Quantum Circuit Born Machine.
-- **[`SingletUCCSDAnsatz`](https://github.com/zapatacomputing/z-quantum-vqe/blob/dev/src/python/zquantum/vqe/singlet_uccsd.py#L14):** 
+- **[`SingletUCCSDAnsatz`](https://github.com/zapatacomputing/z-quantum-vqe/blob/dev/src/python/zquantum/vqe/singlet_uccsd.py#L14):**
 Ansatz class representing Singlet UCCSD Ansatz.
+
+## Examples
+
+In this section you can find ready-to-use examples for your workflows.
+Just copy it to your workflow and adjust any parameters if you need.
+
+### QuantumBackend and QuantumSimulator
+
+```
+- backend_specs: '{"module_name": "qeforest.simulator", "function_name": "ForestSimulator", "device_name": "wavefunction-simulator"}'
+- backend_specs: '{"module_name": "qeforest.simulator", "function_name": "ForestSimulator", "device_name": "9q-qvm"}'
+- backend_specs: '{"module_name": "qeqhipster.simulator", "function_name": "QHipsterSimulator"}'
+- backend_specs: '{"module_name": "qequlacs.simulator", "function_name": "QulacsSimulator"}'
+- backend_specs: '{"module_name": "qeqiskit.simulator", "function_name": "QiskitSimulator", "device_name": "statevector_simulator"}'
+- backend_specs: '{"module_name": "qeqiskit.backend", "function_name": "QiskitBackend", "device_name": "ibmq_qasm_simulator", "n_samples": 8192}'
+
+```
+
+### Optimizer
+```
+- optimizer_specs: "{"module_name": "zquantum.optimizers.grid_search", "function_name": "GridSearchOptimizer", "options": {"keep_value_history": true}}"
+- optimizer_specs: '{"module_name": "zquantum.optimizers.scipy_optimizer", "function_name": "ScipyOptimizer", "method": "L-BFGS-B"}'
+- optimizer_specs: '{"module_name": "zquantum.optimizers.scipy_optimizer", "function_name": "ScipyOptimizer", "method": "Nelder-Mead"}'
+- optimizer_specs: '{"module_name": "zquantum.optimizers.scipy_optimizer", "function_name": "ScipyOptimizer", "method": "COBYLA"}'
+- optimizer_specs: '{"module_name": "zquantum.optimizers.cma_es_optimizer", "function_name": "CMAESOptimizer", "options": {"popsize": 5, "sigma_0": 0.1, "tolx": 1e-6, "seed": 9}}'
+- optimizer_specs: '{"module_name": "zquantum.optimizers.scipy_optimizer", "function_name": "ScipyOptimizer", "method": "COBYLA"}'
+- optimizer_specs: '{"module_name": "zquantum.optimizers.scipy_optimizer", "function_name": "QiskitOptimizer", "method": "SPSA"}'
+- optimizer_specs: '{"module_name": "zquantum.optimizers.scipy_optimizer", "function_name": "QiskitOptimizer", "method": "ADAM"}'
+- optimizer_specs: '{"module_name": "zquantum.optimizers.scipy_optimizer", "function_name": "QiskitOptimizer", "method": "AMSGRAD"}'
+
+```
+
+### Cost functions
+```
+- cost_function_specs: '{"module_name": "zquantum.core.cost_function", "function_name": "AnsatzBasedCostFunction", "estimator-specs": { "module_name": "zquantum.core.estimator", "function_name": "ExactEstimator"}}'
+```
+
+### Estimators
+```
+"estimator-specs": { "module_name": "zquantum.core.estimator", "function_name": "BasicEstimator"}
+"estimator-specs": { "module_name": "zquantum.core.estimator", "function_name": "ExactEstimator"}
+
+```
+
+### Ansatzes
+```
+- ansatz_specs: '{"module_name": "zquantum.vqe.singlet_uccsd", "function_name": "SingletUCCSDAnsatz", "number_of_spatial_orbitals": 2, "number_of_alpha_electrons": 1, "transformation": "Jordan-Wigner"}'
+- ansatz_specs: "{"module_name": "zquantum.qaoa.farhi_ansatz", "function_name": "QAOAFarhiAnsatz", "number_of_layers": 1}"
+- ansatz_specs: '{"module_name": "zquantum.qcbm.ansatz", "function_name": "QCBMAnsatz", "number_of_layers": 4, "number_of_qubits": 4, "topology": "all"}'
+```
