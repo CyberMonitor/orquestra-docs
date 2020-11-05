@@ -25,7 +25,7 @@ weight: 5
 
 
 ___
-**Note**: `qe list` commands require you to be logged in (see [Logging In](../logging-in/)
+**Note**: `qe list` commands require you to be logged in (see [Login](../commands#login)).
 
 **Note**: All times in workflows list displayed are in local time based on timezone set on user's computer system in [RFC3399](https://tools.ietf.org/html/rfc3339) format. 
 If timezone is not set, UTC is the default.

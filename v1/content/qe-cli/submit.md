@@ -18,7 +18,7 @@ weight: 3
 | `-h`, `--help` | help for using submit |
 
 ___
-**Note**: `qe submit` commands require you to be logged in (see [Logging In](../logging-in)).
+**Note**: `qe submit` commands require you to be logged in (see [Login](../commands#login)).
 
 
 ## qe submit workflow
