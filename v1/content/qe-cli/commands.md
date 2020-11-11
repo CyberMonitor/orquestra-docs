@@ -14,6 +14,7 @@ weight: 2
 | [Submit](../submit/) | Submits one or more resources |
 | [Get](../get/) | Displays information about one or more resources |
 | [List](../list/) |  Displays a resource list  |
+| [Stop](../stop/) |  Stops a specific resource that is running and removes it from the scheduler.  |
 | [Install](../install/) | Installs one or more resources |
 
 ## Login
