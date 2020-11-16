@@ -67,3 +67,5 @@ qe get logs <workflow ID> -s <step name>
 The workflow ID is provided when you [submit a workflow](../workflow-submission/).
 
 The step name can be retrieved by [getting workflow details](../get-workflow-details/).
+
+**Note:** The logs are retrieved from three phases of a workflow step```(init, wait, and main)```. The limit for log count associated with each section is ```10000```.
